@@ -5,13 +5,13 @@ require 'pry'
 
 module JobTomate
   class JiraClient
-    API_URL = 'https://jobteaser.atlassian.net/rest/api/2/issue/JT-2253/worklog'
+    API_URL_PREFIX = 'https://jobteaser.atlassian.net/rest/api/2/issue/'
     API_PORT = 443
     DEFAULT_PARAMS = {
     }
 
-    def self.add_worklog()
-      url = API_URL
+    def self.add_worklog(issue_key, username, password, time_spent)
+      url = "#{API_URL_PREFIX}#{issue_key}/worklog"
 
       headers = {
         'Content-Type' => 'application/json'
@@ -21,12 +21,12 @@ module JobTomate
       })
 
       credentials = {
-        username: "romain.champourlier",
-        password: "j+zGVNpW44jvXbJe@6Kr"
+        username: username,
+        password: password
       }
 
       body = {
-        timeSpentSeconds: 3600
+        timeSpentSeconds: time_spent
       }
 
       response = HTTParty.post(url, {
