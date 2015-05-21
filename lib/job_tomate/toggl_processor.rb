@@ -76,10 +76,12 @@ module JobTomate
       issue_key = jira_issue_key(toggl_report)
       username, password = credentials_for_toggl_report(toggl_report)
       toggl_user = toggl_report['user']
+
       if username.nil?
-        puts "User for toggl_user #{toggl_user} not found"
-        false
+        LOGGER.warn "User for toggl_user \"#{toggl_user}\" not found"
+        return false
       end
+
       time_spent = time_spent_seconds(toggl_report)
       JiraClient.add_worklog(
         issue_key,

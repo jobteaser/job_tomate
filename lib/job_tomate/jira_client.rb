@@ -37,17 +37,17 @@ module JobTomate
       })
 
       begin
-        puts "Add worklog (#{time_spent}s) to #{issue_key} as #{username}"
+        LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}"
         if response.code == 200 || response.code == 201
           JSON.parse(response.body)
           true
         else
-          puts "Error (response code #{response.code}, content #{response.body})"
+          LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
           false
         end
       rescue => e
         # TODO fix this too large rescue
-        puts "Exception (#{e})"
+        LOGGER.warn "Exception (#{e})"
         false
       end
     end

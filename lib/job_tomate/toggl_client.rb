@@ -57,11 +57,11 @@ module JobTomate
         if response.code == 200 || response.code == 201
           JSON.parse(response.body)
         else
-          puts "Error (response code #{response.code}, content #{response.body})"
+          LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
         end
       rescue => e
         # TODO fix this too large rescue
-        puts "Exception (#{e})"
+        LOGGER.warn "Exception (#{e})"
       end
     end
   end

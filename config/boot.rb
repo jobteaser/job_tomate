@@ -16,3 +16,5 @@ $LOAD_PATH.unshift root_dir
 $LOAD_PATH.unshift File.join(root_dir, 'lib')
 require 'config/mongo'
 
+require 'job_tomate'
+JobTomate::LOGGER = Logger.new(STDOUT)
