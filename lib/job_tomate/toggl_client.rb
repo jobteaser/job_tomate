@@ -11,21 +11,25 @@ module JobTomate
       workspace_id: ENV['TOGGL_WORKSPACE_ID']
     }
 
-    # @param date [Time] a time to determine the date of reports
-    #   to be returned
-    def self.fetch_reports(time)
-      date = time.strftime("%Y-%m-%d")
+    # @param date_since [Date]
+    # @param date_until [Date]
+    def self.fetch_reports(date_since, date_until)
       page = 1
       all_results = []
       begin
-        results = fetch_reports_page(date, page)['data']
+        results = fetch_reports_page(
+          date_since.strftime("%Y-%m-%d"),
+          date_until.strftime("%Y-%m-%d"),
+          page
+        )['data']
+
         all_results += results
         page += 1
       end while(results.any?)
       all_results
     end
 
-    def self.fetch_reports_page(date, page)
+    def self.fetch_reports_page(date_since, date_until, page)
       url = API_URL
 
       headers = {
@@ -34,8 +38,8 @@ module JobTomate
 
       params = DEFAULT_PARAMS.merge({
         page: page,
-        since: date,
-        until: date
+        since: date_since,
+        until: date_until
       })
 
       credentials = {

@@ -1,3 +1,5 @@
+require 'active_support/all'
+
 module JobTomate
   class TogglProcessor
 
@@ -8,24 +10,69 @@ module JobTomate
     #   - update the entries that have already been created
     #     (update their `toggl_update` field and `status`).
     def self.run
-      reports = TogglClient.fetch_reports(Time.now)
-      reports.each do |report|
-        toggl_id = report['id']
-        toggl_updated = Time.parse(report['updated'])
-
-        if (entry = TogglEntry.where(toggl_id: toggl_id).first)
-          if entry.toggl_updated != toggl_updated
-            entry.status += '_modified'
+      reports = TogglClient.fetch_reports(Date.yesterday, Date.today)
+      reports.each do |toggl_report|
+        if jira_report?(toggl_report)
+          entry = create_or_update_entry(toggl_report)
+          if add_to_jira?(entry)
+            add_worklog_to_jira(toggl_report)
+            mark_entry_added_to_jira(entry)
           end
-        else
-          entry = TogglEntry.new
-          entry.toggl_id = toggl_id
-          entry.status = 'new'
         end
-
-        entry.toggl_updated = toggl_updated
-        entry.save
       end
+    end
+
+    def self.create_or_update_entry(toggl_report)
+      toggl_id = toggl_report['id']
+      toggl_updated = Time.parse(toggl_report['updated'])
+
+      if (entry = TogglEntry.where(id: toggl_id).first)
+        if entry.toggl_updated != toggl_updated
+          entry.status += '_modified'
+        end
+      else
+        entry = TogglEntry.new
+        entry.toggl_id = toggl_id
+        entry.status = 'new'
+      end
+
+      entry.toggl_updated = toggl_updated
+      entry.save
+      entry
+    end
+
+    def self.jira_report?(toggl_report)
+      !!(jira_issue_key(toggl_report))
+    end
+
+    def self.jira_issue_key(toggl_report)
+      toggl_report['description'][/jt-[\d]+/i]
+    end
+
+    def self.time_spent_seconds(toggl_report)
+      toggl_report['dur'] / 1000
+    end
+
+    # @param entry [TogglEntry]
+    def self.add_to_jira?(entry)
+      !!(entry.status =~ /new/) # accepts "new" and "new_updated"
+    end
+
+    def self.add_worklog_to_jira(toggl_report)
+      issue_key = jira_issue_key(toggl_report)
+      username, password = ['romain.champourlier', 'j+zGVNpW44jvXbJe@6Kr']
+      time_spent = time_spent_seconds(toggl_report)
+      JiraClient.add_worklog(
+        issue_key,
+        username,
+        password,
+        time_spent
+      )
+    end
+
+    def self.mark_entry_added_to_jira(entry)
+      entry.status = 'sent_to_jira'
+      entry.save
     end
   end
 end

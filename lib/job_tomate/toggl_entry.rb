@@ -11,11 +11,11 @@ module JobTomate
     # Possible statuses:
     #   - new
     #   - sent_to_jira
+    #   - ignored
     #   - ..._modified
     field :status,            type: String
 
     field :toggl_id,          type: String
     field :toggl_updated,     type: Time
-    field :added_to_jira_at,  type: Time
   end
 end
