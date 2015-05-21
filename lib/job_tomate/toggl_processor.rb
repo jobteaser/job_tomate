@@ -66,9 +66,20 @@ module JobTomate
       !!(entry.status =~ /new/) # accepts "new" and "new_updated"
     end
 
+    def self.credentials_for_toggl_report(toggl_report)
+      toggl_user = toggl_report['user']
+      user = User.where(toggl_user: toggl_user).first
+      user ? [user.jira_username, user.jira_password] : nil
+    end
+
     def self.add_worklog_to_jira(toggl_report)
       issue_key = jira_issue_key(toggl_report)
-      username, password = ['romain.champourlier', 'j+zGVNpW44jvXbJe@6Kr']
+      username, password = credentials_for_toggl_report(toggl_report)
+      toggl_user = toggl_report['user']
+      if username.nil?
+        puts "User for toggl_user #{toggl_user} not found"
+        false
+      end
       time_spent = time_spent_seconds(toggl_report)
       JiraClient.add_worklog(
         issue_key,
