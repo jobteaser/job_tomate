@@ -3,7 +3,6 @@
 require 'pry'
 require_relative '../config/boot'
 
-require 'job_tomate'
-require 'job_tomate/toggl_client'
+require 'job_tomate/all'
 
 Pry.start

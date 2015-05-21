@@ -1,7 +1,6 @@
 require 'uri'
 require 'active_support/all'
 require 'httparty'
-require 'pry'
 
 module JobTomate
   class TogglClient
