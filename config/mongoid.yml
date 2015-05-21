@@ -1,0 +1,16 @@
+base: &default
+  sessions:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>
+
+production:
+  <<: *default
+
+development:
+  <<: *default
+
+test:
+  sessions:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>-test
+      safe: true

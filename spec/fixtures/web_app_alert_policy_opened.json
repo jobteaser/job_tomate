@@ -1,0 +1,10 @@
+{
+"created_at":"2014-03-04T14:31:35-08:00",
+"alert_policy_name":"Default application alert policy",
+"account_name":"Account name",
+"severity":"Critical",
+"message":"Message about alert",
+"short_description":"Short description about alert",
+"long_description":"Long description about alert",
+"alert_url":"http://PATH_TO_NEW_RELIC"
+}

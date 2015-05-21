@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'pry'
+require_relative '../config/boot'
+
+require 'job_tomate'
+require 'job_tomate/toggl_client'
+
+Pry.start

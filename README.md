@@ -12,7 +12,7 @@ Automate as many things as possible in our development workflow.
 
 ## Possible workflows?
 
-- [Automate|Toggl+JIRA] New time entry in Toggl, identify the corresponding JIRA issue and add worklog to it.
+- [Automate|Toggl+JIRA] New time entry in Toggl => add workflow in JIRA
 - [Automate|Github+JIRA] Merge a PR in develop, add the "Merged in develop" comment in JIRA.
 - [Automate|JIRA] Automatically assign the appropriate person when changing the issue status.
 - [Alert|JIRA] send an email to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
@@ -23,3 +23,17 @@ Automate as many things as possible in our development workflow.
 - [Alert|JIRA] send an email if an issue hasn't been updated for X days
 - [Alert|JIRA] send an email if an issue makes more than 2 returns to "In Dev" status after review or functional review
 - [Automate|Git+Github] on a deploy, generate a beautiful release note
+
+
+## Implementation
+
+### Automate|Toggl+JIRA New time entry in Toggl => add workflow in JIRA
+
+API request:
+`https://toggl.com/reports/api/v2/details?user_agent=JobTomate (<dev@jobteaser.com>)&workspace_id=939576&page=5`
+
+- Paginated: use `page` parameter
+
+Processing rules:
+- Identify new entries, if not updated for 2 hours, add the corresponding worklog to JIRA. (This allows an entry to be modified during 2 hours after its creation.)
+

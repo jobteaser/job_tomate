@@ -1,0 +1,2 @@
+module JobTomate
+end
