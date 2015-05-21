@@ -23,7 +23,7 @@ Automate as many things as possible in our development workflow.
 - [Alert|JIRA] send an email if an issue hasn't been updated for X days
 - [Alert|JIRA] send an email if an issue makes more than 2 returns to "In Dev" status after review or functional review
 - [Automate|Git+Github] on a deploy, generate a beautiful release note
-
+- [Automate|JIRA+Github] issue in functional review and GO from product and tests are green => merge in develop
 
 ## Implementation
 
