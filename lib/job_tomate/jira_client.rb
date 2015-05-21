@@ -7,9 +7,9 @@ module JobTomate
   class JiraClient
     API_URL_PREFIX = 'https://jobteaser.atlassian.net/rest/api/2/issue/'
     API_PORT = 443
-    DEFAULT_PARAMS = {
-    }
+    DEFAULT_PARAMS = {}
 
+    # @return [Boolean] true if successful, false otherwise
     def self.add_worklog(issue_key, username, password, time_spent)
       url = "#{API_URL_PREFIX}#{issue_key}/worklog"
 
@@ -37,14 +37,18 @@ module JobTomate
       })
 
       begin
+        puts "Add worklog (#{time_spent}s) to #{issue_key} as #{username}"
         if response.code == 200 || response.code == 201
           JSON.parse(response.body)
+          true
         else
           puts "Error (response code #{response.code}, content #{response.body})"
+          false
         end
       rescue => e
         # TODO fix this too large rescue
         puts "Exception (#{e})"
+        false
       end
     end
   end

@@ -11,13 +11,21 @@ module JobTomate
     #     (update their `toggl_update` field and `status`).
     def self.run
       reports = TogglClient.fetch_reports(Date.yesterday, Date.today)
-      reports.each do |toggl_report|
+      reports.map do |toggl_report|
         if jira_report?(toggl_report)
           entry = create_or_update_entry(toggl_report)
           if add_to_jira?(entry)
-            add_worklog_to_jira(toggl_report)
-            mark_entry_added_to_jira(entry)
+            if add_worklog_to_jira(toggl_report)
+              mark_entry_added_to_jira(entry)
+              :sent_to_jira
+            else
+              :failed_to_send_to_jira
+            end
+          else
+            :already_sent_to_jira
           end
+        else
+          :ignored
         end
       end
     end
@@ -26,7 +34,7 @@ module JobTomate
       toggl_id = toggl_report['id']
       toggl_updated = Time.parse(toggl_report['updated'])
 
-      if (entry = TogglEntry.where(id: toggl_id).first)
+      if (entry = TogglEntry.where(toggl_id: toggl_id).first)
         if entry.toggl_updated != toggl_updated
           entry.status += '_modified'
         end
