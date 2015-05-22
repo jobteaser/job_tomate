@@ -12,7 +12,7 @@ module JobTomate
     def self.run
       reports = TogglClient.fetch_reports(Date.yesterday, Date.today)
       reports.map do |toggl_report|
-        result = process_toggl_report(toggl_report)
+        process_toggl_report(toggl_report)
       end
     end
 

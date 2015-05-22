@@ -4,9 +4,9 @@ gem 'mongoid'
 gem 'httparty'
 
 # For the console
+gem 'pry'
 
 group :development, :test do
-  gem 'pry'
   gem 'dotenv'
   gem 'awesome_print'
 end
