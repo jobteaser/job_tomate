@@ -39,6 +39,10 @@ module JobTomate
         LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}"
         if response.code == 200 || response.code == 201
           JSON.parse(response.body)
+          LogInfo.new(
+            action: "Add worklog (#{time_spent}s) to #{issue_key} as #{username}",
+            timestamp: Time.now,
+            status: response.code).save
           true
         else
           LOGGER.warn "Error (response code #{response.code}, content #{response.body})"

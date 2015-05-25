@@ -1,5 +1,6 @@
 require 'sinatra'
 
 get '/' do
-  "Hello World!"
+  @loginfos = LogInfo.all(:limit => 20)
+  erb :index
 end
