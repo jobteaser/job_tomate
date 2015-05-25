@@ -9,7 +9,7 @@ module JobTomate
     store_in collection: 'loginfos'
 
     field :action,          type: String
-    field :timestamp,       type: Timestamp
+    field :timestamp,       type: Time
     field :status,          type: Integer
   end
 end

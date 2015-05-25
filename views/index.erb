@@ -1,4 +1,5 @@
-<% @jobinfos.each do |jobinfo| %>
-  <h3><%= jobinfo.status %></h3>
-  <p><%= jobinfo.action %></p>
+<% @loginfos.each do |loginfo| %>
+  <p><%= loginfo.action %></p>
+  <p><%= loginfo.status %></p>
+  <p><%= loginfo.timestamp %></p>
 <% end %>
