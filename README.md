@@ -24,6 +24,7 @@ Automate as many things as possible in our development workflow.
 - [Alert|JIRA] send an email if an issue makes more than 2 returns to "In Dev" status after review or functional review
 - [Automate|Git+Github] on a deploy, generate a beautiful release note
 - [Automate|JIRA+Github] issue in functional review and GO from product and tests are green => merge in develop
+- [Automate|Slack] Send the maintenance to-do list to whoever is in charge.
 
 ## Implementation
 
@@ -36,4 +37,3 @@ API request:
 
 Processing rules:
 - Identify new entries, if not updated for 2 hours, add the corresponding worklog to JIRA. (This allows an entry to be modified during 2 hours after its creation.)
-
