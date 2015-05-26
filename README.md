@@ -24,7 +24,7 @@ Automate as many things as possible in our development workflow.
 - [Alert|JIRA] send an email if an issue makes more than 2 returns to "In Dev" status after review or functional review
 - [Automate|Git+Github] on a deploy, generate a beautiful release note
 - [Automate|JIRA+Github] issue in functional review and GO from product and tests are green => merge in develop
-- [Automate|Slack] Send the maintenance to-do list to whoever is in charge.
+- [Automate|Slack+Google Calendar] Send the maintenance to-do list to whoever is in charge.
 
 ## Implementation
 
@@ -37,3 +37,16 @@ API request:
 
 Processing rules:
 - Identify new entries, if not updated for 2 hours, add the corresponding worklog to JIRA. (This allows an entry to be modified during 2 hours after its creation.)
+
+==> Downloading https://homebrew.bintray.com/bottles/mongodb-3.0.1.yosemite.bottle.tar.gz
+######################################################################## 100.0%
+==> Pouring mongodb-3.0.1.yosemite.bottle.tar.gz
+==> Caveats
+To have launchd start mongodb at login:
+    ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
+Then to load mongodb now:
+    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
+Or, if you don't want/need launchctl, you can just run:
+    mongod --config /usr/local/etc/mongod.conf
+==> Summary
+🍺  /usr/local/Cellar/mongodb/3.0.1: 17 files, 153M
