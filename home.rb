@@ -1,7 +1,21 @@
 require_relative 'config/boot.rb'
+require 'sinatra'
+require 'pry'
 
 get '/' do
   "Hello world"
-  # @loginfos = JobTomate::LogInfo.all(:limit => 20)
-  # erb :index
+end
+
+post '/webhooks/pushs' do
+  return 'ok'
+end
+
+post '/webhooks/pr' do
+  data = request.body.read
+  if !data.empty?
+    j = JSON.parse data
+    JobTomate::GithubProcessor.run(j)
+  else
+    return "no body"
+  end
 end

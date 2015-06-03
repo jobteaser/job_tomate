@@ -14,6 +14,7 @@ Automate as many things as possible in our development workflow.
 
 - [Automate|Toggl+JIRA] New time entry in Toggl => add workflow in JIRA
 - [Automate|Github+JIRA] Merge a PR in develop, add the "Merged in develop" comment in JIRA.
+Creating a PR add a comment in the jira issue with the PR url.
 - [Automate|JIRA] Automatically assign the appropriate person when changing the issue status.
 - [Alert|JIRA] send an email to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
 - [Automate|JIRA] PR validated in review (`:+1:` in the comments), add a comment in JIRA and change the issue's status to "Functional Review".
@@ -37,16 +38,3 @@ API request:
 
 Processing rules:
 - Identify new entries, if not updated for 2 hours, add the corresponding worklog to JIRA. (This allows an entry to be modified during 2 hours after its creation.)
-
-==> Downloading https://homebrew.bintray.com/bottles/mongodb-3.0.1.yosemite.bottle.tar.gz
-######################################################################## 100.0%
-==> Pouring mongodb-3.0.1.yosemite.bottle.tar.gz
-==> Caveats
-To have launchd start mongodb at login:
-    ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
-Then to load mongodb now:
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
-Or, if you don't want/need launchctl, you can just run:
-    mongod --config /usr/local/etc/mongod.conf
-==> Summary
-🍺  /usr/local/Cellar/mongodb/3.0.1: 17 files, 153M
