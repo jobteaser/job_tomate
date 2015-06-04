@@ -12,10 +12,11 @@ Automate as many things as possible in our development workflow.
 
 ## Possible workflows?
 
-- [Automate|Toggl+JIRA] New time entry in Toggl => add workflow in JIRA
+- [Automate|Toggl+JIRA] New time entry in Toggl => add workflow in JIRA => DONE
 - [Automate|Github+JIRA] Merge a PR in develop, add the "Merged in develop" comment in JIRA.
-Creating a PR add a comment in the jira issue with the PR url.
+Creating a PR add a comment in the jira issue with the PR url. => DONE
 - [Automate|JIRA] Automatically assign the appropriate person when changing the issue status.
+If there is a subtask, change its status to the same status than the task.
 - [Alert|JIRA] send an email to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
 - [Automate|JIRA] PR validated in review (`:+1:` in the comments), add a comment in JIRA and change the issue's status to "Functional Review".
 - [Automate|JIRA] PR validated in review (`:-1:` in the comments), add a comment in JIRA (including the comment on the PR) and change the issue's status to "In Dev".

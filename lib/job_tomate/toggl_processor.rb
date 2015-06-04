@@ -19,7 +19,6 @@ module JobTomate
     def self.process_toggl_report(toggl_report)
       return :not_linked_to_jira unless linkable_to_jira?(toggl_report)
       return :not_old_enough unless old_enough?(toggl_report)
-      return :too_short unless too_short?(toggl_report)
 
       entry = create_or_update_entry(toggl_report)
       return :already_sent_to_jira if sent_to_jira?(entry)
@@ -59,11 +58,6 @@ module JobTomate
     def self.old_enough?(toggl_report)
       updated_at = Time.parse(toggl_report['updated'])
       updated_at < 2.hours.ago
-    end
-
-    def self.too_short?(toggl_report)
-      duration = toggl_report['dur'] / 1000
-      duration < 1
     end
 
     def self.jira_issue_key(toggl_report)

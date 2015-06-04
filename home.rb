@@ -19,3 +19,13 @@ post '/webhooks/pr' do
     return "no body"
   end
 end
+
+post '/webhooks/status' do
+  binding.pry
+  data = request.body.read
+  if !data.empty?
+    j = JSON.parse data
+  else
+    return "no body"
+  end
+end
