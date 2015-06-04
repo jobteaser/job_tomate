@@ -27,8 +27,7 @@ module JobTomate
         body: comment
       }
 
-#modify condition before deploying
-      if ENV['APP_ENV'] == "development"
+      if ENV['APP_ENV'] != "development"
         response = HTTParty.post(url, {
           headers: headers,
           query: params,
