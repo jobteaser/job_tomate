@@ -21,11 +21,14 @@ post '/webhooks/pr' do
 end
 
 post '/webhooks/status' do
-  binding.pry
   data = request.body.read
   if !data.empty?
     j = JSON.parse data
-    JobTomate::JiraProcessor.run(j)
+    new_status = j['changelog']['items'].first['toString']
+    reviewer = j['issue']['fields']['customfield_10601']['key']
+    assignee = j['issue']['fields']['assignee']['key']
+    developer = j['issue']['fields']['customfield_10600']['key']
+    logger.info "ticket changed to #{new_status}, assignee is #{assignee}, reviewer is #{reviewer}, developer is #{developer}"
   else
     return "no body"
   end

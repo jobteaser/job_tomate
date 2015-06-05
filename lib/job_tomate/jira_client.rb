@@ -8,6 +8,54 @@ module JobTomate
     API_PORT = 443
     DEFAULT_PARAMS = {}
 
+#     def self.assign_user(issue_key, username, password, comment)
+#       url = "#{API_URL_PREFIX}#{issue_key}/comment"
+
+#       headers = {
+#         'Content-Type' => 'application/json'
+#       }
+
+#       params = DEFAULT_PARAMS.merge({
+#       })
+
+#       credentials = {
+#         username: username,
+#         password: password
+#       }
+
+#       body = {
+#         body: comment
+#       }
+
+# #modify condition before deploying
+#       if ENV['APP_ENV'] == "development"
+#         response = HTTParty.post(url, {
+#           headers: headers,
+#           query: params,
+#           basic_auth: credentials,
+#           body: body.to_json
+#         })
+
+#         begin
+#           LOGGER.info "Add comment (#{comment}) to #{issue_key} as #{username}"
+#           if response.code == 200 || response.code == 201
+#             JSON.parse(response.body)
+#             true
+#           else
+#             LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
+#             false
+#           end
+#         rescue => e
+#           # TODO fix this too large rescue
+#           LOGGER.warn "Exception (#{e})"
+#           false
+#         end
+#       else
+#         LOGGER.info "Add comment (#{comment}) to #{issue_key} as #{username} - SKIPPED BECAUSE IN DEV"
+#         return true
+#       end
+#     end
+
     def self.add_comment(issue_key, username, password, comment)
       url = "#{API_URL_PREFIX}#{issue_key}/comment"
 

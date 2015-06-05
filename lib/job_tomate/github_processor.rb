@@ -20,7 +20,7 @@ module JobTomate
                     "PR closed but not merged"
                   end
       else
-        comment = "Opened PR : #{webhook_data['pull_request']['url']}"
+        comment = "Opened PR : #{webhook_data['pull_request']['html_url']}"
       end
       JobTomate::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
     end
