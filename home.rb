@@ -6,10 +6,6 @@ get '/' do
   "Hello world"
 end
 
-post '/webhooks/pushs' do
-  return 'ok'
-end
-
 post '/webhooks/pr' do
   data = request.body.read
   if !data.empty?
