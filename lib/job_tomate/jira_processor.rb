@@ -18,9 +18,12 @@ module JobTomate
         'harold.sirven'
       when 'In Review'
         reviewer
-      when ('Ready for Release' || 'In Development')
+      when 'Ready for Release', 'In Development'
         developer
       end
+      # if webhook_data['issue']['fields']['subtasks'].first['fields']['issuetype']['subtask']
+
+      # end
       JobTomate::JiraClient.assign_user(issue_key, user.jira_username, user.jira_password, assignee)
     end
   end
