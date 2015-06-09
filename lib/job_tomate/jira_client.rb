@@ -27,8 +27,7 @@ module JobTomate
         fields: {assignee: {name: assignee}}
       }
 
-#modify condition before deploying
-      if ENV['APP_ENV'] == "development"
+      if ENV['APP_ENV'] != "development"
         response = HTTParty.put(url, {
           headers: headers,
           query: params,
