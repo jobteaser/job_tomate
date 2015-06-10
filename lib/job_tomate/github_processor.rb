@@ -15,12 +15,12 @@ module JobTomate
       user ? [user.jira_username, user.jira_password] : nil
       if webhook_data['action'] == 'closed'
         comment = if webhook_data['pull_request']['merged']
-                    "Merged PR in #{webhook_data['pull_request']['base']['ref']}"
+                    "Merged PR in #{webhook_data['pull_request']['base']['ref']} (via job_tomate)"
                   else
-                    "PR closed but not merged"
+                    "PR closed but not merged (via job_tomate)"
                   end
       elsif webhook_data['action'] == 'opened'
-        comment = "Opened PR : #{webhook_data['pull_request']['html_url']}"
+        comment = "Opened PR : #{webhook_data['pull_request']['html_url']} (via job_tomate)"
       end
       JobTomate::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
     end
