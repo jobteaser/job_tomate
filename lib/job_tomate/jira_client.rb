@@ -47,21 +47,21 @@ module JobTomate
       end
     end
 
-    def self.make_transition(issue_key, username, password, status_id)
-      body = {
-        transition: {id: "121"}
-      }
+#     def self.make_transition(issue_key, username, password, status_id)
+#       body = {
+#         transition: {id: "121"}
+#       }
 
-# CHANGE CONDITION BEFORE DEPLOYING
+# # CHANGE CONDITION BEFORE DEPLOYING
 
-      if ENV['APP_ENV'] == "development"
-        response = exec_request(:put, "#{issue_key}/transitions", username, password, body)
-        display_logs(response, "Made transition of #{issue_key}")
-      else
-        LOGGER.info "made transition of #{issue_key} - SKIPPED BECAUSE IN DEV"
-        return true
-      end
-    end
+#       if ENV['APP_ENV'] == "development"
+#         response = exec_request(:put, "#{issue_key}/transitions", username, password, body)
+#         display_logs(response, "Made transition of #{issue_key}")
+#       else
+#         LOGGER.info "made transition of #{issue_key} - SKIPPED BECAUSE IN DEV"
+#         return true
+#       end
+#     end
 
     def self.assign_user(issue_key, username, password, assignee)
       body = {
