@@ -19,7 +19,7 @@ module JobTomate
       if developer.nil? && (new_status == 'Ready for Release' || new_status == 'In Development')
         developer = webhook_data['user']['name']
       end
-      if reviewer.nil? && new_status == 'In Review'
+      if (reviewer.nil? && new_status == 'In Review') && webhook_data['user']['name'] != developer
         reviewer = webhook_data['user']['name']
       end
 
