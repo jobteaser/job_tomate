@@ -63,9 +63,11 @@ module JobTomate
 #       end
 #     end
 
-    def self.assign_user(issue_key, username, password, assignee)
+    def self.assign_user(issue_key, username, password, assignee, developer, reviewer)
       body = {
-        fields: {assignee: {name: assignee}}
+        fields: {assignee: {name: assignee},
+                customfield_10600: {name: developer},
+                customfield_10601: {name: reviewer}}
       }
 
       if ENV['APP_ENV'] != "development"
