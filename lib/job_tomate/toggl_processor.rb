@@ -68,6 +68,11 @@ module JobTomate
       toggl_report['dur'] / 1000
     end
 
+    def self.jira_format_date(toggl_report)
+      original_date = toggl_report['start']
+      original_date.strftime('%Y-%m-%dT%H:%M:%S.%3N%z')
+    end
+
     # Returns `true` if the Toggl entry has been sent to JIRA,
     # i.e. the status contains `sent_to_jira`.
     # @param entry [TogglEntry]
@@ -92,11 +97,13 @@ module JobTomate
       end
 
       time_spent = time_spent_seconds(toggl_report)
+      start = jira_format_date(toggl_report)
       JiraClient.add_worklog(
         issue_key,
         username,
         password,
-        time_spent
+        time_spent,
+        start
       )
     end
 

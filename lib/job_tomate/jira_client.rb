@@ -47,22 +47,6 @@ module JobTomate
       end
     end
 
-#     def self.make_transition(issue_key, username, password, status_id)
-#       body = {
-#         transition: {id: "121"}
-#       }
-
-# # CHANGE CONDITION BEFORE DEPLOYING
-
-#       if ENV['APP_ENV'] == "development"
-#         response = exec_request(:put, "#{issue_key}/transitions", username, password, body)
-#         display_logs(response, "Made transition of #{issue_key}")
-#       else
-#         LOGGER.info "made transition of #{issue_key} - SKIPPED BECAUSE IN DEV"
-#         return true
-#       end
-#     end
-
     def self.assign_user(issue_key, username, password, assignee, developer, reviewer)
       body = {
         fields: {assignee: {name: assignee},
@@ -93,16 +77,17 @@ module JobTomate
       end
     end
 
-    def self.add_worklog(issue_key, username, password, time_spent)
+    def self.add_worklog(issue_key, username, password, time_spent, start)
       body = {
-        timeSpentSeconds: time_spent
+        timeSpentSeconds: time_spent,
+        started: start
       }
 
       if ENV['APP_ENV'] != "development"
         response = exec_request(:post, "#{issue_key}/worklog", username, password, body)
-        display_logs(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}")
+        display_logs(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start}")
       else
-        LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username} - SKIPPED BECAUSE IN DEV"
+        LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start} - SKIPPED BECAUSE IN DEV"
         return true
       end
     end
