@@ -1,4 +1,5 @@
 require 'active_support/all'
+require 'pry'
 
 module JobTomate
   class TogglProcessor
@@ -69,7 +70,7 @@ module JobTomate
     end
 
     def self.jira_format_date(toggl_report)
-      original_date = toggl_report['start']
+      original_date = DateTime.parse(toggl_report['start'])
       original_date.strftime('%Y-%m-%dT%H:%M:%S.%3N%z')
     end
 
