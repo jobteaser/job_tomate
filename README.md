@@ -21,6 +21,7 @@ Automate as many things as possible in our development workflow.
 
 ## Worklows todolist
 
+- **[Alert|JIRA]** Comment in JIRA sends an email/Slack DM to the issue's developer, reviewer and current assignee, and the person named in the comment if present (@someone).
 - **[Automate|JIRA]** If there is a subtask, change its status to the same status than the task.
 - **[Alert|JIRA]** send an email/Slack DM to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
 - **[Automate|JIRA]** PR validated in review (`:+1:` in the comments), add a comment in JIRA and change the issue's status to "Functional Review".
