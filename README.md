@@ -47,3 +47,23 @@ API request:
 
 Processing rules:
 - Identify new entries, if not updated for 2 hours, add the corresponding worklog to JIRA. (This allows an entry to be modified during 2 hours after its creation.)
+
+## How to use
+
+**Open a console locally*
+
+```
+bin/console
+```
+
+**Deploy to Heroku**
+
+```
+bin/deploy
+```
+
+**Run a console on Heroku**
+
+```
+heroku run bin/console
+```
