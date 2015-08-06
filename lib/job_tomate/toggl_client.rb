@@ -18,8 +18,8 @@ module JobTomate
       all_results = []
       begin
         results = fetch_reports_page(
-          date_since.strftime("%Y-%m-%d"),
-          date_until.strftime("%Y-%m-%d"),
+          date_since.strftime('%Y-%m-%d'),
+          date_until.strftime('%Y-%m-%d'),
           page
         )['data']
 
@@ -66,4 +66,3 @@ module JobTomate
     end
   end
 end
-
