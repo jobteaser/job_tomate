@@ -7,26 +7,31 @@ get '/' do
 end
 
 post '/webhooks/pr' do
-  data = request.body.read
-  if !data.empty?
-    j = JSON.parse data
-    JobTomate::GithubProcessor.run(j)
-  else
-    return "no body"
-  end
+  json = request.body.read
+  return 'no body' if json.empty?
+
+  data = JSON.parse json
+  JobTomate::GithubProcessor.run(data)
 end
 
 post '/webhooks/status' do
-  data = request.body.read
-  if !data.empty?
-    j = JSON.parse data
-    begin
-      status_changed = j['changelog']['items'].find{|item| item['field'] == 'status'}
-      JobTomate::JiraProcessor.run(j) if status_changed
-    rescue NoMethodError => e
-      logger.warn "Exception: #{e} (data: #{j})"
-    end
-  else
-    return "no body"
+  json = request.body.read
+  return 'no body' if json.empty?
+
+  data = JSON.parse json
+  issue_key = data['issue']['key']
+
+  changelog = data['changelog']
+  if changelog.blank? || (items = changelog['items']).empty?
+    logger.warn "No changelog or changelog items for issue #{issue_key}"
+    return
   end
+
+  status_change = items.find{ |item| item['field'] == 'status' }
+  if status_change.nil?
+    logger.warn "No status change for issue #{issue_key}"
+    return
+  end
+
+  JobTomate::JiraProcessor.run(data) if status_change
 end
