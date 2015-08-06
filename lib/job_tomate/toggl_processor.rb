@@ -96,7 +96,7 @@ module JobTomate
       toggl_user = toggl_report['user']
 
       if username.nil?
-        LOGGER.critical "User for toggl_user \"#{toggl_user}\" not found"
+        LOGGER.error "User for toggl_user \"#{toggl_user}\" not found"
         return false
       end
 
