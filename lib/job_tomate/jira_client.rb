@@ -32,17 +32,11 @@ module JobTomate
     end
 
     def self.display_logs(response, success_message)
-      begin
-        LOGGER.info "#{success_message}"
-        if response.code == 200 || response.code == 201 || response.code == 204
-          true
-        else
-          LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
-          false
-        end
-      rescue => e
-        # TODO fix this too large rescue
-        LOGGER.warn "Exception (#{e})"
+      LOGGER.info "#{success_message}"
+      if response.code == 200 || response.code == 201 || response.code == 204
+        true
+      else
+        LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
         false
       end
     end
