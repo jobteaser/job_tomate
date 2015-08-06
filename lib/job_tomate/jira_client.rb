@@ -62,6 +62,11 @@ module JobTomate
     end
 
     def self.add_worklog(issue_key, username, password, time_spent, start)
+      if time_spent.to_i < 60
+        LOGGER.info 'Skipping worklog < 1 min (not accepted by JIRA)'
+        return true
+      end
+
       body = {
         timeSpentSeconds: time_spent,
         started: start
