@@ -21,6 +21,7 @@ Automate as many things as possible in our development workflow.
 
 ## Worklows todolist
 
+- **[Alert|Toggl]** Slack DM if no Toggl report more than 2 hours after a normal work day start
 - **[Alert|JIRA]** Comment in JIRA sends an email/Slack DM to the issue's developer, reviewer and current assignee, and the person named in the comment if present (@someone).
 - **[Automate|JIRA]** If there is a subtask, change its status to the same status than the task.
 - **[Alert|JIRA]** send an email/Slack DM to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
@@ -33,6 +34,7 @@ Automate as many things as possible in our development workflow.
 - **[Automate|Git+Github]** on a deploy, generate a beautiful release note
 - **[Automate|JIRA+Github]** issue in functional review and GO from product and tests are green => merge in develop
 - **[Automate|Slack+Google Calendar]** Send the maintenance to-do list to whoever is in charge.
+- **[Alert|JIRA]** When a ticket is released, send an email to a specific email address according to some criteria on the issue content.
 
 ## Implementation
 
