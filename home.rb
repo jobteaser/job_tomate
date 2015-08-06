@@ -6,6 +6,7 @@ get '/' do
   "Hello world"
 end
 
+# Github pull request webhook
 post '/webhooks/pr' do
   json = request.body.read
   return 'no body' if json.empty?
@@ -14,6 +15,7 @@ post '/webhooks/pr' do
   JobTomate::GithubProcessor.run(data)
 end
 
+# JIRA issue status change webhook
 post '/webhooks/status' do
   json = request.body.read
   return 'no body' if json.empty?
