@@ -1,28 +1,31 @@
 require 'spec_helper'
+require 'job_tomate/toggl_processor'
 
 describe JobTomate::TogglProcessor do
 
   let(:report) do
-    {"id"=>256671430,
-    "pid"=>9800223,
-    "tid"=>nil,
-    "uid"=>1634403,
-    "description"=> description,
-    "start"=>"2015-07-29T09:21:15+02:00",
-    "end"=>"2015-07-29T10:15:26+02:00",
-    "updated"=> updated_at.to_s,
-    "dur"=>3251000,
-    "user"=>"Romain",
-    "use_stop"=>true,
-    "client"=>nil,
-    "project"=>"Maintenance",
-    "project_color"=>"0",
-    "project_hex_color"=>"#4dc3ff",
-    "task"=>nil,
-    "billable"=>0.0,
-    "is_billable"=>false,
-    "cur"=>"USD",
-    "tags"=>[]}
+    {
+      'id'=>256671430,
+      'pid'=>9800223,
+      'tid'=>nil,
+      'uid'=>1634403,
+      'description'=> description,
+      'start'=>'2015-07-29T09:21:15+02:00',
+      'end'=>'2015-07-29T10:15:26+02:00',
+      'updated'=> updated_at.to_s,
+      'dur'=>3251000,
+      'user'=>'Romain',
+      'use_stop'=>true,
+      'client'=>nil,
+      'project'=>'Maintenance',
+      'project_color'=>'0',
+      'project_hex_color'=>'#4dc3ff',
+      'task'=>nil,
+      'billable'=>0.0,
+      'is_billable'=>false,
+      'cur'=>'USD',
+      'tags'=>[]
+    }
   end
 
   let(:entry) do
@@ -32,7 +35,7 @@ describe JobTomate::TogglProcessor do
   let(:description) { 'jt-2423' }
   let(:updated_at) { 1.day.ago }
   describe '::process_toggl_report' do
-  
+
     context 'the issue is not linkable to JIRA' do
       let(:description) { 'kzoajzal' }
 

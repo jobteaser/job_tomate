@@ -1,5 +1,8 @@
 require 'active_support/all'
-require 'pry'
+require 'job_tomate/toggl_entry'
+require 'job_tomate/toggl_client'
+require 'job_tomate/user'
+require 'job_tomate/jira_client'
 
 module JobTomate
   class TogglProcessor
