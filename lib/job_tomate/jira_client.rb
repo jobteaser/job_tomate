@@ -31,16 +31,6 @@ module JobTomate
       })
     end
 
-    def self.display_logs(response, success_message)
-      LOGGER.info "#{success_message}"
-      if response.code == 200 || response.code == 201 || response.code == 204
-        true
-      else
-        LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
-        false
-      end
-    end
-
     def self.assign_user(issue_key, username, password, assignee, developer, reviewer)
       body = {
         fields: {assignee: {name: assignee},
@@ -48,11 +38,11 @@ module JobTomate
                 customfield_10601: {name: reviewer}}
       }
 
-      if ENV['APP_ENV'] != "development"
+      if ENV['APP_ENV'] != 'development'
         response = exec_request(:put, "#{issue_key}/", username, password, body)
-        display_logs(response, "assigned user (#{assignee}) to #{issue_key}")
+        handle_response(response, "assigned user (#{assignee}) to #{issue_key}")
       else
-        LOGGER.info "assigned user (#{assignee}) to #{issue_key} - SKIPPED BECAUSE IN DEV"
+        LOGGER.info "Assigned user (#{assignee}) to #{issue_key} - SKIPPED BECAUSE IN DEV"
         return true
       end
     end
@@ -62,9 +52,9 @@ module JobTomate
         body: comment
       }
 
-      if ENV['APP_ENV'] != "development"
+      if ENV['APP_ENV'] != 'development'
         response = exec_request(:post, "#{issue_key}/comment", username, password, body)
-        display_logs(response, "Add comment (#{comment}) to #{issue_key} as #{username}")
+        handle_response(response, "Add comment (#{comment}) to #{issue_key} as #{username}")
       else
         LOGGER.info "Add comment (#{comment}) to #{issue_key} as #{username} - SKIPPED BECAUSE IN DEV"
         return true
@@ -79,10 +69,22 @@ module JobTomate
 
       if ENV['APP_ENV'] != "development"
         response = exec_request(:post, "#{issue_key}/worklog", username, password, body)
-        display_logs(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start}")
+        handle_response(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start}")
       else
         LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start} - SKIPPED BECAUSE IN DEV"
         return true
+      end
+    end
+
+    # IMPLEMENTATION
+
+    def self.handle_response(response, success_message)
+      LOGGER.info success_message
+      if response.code == 200 || response.code == 201 || response.code == 204
+        true
+      else
+        LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
+        false
       end
     end
   end
