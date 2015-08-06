@@ -1,4 +1,6 @@
 require 'active_support/all'
+require 'job_tomate/user'
+require 'job_tomate/jira_client'
 
 module JobTomate
   class GithubProcessor
@@ -11,7 +13,7 @@ module JobTomate
       branche = webhook_data['pull_request']['head']['ref']
       issue_key = branche[/jt-[\d]+/i]
       github_user = webhook_data['pull_request']['user']['login']
-      user = JobTomate::User.where(github_user: github_user).first
+      user = User.where(github_user: github_user).first
       user ? [user.jira_username, user.jira_password] : nil
       if webhook_data['action'] == 'closed'
         comment = if webhook_data['pull_request']['merged']
@@ -22,7 +24,7 @@ module JobTomate
       elsif webhook_data['action'] == 'opened'
         comment = "Opened PR : #{webhook_data['pull_request']['html_url']} (via job_tomate)"
       end
-      JobTomate::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
+      JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
     end
   end
 end
