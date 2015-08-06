@@ -4,12 +4,12 @@
 
 Automate as many things as possible in our development workflow.
 
-## What to automate?
+## What is automated?
 
 - JIRA
 - Github
 - Toggl
-- Slack
+- Slack (TODO!)
 
 ## Implemented workflows
 
@@ -66,4 +66,11 @@ bin/deploy
 
 ```
 heroku run bin/console
+```
+
+**Reprocess older Toggl reports for a given user**
+
+```
+reports = JobTomate::TogglClient.fetch_reports(Date.parse("2015-07-01"), Date.today).select {|r| r['user'] == 'some-user' }
+reports.map { |r| JobTomate::TogglProcessor.process_toggl_report(r) }
 ```

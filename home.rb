@@ -1,9 +1,10 @@
 require_relative 'config/boot.rb'
 require 'sinatra'
-require 'pry'
+require 'job_tomate/github_processor'
+require 'job_tomate/jira_processor'
 
 get '/' do
-  "Hello world"
+  { status: 'ok' }.to_json
 end
 
 # Github pull request webhook
