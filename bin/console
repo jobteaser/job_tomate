@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require_relative '../config/boot'
+
+Dir[File.expand_path('../../lib/job_tomate/*.rb', __FILE__)].each { |f| require f }
+
+require 'pry'
+Pry.start
