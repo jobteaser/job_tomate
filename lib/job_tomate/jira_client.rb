@@ -31,11 +31,15 @@ module JobTomate
       })
     end
 
-    def self.assign_user(issue_key, username, password, assignee, developer, reviewer)
+    # Sets the people associated to the issue: assignee, developer,
+    # reviewer.
+    def self.set_people(issue_key, username, password, assignee, developer, reviewer)
       body = {
-        fields: {assignee: {name: assignee},
-                customfield_10600: {name: developer},
-                customfield_10601: {name: reviewer}}
+        fields: {
+          assignee:           { name: assignee },
+          customfield_10600:  { name: developer },
+          customfield_10601:  { name: reviewer }
+        }
       }
 
       if ENV['APP_ENV'] != 'development'

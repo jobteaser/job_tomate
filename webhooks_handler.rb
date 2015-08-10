@@ -16,8 +16,8 @@ post '/webhooks/pr' do
   JobTomate::GithubProcessor.run(data)
 end
 
-# JIRA issue status change webhook
-post '/webhooks/status' do
+# JIRA issue change wehbook handler
+post '/webhooks/jira' do
   json = request.body.read
   return 'no body' if json.empty?
 

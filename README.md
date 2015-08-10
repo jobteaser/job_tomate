@@ -74,3 +74,14 @@ heroku run bin/console
 reports = JobTomate::TogglClient.fetch_reports(Date.parse("2015-07-01"), Date.today).select {|r| r['user'] == 'some-user' }
 reports.map { |r| JobTomate::TogglProcessor.process_toggl_report(r) }
 ```
+
+## Setup
+
+### JIRA Webhook
+
+You must setup a webhook on JIRA to trigger JIRA-related workflows. You can find this in Administration > System > Webhooks.
+
+Here is the configuration to use:
+
+- URL: `deployment-domain/webhooks/jira`
+- Select "updated" issue events, on all issues (no filter)
