@@ -50,7 +50,7 @@ Processing rules:
 
 ## How to use
 
-**Open a console locally*
+**Open a console locally**
 
 ```
 bin/console
@@ -66,6 +66,18 @@ bin/deploy
 
 ```
 heroku run bin/console
+```
+
+**Add a new user**
+
+```
+# In the console on Heroku
+
+# Get the Toggl username
+JobTomate::TogglClient.fetch_reports(Date.yesterday, Date.today).map{|e| e['user']}.uniq
+
+# The JIRA password can be reset manually for a given user by a JIRA admin
+JobTomate::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password'
 ```
 
 **Reprocess older Toggl reports for a given user**
