@@ -1,5 +1,5 @@
 require 'active_support/all'
-require 'job_tomate/input/jira/people_rules'
+require 'job_tomate/input/jira/status_rules'
 require 'job_tomate/input/jira/alerting_rules'
 
 module JobTomate
@@ -19,7 +19,7 @@ module JobTomate
         # the issue change. If the user is not available on JobTomate, the
         # first user in the database is used.
         def self.run(webhook_data)
-          PeopleRules.apply(webhook_data)
+          StatusRules.apply(webhook_data)
           AlertingRules.apply(webhook_data)
         end
       end

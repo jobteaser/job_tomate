@@ -4,9 +4,10 @@ module JobTomate
   module Input
     module Jira
 
-      # Updates the peoples associated to the issue
-      # (assignee, developer and reviewer).
-      class PeopleRules
+      # Perform actions based on status changes:
+      #   - set people (assignee, developer and reviewer),
+      #   - notify newly assigned user in Slack.
+      class StatusRules
 
         # Applies the rules
         def self.apply(webhook_data)
