@@ -1,4 +1,5 @@
 require 'active_support/all'
+require 'job_tomate/input/jira/helpers'
 require 'job_tomate/output/jira_client'
 require 'job_tomate/output/slack_webhook'
 
@@ -10,18 +11,25 @@ module JobTomate
       # state of the issues (may not be related to the
       # particular issue the webhook is issued for).
       class AlertingRules
+        extend Helpers
+
         JIRA_MAX_RESULTS = 1000
         JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND cf[10400] = Maintenance AND (fixVersion is EMPTY AND status not in (released, closed) OR updatedDate >= -1w)'
 
+        ALERT_MAINTENANCE_TODO_AND_WIP_MAX = 5
+
         # Applies the rules
-        def self.apply(_webhook_data)
-          alert_maintenance_todo_and_wip_issues
+        def self.apply(webhook_data)
+          if issue_created?(webhook_data) ||
+            issue_changed?('status', webhook_data)
+            alert_maintenance_todo_and_wip_issues
+          end
         end
 
         def self.alert_maintenance_todo_and_wip_issues
           count_todo = count_of_maintenance(:todo)
           count_wip = count_of_maintenance(:wip)
-          if count_todo + count_wip > 2
+          if count_todo + count_wip > ALERT_MAINTENANCE_TODO_AND_WIP_MAX
             Output::SlackWebhook.send(
               "<!channel>: *Too much maintenance*: #{count_todo} TODO & #{count_wip} WIP",
               channel: '#maintenance'
