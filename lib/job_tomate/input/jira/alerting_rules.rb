@@ -1,6 +1,6 @@
 require 'active_support/all'
 require 'job_tomate/input/jira/helpers'
-require 'job_tomate/output/jira_client'
+require 'job_tomate/interface/jira_client'
 require 'job_tomate/output/slack_webhook'
 
 module JobTomate

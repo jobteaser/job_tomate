@@ -1,6 +1,6 @@
 require 'active_support/all'
 require 'job_tomate/user'
-require 'job_tomate/output/jira_client'
+require 'job_tomate/interface/jira_client'
 
 module JobTomate
   class GithubProcessor
@@ -24,7 +24,7 @@ module JobTomate
       elsif webhook_data['action'] == 'opened'
         comment = "Opened PR : #{webhook_data['pull_request']['html_url']} (via job_tomate)"
       end
-      Output::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
+      Interface::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
     end
   end
 end

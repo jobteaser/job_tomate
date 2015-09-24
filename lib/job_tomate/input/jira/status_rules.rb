@@ -17,6 +17,7 @@ module JobTomate
         )
         ACCEPTED_FOR_FUNCTIONAL_REVIEW = DEFAULT_FOR_FUNCTIONAL_REVIEW +
           %w(romain.champourlier)
+
         JIRA_ISSUE_URL_BASE = 'https://jobteaser.atlassian.net/browse'
 
         # Applies the rules
@@ -93,7 +94,7 @@ module JobTomate
             end
           )
 
-          Output::JiraClient.set_people(
+          Interface::JiraClient.set_people(
             key,
             ENV['JIRA_USERNAME'],
             ENV['JIRA_PASSWORD'],
