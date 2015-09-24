@@ -4,6 +4,10 @@ require 'httparty'
 
 module JobTomate
   module Output
+
+    # Usage:
+    #   SlackWebhook.send('<@username>: Here\'s JobTomate!!!', channel: '#dev-team')
+    #   SlackWebhook.send('<!channel>: Hello channel!')
     class SlackWebhook
       DEFAULT_CHANNEL = '#dev-team'
       DEFAULT_USERNAME = 'JobTomate'
