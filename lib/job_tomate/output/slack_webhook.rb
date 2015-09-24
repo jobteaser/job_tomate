@@ -12,7 +12,7 @@ module JobTomate
       DEFAULT_CHANNEL = '#dev-team'
       DEFAULT_USERNAME = 'JobTomate'
       DEFAULT_ICON_URL = nil
-      DEFAULT_ICON_EMOJI = ':ghost:'
+      DEFAULT_ICON_EMOJI = ':japanese_ogre:'
 
       # Sends a message to Slack incoming webhook.
       #
