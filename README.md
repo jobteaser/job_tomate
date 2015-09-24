@@ -62,6 +62,14 @@ bin/console
 bin/deploy
 ```
 
+The deployed code will run a web application that will handle webhooks (see `webhooks_handler.rb`).
+
+A scheduled task must be setup too. Use Heroku's Scheduler plugin, setup the following code:
+
+```
+ruby script/process_toggl_reports.rb
+```
+
 **Run a console on Heroku**
 
 ```
