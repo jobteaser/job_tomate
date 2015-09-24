@@ -12,5 +12,6 @@ module JobTomate
     field :github_user,         type: String
     field :jira_username,       type: String
     field :jira_password,       type: String
+    field :slack_username,      type: String
   end
 end
