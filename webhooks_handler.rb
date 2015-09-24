@@ -12,8 +12,8 @@ post '/webhooks/pr' do
   json = request.body.read
   return 'no body' if json.empty?
 
-  data = JSON.parse json
-  JobTomate::GithubProcessor.run(data)
+  webhook_data = JSON.parse json
+  JobTomate::GithubProcessor.run(webhook_data)
 end
 
 # JIRA issue change wehbook handler
@@ -21,20 +21,6 @@ post '/webhooks/jira' do
   json = request.body.read
   return 'no body' if json.empty?
 
-  data = JSON.parse json
-  issue_key = data['issue']['key']
-
-  changelog = data['changelog']
-  if changelog.blank? || (items = changelog['items']).empty?
-    logger.warn "No changelog or changelog items for issue #{issue_key}"
-    return
-  end
-
-  status_change = items.find{ |item| item['field'] == 'status' }
-  if status_change.nil?
-    logger.warn "No status change for issue #{issue_key}"
-    return
-  end
-
-  JobTomate::Input::Jira::Processor.run(data) if status_change
+  webhook_data = JSON.parse json
+  JobTomate::Input::Jira::Processor.run(webhook_data)
 end

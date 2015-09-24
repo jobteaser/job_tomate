@@ -10,6 +10,20 @@ module JobTomate
 
         # Applies the rules
         def self.apply(webhook_data)
+          issue_key = webhook_data['issue']['key']
+
+          changelog = webhook_data['changelog']
+          if changelog.blank? || (items = changelog['items']).empty?
+            LOGGER.warn "No changelog or changelog items for issue #{issue_key}"
+            return
+          end
+
+          status_change = items.find{ |item| item['field'] == 'status' }
+          if status_change.nil?
+            LOGGER.warn "No status change for issue #{issue_key}"
+            return
+          end
+
           new_status = webhook_data['changelog']['items'].first['toString']
           user_name = webhook_data['user']['key']
           issue_key = webhook_data['issue']['key']
