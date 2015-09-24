@@ -8,7 +8,7 @@ describe JobTomate::Output::SlackWebhook do
     let(:webhook_url) { 'https://test.slack.com' }
     before { ENV['SLACK_WEBHOOK_URL'] = webhook_url }
 
-    # TODO test using webmock instead of stubbing
+    # TODO: test using webmock instead of stubbing
     #   HTTParty
     it 'sends the correct payload using HTTParty' do
       expect(HTTParty).to receive(:send).with(

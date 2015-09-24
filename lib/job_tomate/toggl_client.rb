@@ -60,7 +60,7 @@ module JobTomate
           LOGGER.error "Error (response code #{response.code}, content #{response.body})"
         end
       rescue => e
-        # TODO fix this too large rescue
+        # TODO: fix this too large rescue
         LOGGER.error "Exception (#{e})"
       end
     end

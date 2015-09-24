@@ -35,6 +35,8 @@ module JobTomate
           maintenance_todo_wip_alert(webhook_data)
         end
 
+        # TODO: use formatted message
+        # TODO: add information to message (link to issue, event - creation or status change...)
         def self.maintenance_todo_wip_alert(webhook_data)
           return unless issue_created?(webhook_data) || issue_changed?('status', webhook_data)
           return unless issue_category(webhook_data) == :maintenance

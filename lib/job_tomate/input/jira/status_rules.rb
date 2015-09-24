@@ -27,6 +27,7 @@ module JobTomate
         end
 
         # Notify new assignee on Slack
+        # TODO: split
         def self.notify_new_assignee(webhook_data)
           key = issue_key(webhook_data)
           assignee_change = change('assignee', webhook_data)
@@ -54,6 +55,9 @@ module JobTomate
           Output::SlackWebhook.send(message, channel: "@#{assignee_slack_username}")
         end
 
+        # Update people (assignee, developer, reviewer)
+        # associated to an issue.
+        # TODO: split
         def self.update_people(webhook_data)
           key = issue_key(webhook_data)
           status_change = change('status', webhook_data)
@@ -105,10 +109,12 @@ module JobTomate
 
         # IMPLEMENTATION
 
+        # TODO: move to helpers
         def self.reporter_jira_username(webhook_data)
           webhook_data['issue']['fields']['reporter']['key']
         end
 
+        # TODO: move to helpers
         def self.functional_reviewer_jira_username(webhook_data)
           issue_reporter = reporter_jira_username(webhook_data)
           if issue_reporter.present? &&
@@ -118,12 +124,14 @@ module JobTomate
           DEFAULT_FOR_FUNCTIONAL_REVIEW.sample
         end
 
+        # TODO: move to helpers
         def self.user_for_jira_username(jira_username)
           User.where(jira_username: jira_username).first
         end
 
         # Returns a String usable in a Slack message to
         # present a link to a JIRA issue.
+        # TODO: separate and move to jira/helpers and slack/helpers
         def self.slack_link_for_jira_issue(issue_key)
           "<#{JIRA_ISSUE_URL_BASE}/#{issue_key}|#{issue_key}>"
         end

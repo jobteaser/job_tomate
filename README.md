@@ -29,7 +29,7 @@ Automate as many things as possible in our development workflow.
 
 ### JIRA and Slack
 
-- Send an alert to #maintenance to JobTeaser slack team if the maintenance board has more than 5 TODO & WIP issues.
+- Send an alert to #maintenance to JobTeaser slack team if the maintenance board has more than 5 TODO: & WIP issues.
 - Notify someone on Slack an issue has been assigned to oneself.
 
 ## Worklows todolist
