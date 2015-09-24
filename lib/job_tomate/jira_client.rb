@@ -76,7 +76,7 @@ module JobTomate
         started: start
       }
 
-      if ENV['APP_ENV'] != "development"
+      if ENV['APP_ENV'] != 'development'
         response = exec_request(:post, "#{issue_key}/worklog", username, password, body)
         handle_response(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start}")
       else
