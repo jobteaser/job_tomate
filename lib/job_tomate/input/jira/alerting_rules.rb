@@ -59,8 +59,7 @@ module JobTomate
               maxResults: JIRA_MAX_RESULTS
             }
           )
-          # require 'pry'; binding.pry
-          results['total']
+          results['total'].to_i
         end
 
         def self.jql_for_maintenance_with_statuses(statuses)
