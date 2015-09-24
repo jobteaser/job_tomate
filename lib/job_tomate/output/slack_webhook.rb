@@ -30,6 +30,7 @@ module JobTomate
 
         payload = build_payload(text, channel, username, icon_url, icon_emoji)
         send_payload(payload)
+        LOGGER.info "Sent \"#{text}\" to Slack channel #{channel} as #{username}"
       end
 
       private
