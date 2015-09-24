@@ -33,8 +33,6 @@ module JobTomate
         LOGGER.info "Sent \"#{text}\" to Slack channel #{channel} as #{username}"
       end
 
-      private
-
       def self.build_payload(text, channel, username, icon_url, icon_emoji)
         base = {
           text: text,
@@ -50,10 +48,10 @@ module JobTomate
           'Content-Type' => 'application/json'
         }
 
-        HTTParty.send(:post, ENV['SLACK_WEBHOOK_URL'], {
+        HTTParty.send(:post, ENV['SLACK_WEBHOOK_URL'],
           headers: headers,
           body: payload.to_json
-        })
+        )
       end
     end
   end
