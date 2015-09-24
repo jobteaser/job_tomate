@@ -39,11 +39,12 @@ module JobTomate
           body: comment
         }
 
+        log_message = "Add comment (#{comment}) to #{issue_key} as #{username}"
         if ENV['APP_ENV'] != 'development'
           response = exec_request(:post, "/issue/#{issue_key}/comment", username, password, body)
-          handle_response(response, "Add comment (#{comment}) to #{issue_key} as #{username}")
+          handle_response(response, log_message)
         else
-          LOGGER.info "Add comment (#{comment}) to #{issue_key} as #{username} - SKIPPED BECAUSE IN DEV"
+          LOGGER.info "#{log_message} - SKIPPED BECAUSE IN DEV"
           return true
         end
       end
