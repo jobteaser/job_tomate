@@ -5,6 +5,17 @@ require 'job_tomate/user'
 require 'job_tomate/interface/jira_client'
 
 module JobTomate
+
+  # API request:
+  # `https://toggl.com/reports/api/v2/details?user_agent=JobTomate (<dev@jobteaser.com>)&workspace_id=939576&page=5`
+  # 
+  # - Paginated: use `page` parameter
+  #
+  # Processing rules:
+  # - Identify new entries, if not updated for 2 hours,
+  #   adds the corresponding worklog to JIRA. (This
+  #   allows an entry to be modified during 2 hours
+  #   after its creation.)
   class TogglProcessor
 
     # Perform a run where:

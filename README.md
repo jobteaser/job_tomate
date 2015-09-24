@@ -9,7 +9,7 @@ Automate as many things as possible in our development workflow.
 - JIRA
 - Github
 - Toggl
-- Slack (TODO!)
+- Slack
 
 ## Implemented workflows
 
@@ -29,7 +29,8 @@ Automate as many things as possible in our development workflow.
 
 ### JIRA and Slack
 
-- Send an alert to #maintenance to JobTeaser slack team if the maitenance board has more than 5 TODO & WIP issues.
+- Send an alert to #maintenance to JobTeaser slack team if the maintenance board has more than 5 TODO & WIP issues.
+- Notify someone on Slack an issue has been assigned to oneself.
 
 ## Worklows todolist
 
@@ -60,18 +61,6 @@ Automate as many things as possible in our development workflow.
 ### Slack and Calendar
 
 - Send the maintenance to-do list to whoever is in charge.
-
-## Implementation
-
-### Automate|Toggl+JIRA New time entry in Toggl => add workflow in JIRA
-
-API request:
-`https://toggl.com/reports/api/v2/details?user_agent=JobTomate (<dev@jobteaser.com>)&workspace_id=939576&page=5`
-
-- Paginated: use `page` parameter
-
-Processing rules:
-- Identify new entries, if not updated for 2 hours, add the corresponding worklog to JIRA. (This allows an entry to be modified during 2 hours after its creation.)
 
 ## How to use
 
