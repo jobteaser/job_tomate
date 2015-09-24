@@ -1,12 +1,46 @@
 require 'active_support/all'
+require 'job_tomate/interface/jira_client'
 
 module JobTomate
   module Input
     module Jira
+
+      # A set of helpers for Jira classes.
+      # Usage:
+      #   require 'job_tomate/input/jira_helpers'
+      #   ...
+      #   module Jira
+      #     class SomeClass
+      #       extend Helpers
+      #   ...
       module Helpers
+
+        JIRA_MAX_RESULTS = 1000
+        JIRA_CATEGORIES = {
+          'Maintenance' => :maintenance
+        }
+
+        # Performs a JIRA search with the specified JQL
+        # query.
+        def search(jql)
+          Interface::JiraClient.exec_request(
+            :get, '/search',
+            ENV['JIRA_USERNAME'], ENV['JIRA_PASSWORD'],
+            {}, # body
+            jql: jql,
+            startAt: 0,
+            fields: 'id',
+            maxResults: JIRA_MAX_RESULTS
+          )
+        end
 
         def issue_key(webhook_data)
           webhook_data['issue']['key']
+        end
+
+        def issue_category(webhook_data)
+          jira_category = webhook_data['issue']['fields']['customfield_10400']
+          JIRA_CATEGORIES[jira_category]
         end
 
         # Returns true if the webhook has been called for

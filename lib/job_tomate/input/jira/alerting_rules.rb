@@ -13,20 +13,32 @@ module JobTomate
       class AlertingRules
         extend Helpers
 
-        JIRA_MAX_RESULTS = 1000
-        JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND cf[10400] = Maintenance AND (fixVersion is EMPTY AND status not in (released, closed) OR updatedDate >= -1w)'
+        JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND \
+          cf[10400] = Maintenance AND \
+          (fixVersion is EMPTY AND \
+          status not in (released, closed) OR \
+          updatedDate >= -1w)'
+
+        JIRA_STATUSES = {
+          todo: ['Open'],
+          wip: ['In Development', 'In Review']
+        }
 
         ALERT_MAINTENANCE_TODO_AND_WIP_MAX = 5
 
         # Applies the rules
         def self.apply(webhook_data)
-          if issue_created?(webhook_data) ||
-            issue_changed?('status', webhook_data)
-            alert_maintenance_todo_and_wip_issues
-          end
+          maintenance_alerts(webhook_data)
         end
 
-        def self.alert_maintenance_todo_and_wip_issues
+        def self.maintenance_alerts(webhook_data)
+          maintenance_todo_wip_alert(webhook_data)
+        end
+
+        def self.maintenance_todo_wip_alert(webhook_data)
+          return unless issue_created?(webhook_data) || issue_changed?('status', webhook_data)
+          return unless issue_category(webhook_data) == :maintenance
+
           count_todo = count_of_maintenance(:todo)
           count_wip = count_of_maintenance(:wip)
           if count_todo + count_wip > ALERT_MAINTENANCE_TODO_AND_WIP_MAX
@@ -37,31 +49,20 @@ module JobTomate
           end
         end
 
-        # @param status [Symbol] :todo or :wip
-        def self.count_of_maintenance(status)
-          jira_statuses = (
-            case status
-            when :todo then ['Open']
-            when :wip then ['In Development', 'In Review']
-            else fail ArgumentError, "Unknown status \"#{status}\""
-            end
-          )
-          results = Output::JiraClient.exec_request(
-            :get,
-            '/search',
-            ENV['JIRA_USERNAME'],
-            ENV['JIRA_PASSWORD'],
-            {}, # body
-            {
-              jql: jql_for_maintenance_with_statuses(jira_statuses),
-              startAt: 0,
-              fields: 'id',
-              maxResults: JIRA_MAX_RESULTS
-            }
-          )
+        # @param status [Symbol] key from JIRA_STATUSES
+        def self.count_of_maintenance(status_group)
+          jira_statuses = JIRA_STATUSES[status_group]
+          if jira_statuses.nil?
+            fail ArgumentError, "Unknown status \"#{status}\""
+          end
+
+          results = search(jql_for_maintenance_with_statuses)
           results['total'].to_i
         end
 
+        # Builds a JQL query for maintenance issues (using
+        # JQL_MAINTENANCE_ISSUES) and appending a query to
+        # limit results to issues in the specified statuses.
         def self.jql_for_maintenance_with_statuses(statuses)
           jql_status_list = statuses.map { |s| "\"#{s}\"" }.join(', ')
           "#{JQL_MAINTENANCE_ISSUES} AND status IN (#{jql_status_list})"
