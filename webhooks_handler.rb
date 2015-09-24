@@ -1,7 +1,7 @@
 require_relative 'config/boot.rb'
 require 'sinatra'
 require 'job_tomate/github_processor'
-require 'job_tomate/jira_processor'
+require 'job_tomate/input/jira/processor'
 
 get '/' do
   { status: 'ok' }.to_json
@@ -36,5 +36,5 @@ post '/webhooks/jira' do
     return
   end
 
-  JobTomate::JiraProcessor.run(data) if status_change
+  JobTomate::Input::Jira::Processor.run(data) if status_change
 end

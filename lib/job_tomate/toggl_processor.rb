@@ -2,7 +2,7 @@ require 'active_support/all'
 require 'job_tomate/toggl_entry'
 require 'job_tomate/toggl_client'
 require 'job_tomate/user'
-require 'job_tomate/jira_client'
+require 'job_tomate/output/jira_client'
 
 module JobTomate
   class TogglProcessor
@@ -102,7 +102,7 @@ module JobTomate
 
       time_spent = time_spent_seconds(toggl_report)
       start = jira_format_date(toggl_report)
-      JiraClient.add_worklog(
+      Output::JiraClient.add_worklog(
         issue_key,
         username,
         password,
