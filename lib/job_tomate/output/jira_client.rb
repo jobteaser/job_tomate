@@ -98,7 +98,7 @@ module JobTomate
         if response.code == 200 || response.code == 201 || response.code == 204
           true
         else
-          LOGGER.warn "Error (response code #{response.code}, content #{response.body})"
+          LOGGER.error "Error (response code #{response.code}, content #{response.body})"
           false
         end
       end
