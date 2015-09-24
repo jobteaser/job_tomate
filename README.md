@@ -89,6 +89,16 @@ reports.map { |r| JobTomate::TogglProcessor.process_toggl_report(r) }
 
 ## Setup
 
+### Required environment variables
+
+```
+APP_ENV=development
+MONGODB_URI=mongodb://127.0.0.1:27017/job_tomate
+TOGGL_API_TOKEN=REPLACE-ME
+TOGGL_WORKSPACE_ID=REPLACE-ME
+SLACK_WEBHOOK_URL=REPLACE-ME
+```
+
 ### JIRA Webhook
 
 You must setup a webhook on JIRA to trigger JIRA-related workflows. You can find this in Administration > System > Webhooks.
@@ -97,3 +107,9 @@ Here is the configuration to use:
 
 - URL: `deployment-domain/webhooks/jira`
 - Select "updated" issue events, on all issues (no filter)
+
+### Slack Webhook
+
+Setup a webhook integration on Slack. Any default will do since they are all overriden by JobTomate.
+
+The webhook URL must be defined in the environment variables (`SLACK_WEBHOOK_URL`).
