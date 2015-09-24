@@ -46,12 +46,11 @@ module JobTomate
             else fail ArgumentError, "Unknown status \"#{status}\""
             end
           )
-          user = User.first
           results = Output::JiraClient.exec_request(
             :get,
             '/search',
-            user.jira_username,
-            user.jira_password,
+            ENV['JIRA_USERNAME'],
+            ENV['JIRA_PASSWORD'],
             {}, # body
             {
               jql: jql_for_maintenance_with_statuses(jira_statuses),

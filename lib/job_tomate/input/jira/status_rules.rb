@@ -62,41 +62,44 @@ module JobTomate
           end
 
           new_status = status_change['toString']
-          webhook_username = webhook_data['user']['key']
+          webhook_jira_username = webhook_data['user']['name']
           developer_jira_username = webhook_data['issue']['fields']['customfield_10600'].try(:[], 'key')
-          reviewer = webhook_data['issue']['fields']['customfield_10601'].try(:[], 'key')
-          functional_reviewer = determine_functional_reviewer(webhook_data)
+          reviewer_jira_username = webhook_data['issue']['fields']['customfield_10601'].try(:[], 'key')
+          functional_jira_username = functional_reviewer_jira_username(webhook_data)
 
-          webhook_user = JobTomate::User.where(jira_username: webhook_username).first
+          webhook_user = JobTomate::User.where(jira_username: webhook_jira_username).first
           if webhook_user.nil?
-            LOGGER.warn "User with JIRA username \"#{webhook_username}\" is unknown"
+            LOGGER.warn "User with JIRA username \"#{webhook_jira_username}\" is unknown"
             webhook_user = JobTomate::User.first
             LOGGER.warn "Falling back to JIRA user \"#{webhook_user.jira_username}\""
           end
 
-          if developer_jira_username.nil? && (new_status == 'Ready for Release' || new_status == 'In Development')
-            developer_jira_username = webhook_data['user']['name']
+          if developer_jira_username.nil? &&
+            new_status.in?(['Ready for Release', 'In Development'])
+            developer_jira_username = webhook_jira_username
           end
-          if (reviewer.nil? && new_status == 'In Review') && webhook_data['user']['name'] != developer_jira_username
-            reviewer = webhook_data['user']['name']
+          if reviewer_jira_username.nil? &&
+            new_status.in?(['In Review']) &&
+            webhook_jira_username != developer_jira_username
+            reviewer_jira_username = webhook_jira_username
           end
 
           assignee_jira_username = (
             case new_status
             when 'In Development' then developer_jira_username
-            when 'In Functional Review' then functional_reviewer
-            when 'In Review' then reviewer
+            when 'In Review' then reviewer_jira_username
+            when 'In Functional Review' then functional_jira_username
             when 'Ready for Release' then developer_jira_username
             end
           )
 
           Output::JiraClient.set_people(
             key,
-            webhook_user.jira_username,
-            webhook_user.jira_password,
+            ENV['JIRA_USERNAME'],
+            ENV['JIRA_PASSWORD'],
             assignee_jira_username,
             developer_jira_username,
-            reviewer)
+            reviewer_jira_username)
         end
 
         # IMPLEMENTATION
@@ -105,7 +108,7 @@ module JobTomate
           webhook_data['issue']['fields']['reporter']['key']
         end
 
-        def self.determine_functional_reviewer(webhook_data)
+        def self.functional_reviewer_jira_username(webhook_data)
           issue_reporter = reporter_jira_username(webhook_data)
           if issue_reporter.present? &&
             issue_reporter.in?(ACCEPTED_FOR_FUNCTIONAL_REVIEW)
