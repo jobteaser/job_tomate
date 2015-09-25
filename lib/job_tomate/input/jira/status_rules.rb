@@ -1,4 +1,5 @@
 require 'active_support/all'
+require 'job_tomate/user'
 require 'job_tomate/input/jira/helpers'
 require 'job_tomate/interface/jira_client'
 
