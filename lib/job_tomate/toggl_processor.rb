@@ -8,7 +8,7 @@ module JobTomate
 
   # API request:
   # `https://toggl.com/reports/api/v2/details?user_agent=JobTomate (<dev@jobteaser.com>)&workspace_id=939576&page=5`
-  # 
+  #
   # - Paginated: use `page` parameter
   #
   # Processing rules:
@@ -113,7 +113,7 @@ module JobTomate
 
       time_spent = time_spent_seconds(toggl_report)
       start = jira_format_date(toggl_report)
-      Interface::JiraClient.add_worklog(
+      JobTomate::Interface::JiraClient.add_worklog(
         issue_key,
         username,
         password,

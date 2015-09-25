@@ -24,7 +24,7 @@ module JobTomate
       elsif webhook_data['action'] == 'opened'
         comment = "Opened PR : #{webhook_data['pull_request']['html_url']} (via job_tomate)"
       end
-      Interface::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
+      JobTomate::Interface::JiraClient.add_comment(issue_key, user.jira_username, user.jira_password, comment)
     end
   end
 end

@@ -1,5 +1,6 @@
 require 'active_support/all'
 require 'job_tomate/input/jira/helpers'
+require 'job_tomate/interface/jira_client'
 
 module JobTomate
   module Input
@@ -98,7 +99,7 @@ module JobTomate
             end
           )
 
-          Interface::JiraClient.set_people(
+          JobTomate::Interface::JiraClient.set_people(
             key,
             ENV['JIRA_USERNAME'],
             ENV['JIRA_PASSWORD'],

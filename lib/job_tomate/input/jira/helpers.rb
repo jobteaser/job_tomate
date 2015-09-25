@@ -23,7 +23,7 @@ module JobTomate
         # Performs a JIRA search with the specified JQL
         # query.
         def search(jql)
-          Interface::JiraClient.exec_request(
+          JobTomate::Interface::JiraClient.exec_request(
             :get, '/search',
             ENV['JIRA_USERNAME'], ENV['JIRA_PASSWORD'],
             {}, # body
