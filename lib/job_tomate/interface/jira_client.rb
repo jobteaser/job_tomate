@@ -3,7 +3,7 @@ require 'active_support/all'
 require 'httparty'
 
 module JobTomate
-  module Output
+  module Interface
 
     # A client for JIRA for:
     #   - setting people on issues
