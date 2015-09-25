@@ -12,6 +12,7 @@ Style/StringLiterals:
 
 Style/EmptyLinesAroundBody:
   Enabled: false
-
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
 Style/EmptyLinesAroundModuleBody:
   Enabled: false
