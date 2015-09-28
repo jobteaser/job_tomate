@@ -39,7 +39,7 @@ module JobTomate
         end
 
         def issue_category(webhook_data)
-          jira_category = webhook_data['issue']['fields']['customfield_10400']
+          jira_category = webhook_data['issue']['fields']['customfield_10400']['value']
           JIRA_CATEGORIES[jira_category]
         end
 

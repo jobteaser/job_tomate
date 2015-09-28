@@ -13,7 +13,11 @@ describe JobTomate::Input::Jira::AlertingRules do
           {
             'webhookEvent' => 'jira:issue_created',
             'issue' => {
-              'fields' => { 'customfield_10400' => 'Maintenance'}
+              'fields' => {
+                'customfield_10400' => {
+                  'value' => 'Maintenance'
+                }
+              }
             }
           }
         end
