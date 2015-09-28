@@ -13,11 +13,11 @@ module JobTomate
       class AlertingRules
         extend Helpers
 
-        JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND \
-          cf[10400] = Maintenance AND \
-          (fixVersion is EMPTY AND \
-          status not in (released, closed) OR \
-          updatedDate >= -1w)'
+        JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND ' \
+          'cf[10400] = Maintenance AND ' \
+          '(fixVersion is EMPTY AND ' \
+          'status not in (released, closed) OR ' \
+          'updatedDate >= -1w)'
 
         JIRA_STATUSES = {
           todo: ['Open'],
@@ -58,7 +58,7 @@ module JobTomate
             fail ArgumentError, "Unknown status \"#{status}\""
           end
 
-          results = search(jql_for_maintenance_with_statuses)
+          results = search(jql_for_maintenance_with_statuses(jira_statuses))
           results['total'].to_i
         end
 
