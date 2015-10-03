@@ -25,22 +25,41 @@ module JobTomate
           comment = webhook_data['comment']
           return if comment.nil?
 
-          comment_text = comment['body']
-          mentioned_jira_usernames = comment_text.scan(/\[~[^\]]+\]/).map { |s| s.gsub(/[\[\]~]/, '') }.uniq
-
-          mentioned_users = mentioned_jira_usernames.map do |jira_username|
-            user_for_jira_username(jira_username)
-          end.compact
+          users = mentioned_users(comment['body'])
+          slack_comment = rewrite_users_in_jira_comment_for_slack(comment['body'], users)
 
           key = issue_key(webhook_data)
-          mentioned_users.each do |mentioned_user|
+          users.each do |mentioned_user|
             slack_username = mentioned_user.slack_username
             next if slack_username.blank?
             Output::SlackWebhook.send(
-              "You were mentioned in a comment on #{slack_link_for_jira_issue(key)}: #{comment_text}",
+              "You were mentioned in a comment on #{slack_link_for_jira_issue(key)}: #{slack_comment}",
               channel: "@#{mentioned_user.slack_username}"
             )
           end
+        end
+
+        # Returns the `JobTomate::User`s mentioned in the specified
+        # JIRA comment body.
+        def self.mentioned_users(comment_body)
+          mentioned_jira_usernames = comment_body.scan(/\[~[^\]]+\]/).map { |s| s.gsub(/[\[\]~]/, '') }.uniq
+          mentioned_jira_usernames.map do |jira_username|
+            user_for_jira_username(jira_username)
+          end.compact
+        end
+
+        # Takes a JIRA comment body and replaces occurrence of JIRA
+        # user mentions (`[~jira.user]`) by Slack user mentions
+        # (`@slack.user`).
+        #
+        # @param comment_body [String] JIRA comment body
+        # @param users [Array of JobTomate::User]
+        def self.rewrite_users_in_jira_comment_for_slack(comment_body, users)
+          rewritten_comment = comment_body.clone
+          users.each do |user|
+            rewritten_comment.gsub! "[~#{user.jira_username}]", "@#{user.slack_username}"
+          end
+          rewritten_comment
         end
       end
     end
