@@ -23,4 +23,6 @@ post '/webhooks/jira' do
 
   webhook_data = JSON.parse json
   JobTomate::Input::Jira::Processor.run(webhook_data)
+
+  'ok'
 end
