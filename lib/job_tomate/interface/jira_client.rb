@@ -29,7 +29,7 @@ module JobTomate
           response = exec_request(:put, "/issue/#{issue_key}/", username, password, body)
           handle_response(response, "assigned user (#{assignee}) to #{issue_key}")
         else
-          LOGGER.info "Assigned user (#{assignee}) to #{issue_key} - SKIPPED BECAUSE IN DEV"
+          LOGGER.info "Assigned user (#{assignee}) to #{issue_key} - SKIPPED"
           return true
         end
       end
@@ -44,14 +44,14 @@ module JobTomate
           response = exec_request(:post, "/issue/#{issue_key}/comment", username, password, body)
           handle_response(response, log_message)
         else
-          LOGGER.info "#{log_message} - SKIPPED BECAUSE IN DEV"
+          LOGGER.info "#{log_message} - SKIPPED"
           return true
         end
       end
 
       def self.add_worklog(issue_key, username, password, time_spent, start)
         if time_spent.to_i < 60
-          LOGGER.info 'Skipping worklog < 1 min (not accepted by JIRA)'
+          LOGGER.info 'Ignored worklog < 1 min (not accepted by JIRA)'
           return true
         end
 
@@ -64,7 +64,7 @@ module JobTomate
           response = exec_request(:post, "/issue/#{issue_key}/worklog", username, password, body)
           handle_response(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start}")
         else
-          LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start} - SKIPPED BECAUSE IN DEV"
+          LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start} - SKIPPED"
           return true
         end
       end
