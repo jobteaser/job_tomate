@@ -50,7 +50,7 @@ describe JobTomate::Input::Jira::CommentsRules do
                 expect(JobTomate::Output::SlackWebhook).to receive(:send) do |message, options|
                   modified_comment_body = comment_body.gsub("[~#{user.jira_username}]", "@#{user.slack_username}")
                   expected_message = "You were mentioned in a comment on " \
-                    "<#{jira_issue_url_base}/#{jira_issue_key}|#{jira_issue_key}>: #{modified_comment_body}"
+                    "<#{jira_issue_url_base}/#{jira_issue_key}|#{jira_issue_key}>: *#{modified_comment_body}*"
                   expect(message).to eq(expected_message)
                   expect(options[:channel]).to eq("@#{user.slack_username}")
                 end

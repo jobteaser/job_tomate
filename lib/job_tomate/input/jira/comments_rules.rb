@@ -33,7 +33,7 @@ module JobTomate
             slack_username = mentioned_user.slack_username
             next if slack_username.blank?
             Output::SlackWebhook.send(
-              "You were mentioned in a comment on #{slack_link_for_jira_issue(key)}: #{slack_comment}",
+              "You were mentioned in a comment on #{slack_link_for_jira_issue(key)}: *#{slack_comment}*",
               channel: "@#{mentioned_user.slack_username}"
             )
           end
