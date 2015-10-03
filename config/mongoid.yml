@@ -10,7 +10,7 @@ development:
   <<: *default
 
 test:
-  sessions:
+  clients:
     default:
-      uri: <%= ENV['MONGODB_URI'] %>-test
+      uri: <%= ENV['MONGODB_URI'] %>
       safe: true
