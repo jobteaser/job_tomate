@@ -49,6 +49,12 @@ module JobTomate
           webhook_data['webhookEvent'] == 'jira:issue_created'
         end
 
+        # Returns true if the webhook has been called for
+        # an issue update.
+        def issue_created?(webhook_data)
+          webhook_data['webhookEvent'] == 'jira:issue_updated'
+        end
+
         # Returns true if the webhook has been called
         # because the issue was changed on the specified
         # field.
