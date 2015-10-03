@@ -29,8 +29,13 @@ module JobTomate
         icon_emoji: DEFAULT_ICON_EMOJI)
 
         payload = build_payload(text, channel, username, icon_url, icon_emoji)
-        send_payload(payload)
-        LOGGER.info "Sent \"#{text}\" to Slack channel #{channel} as #{username}"
+
+        if ENV['APP_ENV'] != 'development'
+          send_payload(payload)
+          LOGGER.info "Sent \"#{text}\" to Slack channel #{channel} as #{username}"
+        else
+          LOGGER.info "Would send \"#{text}\" to Slack channel #{channel} as #{username} (SKIPPED)"
+        end
       end
 
       def self.build_payload(text, channel, username, icon_url, icon_emoji)
