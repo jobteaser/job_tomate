@@ -31,6 +31,7 @@ Automate as many things as possible in our development workflow.
 
 - Send an alert to #maintenance to JobTeaser slack team if the maintenance board has more than 5 TODO: & WIP issues.
 - Notify someone on Slack an issue has been assigned to oneself.
+- Notify on Slack an user mentioned in a comment on JIRA.
 
 ## Worklows todolist
 
@@ -40,7 +41,6 @@ Automate as many things as possible in our development workflow.
 
 ### JIRA and Slack
 
-- Comment in JIRA sends a Slack DM to the issue's developer, reviewer and current assignee, and the person named in the comment if present (@someone).
 - Send a Slack DM to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
 - Send a Slack DM if an issue is an a given threshold of its due date (3 days before, on due date, every day after due date)
 - Send a Slack DM if an issue hasn't been updated for X days
