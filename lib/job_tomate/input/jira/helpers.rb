@@ -69,6 +69,11 @@ module JobTomate
 
           items.find { |item| item['field'] == field }
         end
+
+        # @return [JobTomate::User] for the specified JIRA username
+        def self.user_for_jira_username(jira_username)
+          User.where(jira_username: jira_username).first
+        end
       end
     end
   end

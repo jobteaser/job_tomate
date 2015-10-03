@@ -126,11 +126,6 @@ module JobTomate
           DEFAULT_FOR_FUNCTIONAL_REVIEW.sample
         end
 
-        # TODO: move to helpers
-        def self.user_for_jira_username(jira_username)
-          User.where(jira_username: jira_username).first
-        end
-
         # Returns a String usable in a Slack message to
         # present a link to a JIRA issue.
         # TODO: separate and move to jira/helpers and slack/helpers
