@@ -15,6 +15,11 @@ describe JobTomate::GithubProcessor do
       }
     end
 
+    before do
+      response = double(code: 200)
+      allow(JobTomate::Interface::JiraClient).to receive(:exec_request).and_return(response)
+    end
+
     it 'works' do
       described_class.run(webhook_data)
     end
