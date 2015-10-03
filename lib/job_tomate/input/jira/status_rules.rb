@@ -13,15 +13,6 @@ module JobTomate
       class StatusRules
         extend Helpers
 
-        DEFAULT_FOR_FUNCTIONAL_REVIEW = %w(
-          harold.sirven
-          christophe.colard
-        )
-        ACCEPTED_FOR_FUNCTIONAL_REVIEW = DEFAULT_FOR_FUNCTIONAL_REVIEW +
-          %w(romain.champourlier)
-
-        JIRA_ISSUE_URL_BASE = 'https://jobteaser.atlassian.net/browse'
-
         # Applies the rules
         def self.apply(webhook_data)
           notify_new_assignee(webhook_data)
@@ -107,30 +98,6 @@ module JobTomate
             assignee_jira_username,
             developer_jira_username,
             reviewer_jira_username)
-        end
-
-        # IMPLEMENTATION
-
-        # TODO: move to helpers
-        def self.reporter_jira_username(webhook_data)
-          webhook_data['issue']['fields']['reporter']['key']
-        end
-
-        # TODO: move to helpers
-        def self.functional_reviewer_jira_username(webhook_data)
-          issue_reporter = reporter_jira_username(webhook_data)
-          if issue_reporter.present? &&
-            issue_reporter.in?(ACCEPTED_FOR_FUNCTIONAL_REVIEW)
-            return issue_reporter
-          end
-          DEFAULT_FOR_FUNCTIONAL_REVIEW.sample
-        end
-
-        # Returns a String usable in a Slack message to
-        # present a link to a JIRA issue.
-        # TODO: separate and move to jira/helpers and slack/helpers
-        def self.slack_link_for_jira_issue(issue_key)
-          "<#{JIRA_ISSUE_URL_BASE}/#{issue_key}|#{issue_key}>"
         end
       end
     end

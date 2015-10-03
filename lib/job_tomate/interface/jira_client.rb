@@ -10,7 +10,7 @@ module JobTomate
     #   - adding worklogs
     #   - adding comments
     class JiraClient
-      API_URL_PREFIX = 'https://jobteaser.atlassian.net/rest/api/2'
+      API_URL_PREFIX = ENV['JIRA_API_URL_PREFIX']
       API_PORT = 443
       DEFAULT_PARAMS = {}
 
