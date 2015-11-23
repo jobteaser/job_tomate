@@ -7,48 +7,59 @@ module JobTomate
   module Input
     module Jira
 
-      # Performs alerting actions depending on the
-      # state of the issues (may not be related to the
-      # particular issue the webhook is issued for).
+      # Send alerts on Slack for maintenance issues when:
+      #   - a new blocker issues has been created (TODO),
+      #   - a new issue has been created and the total number of WIP issues is:
+      #     * >= 10, ask for 1 more developer (level 1),
+      #     * >= 14, ask for 2 more developers (level 2),
+      #     * >= 18, ask for a war-room (level 3).
       class AlertingRules
         extend Helpers
 
         JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND ' \
           'cf[10400] = Maintenance AND ' \
           '(fixVersion is EMPTY AND ' \
-          'status not in (released, closed) OR ' \
-          'updatedDate >= -1w)'
+          'status not in (released, closed)'
 
         JIRA_STATUSES = {
           todo: ['Open'],
           wip: ['In Development', 'In Review']
         }
 
-        ALERT_MAINTENANCE_TODO_AND_WIP_MAX = 5
+        ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_1 = 10
+        ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_2 = 14
+        ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_3 = 18
 
-        # Applies the rules
+        # Apply the rules
         def self.apply(webhook_data)
           maintenance_alerts(webhook_data)
         end
 
-        def self.maintenance_alerts(webhook_data)
-          maintenance_todo_wip_alert(webhook_data)
-        end
-
+        # Send Slack message if a maintenance issue has been created and the
+        # count of todo and wip issues match an alert level.
+        #
         # TODO: use formatted message
         # TODO: add information to message (link to issue, event - creation or status change...)
-        def self.maintenance_todo_wip_alert(webhook_data)
-          return unless issue_created?(webhook_data) || issue_changed?('status', webhook_data)
+        def self.maintenance_alerts(webhook_data)
           return unless issue_category(webhook_data) == :maintenance
+          return unless issue_created?(webhook_data)
 
-          count_todo = count_of_maintenance(:todo)
-          count_wip = count_of_maintenance(:wip)
-          if count_todo + count_wip > ALERT_MAINTENANCE_TODO_AND_WIP_MAX
-            Output::SlackWebhook.send(
-              "<!channel>: *Too much maintenance*: #{count_todo} TODO & #{count_wip} WIP",
-              channel: '#maintenance'
-            )
-          end
+          count_todo_and_wip = count_of_maintenance(:todo) + count_of_maintenance(:wip)
+          return if count_todo_and_wip < ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_1
+
+          message = (
+            if count_todo_and_wip == ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_3
+              '*Maintenance reached level 3* => war room'
+            elsif count_todo_and_wip == ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_2
+              '*Maintenance reached level 2* => 2 developers must reinforce the maintenance team'
+            elsif count_todo_and_wip == ALERT_MAINTENANCE_TODO_AND_WIP_LEVEL_1
+              '*Maintenance reached level 1* => 1 developer must reinforce the maintenance team'
+            end
+          )
+          Output::SlackWebhook.send(
+            "<!channel>: #{message}",
+            channel: '#maintenance'
+          )
         end
 
         # @param status [Symbol] key from JIRA_STATUSES
