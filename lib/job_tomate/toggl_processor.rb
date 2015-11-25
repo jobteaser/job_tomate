@@ -34,7 +34,6 @@ module JobTomate
     def self.process_toggl_report(toggl_report)
       return :not_linked_to_jira unless linkable_to_jira?(toggl_report)
       return :not_old_enough unless old_enough?(toggl_report)
-      return :from_ftg unless from_ftg(toggl_report)
 
       entry = create_or_update_entry(toggl_report)
       return :already_sent_to_jira if sent_to_jira?(entry)
@@ -45,12 +44,6 @@ module JobTomate
       else
         :failed_to_send_to_jira
       end
-    end
-
-    def self.from_ftg(toggl_report)
-      result = !!toggl_report['description'][/\[FTG\]/]
-      puts "from_ftg: #{toggl_report['description']} -> #{result}"
-      result
     end
 
     def self.create_or_update_entry(toggl_report)
