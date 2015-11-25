@@ -104,7 +104,10 @@ module JobTomate
         end
 
         def self.issue_status_change_to_todo_or_wip?(webhook_data)
-          change('status', webhook_data)['toString'].in?(JIRA_STATUSES[:todo] + JIRA_STATUSES[:wip])
+          status_change = change('status', webhook_data)
+          return false if status_change.nil?
+
+          status_change['toString'].in?(JIRA_STATUSES[:todo] + JIRA_STATUSES[:wip])
         end
 
         # @param status [Symbol] key from JIRA_STATUSES

@@ -8,18 +8,9 @@ describe JobTomate::Input::Jira::AlertingRules do
     let(:count_todo) { 0 }
     let(:count_wip) { 0 }
     let(:issue_priority) { 'Major' }
-    let(:status_to_string) { 'Open' }
-    let(:webhook_data) do
+    let(:webhook_data_base) do
       {
         'webhookEvent' => "jira:issue_#{webhook_event}",
-        'changelog' => {
-          'items' => [
-            {
-              'field' => 'status',
-              'toString' => status_to_string
-            }
-          ]
-        },
         'issue' => {
           'fields' => {
             'customfield_10400' => {
@@ -44,6 +35,7 @@ describe JobTomate::Input::Jira::AlertingRules do
     end
 
     context 'created maintenance issue' do
+      let(:webhook_data) { webhook_data_base.merge({}) }
       let(:webhook_event) { 'created' }
 
       context 'blocker' do
@@ -117,7 +109,12 @@ describe JobTomate::Input::Jira::AlertingRules do
     end
 
     context 'updated maintenance issue' do
+      let(:changelog) { {} }
+      let(:webhook_data) do
+        webhook_data_base.merge('changelog' => changelog)
+      end
       let(:webhook_event) { 'updated' }
+      let(:status_to_string) { 'Open' }
 
       context 'blocker' do
         let(:issue_priority) { 'Blocker' }
@@ -130,6 +127,16 @@ describe JobTomate::Input::Jira::AlertingRules do
 
       context 'changed status to "In Development"' do
         let(:status_to_string) { 'In Development' }
+        let(:changelog) do
+          {
+            'items' => [
+              {
+                'field' => 'status',
+                'toString' => status_to_string
+              }
+            ]
+          }
+        end
 
         context 'exactly 9 WIP maintenance issues' do
           let(:count_todo) { 5 }
