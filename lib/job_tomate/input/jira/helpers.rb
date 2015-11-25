@@ -54,6 +54,12 @@ module JobTomate
           CATEGORIES[jira_category]
         end
 
+        def issue_priority(webhook_data)
+          webhook_data['issue']['fields']['priority']['name']
+        rescue NoMethodError
+          nil
+        end
+
         # Returns true if the webhook has been called for
         # a new issue.
         def issue_created?(webhook_data)

@@ -85,6 +85,7 @@ module JobTomate
           password: password
         }
 
+        LOGGER.info "Performing JIRA request: #{verb.upcase} #{url} #{headers} #{final_params} #{body}"
         HTTParty.send(verb, url, {
           headers: headers,
           query: final_params,
