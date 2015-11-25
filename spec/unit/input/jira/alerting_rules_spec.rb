@@ -7,6 +7,29 @@ describe JobTomate::Input::Jira::AlertingRules do
   describe '.apply(webhook_data)' do
     let(:count_todo) { 0 }
     let(:count_wip) { 0 }
+    let(:issue_priority) { 'Major' }
+    let(:status_to_string) { 'Open' }
+    let(:webhook_data) do
+      {
+        'webhookEvent' => "jira:issue_#{webhook_event}",
+        'changelog' => {
+          'items' => [
+            {
+              'field' => 'status',
+              'toString' => status_to_string
+            }
+          ]
+        },
+        'issue' => {
+          'fields' => {
+            'customfield_10400' => {
+              'value' => 'Maintenance'
+            },
+            'priority' => { 'name' => issue_priority }
+          }
+        }
+      }
+    end
 
     before do
       expect(JobTomate::Interface::JiraClient).to receive(:exec_request) do |action, path, usr, pwd, body, params|
@@ -21,20 +44,7 @@ describe JobTomate::Input::Jira::AlertingRules do
     end
 
     context 'created maintenance issue' do
-      let(:issue_priority) { 'Major' }
-      let(:webhook_data) do
-        {
-          'webhookEvent' => 'jira:issue_created',
-          'issue' => {
-            'fields' => {
-              'customfield_10400' => {
-                'value' => 'Maintenance'
-              },
-              'priority' => { 'name' => issue_priority }
-            }
-          }
-        }
-      end
+      let(:webhook_event) { 'created' }
 
       context 'blocker' do
         let(:issue_priority) { 'Blocker' }
@@ -47,9 +57,9 @@ describe JobTomate::Input::Jira::AlertingRules do
       end
 
       context 'count of todo and wip issues not at a level value' do
-        let(:count_todo) { 5 }
 
         context 'count is 9' do
+          let(:count_todo) { 5 }
           let(:count_wip) { 4 }
 
           it 'does not send a Slack notification' do
@@ -59,6 +69,7 @@ describe JobTomate::Input::Jira::AlertingRules do
         end
 
         context 'count is 11' do
+          let(:count_todo) { 5 }
           let(:count_wip) { 6 }
 
           it 'does not send a Slack notification' do
@@ -106,30 +117,11 @@ describe JobTomate::Input::Jira::AlertingRules do
     end
 
     context 'updated maintenance issue' do
-      let(:status_to_string) { 'Open' }
-      let(:webhook_data) do
-        {
-          'changelog' => {
-            'items' => [
-              {
-                'field' => 'status',
-                'toString' => status_to_string
-              }
-            ]
-          },
-          'webhookEvent' => 'jira:issue_updated',
-          'issue' => {
-            'fields' => {
-              'customfield_10400' => {
-                'value' => 'Maintenance'
-              }
-            }
-          }
-        }
-      end
+      let(:webhook_event) { 'updated' }
 
       context 'blocker' do
         let(:issue_priority) { 'Blocker' }
+        let(:status_to_string) { 'Open' }
         it 'does not send a notification' do
           expect(JobTomate::Output::SlackWebhook).not_to receive(:send)
           described_class.apply(webhook_data)

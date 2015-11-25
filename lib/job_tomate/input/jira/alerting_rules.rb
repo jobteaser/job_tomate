@@ -67,6 +67,7 @@ module JobTomate
         end
 
         def self.blocker_notification(webhook_data)
+          return unless issue_created?(webhook_data)
           if issue_priority(webhook_data) == 'Blocker'
             message = 'New blocker issue has just been created!'
             Output::SlackWebhook.send(
