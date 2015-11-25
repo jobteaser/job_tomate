@@ -42,7 +42,7 @@ module JobTomate
 
         # Apply the rules
         def self.apply(webhook_data)
-          maintenance_alerts(webhook_data)
+          # maintenance_alerts(webhook_data)
           blocker_notification(webhook_data)
         end
 
