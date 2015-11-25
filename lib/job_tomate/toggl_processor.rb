@@ -25,7 +25,7 @@ module JobTomate
     #   - update the entries that have already been created
     #     (update their `toggl_update` field and `status`).
     def self.run
-      reports = TogglClient.fetch_reports(Date.yesterday, Date.today)
+      reports = TogglClient.fetch_reports(2.days.ago.to_date, Date.today)
       reports.map do |toggl_report|
         process_toggl_report(toggl_report)
       end
