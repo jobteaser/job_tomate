@@ -106,6 +106,7 @@ describe JobTomate::Input::Jira::AlertingRules do
     end
 
     context 'updated maintenance issue' do
+      let(:status_to_string) { 'Open' }
       let(:webhook_data) do
         {
           'changelog' => {
@@ -125,6 +126,14 @@ describe JobTomate::Input::Jira::AlertingRules do
             }
           }
         }
+      end
+
+      context 'blocker' do
+        let(:issue_priority) { 'Blocker' }
+        it 'does not send a notification' do
+          expect(JobTomate::Output::SlackWebhook).not_to receive(:send)
+          described_class.apply(webhook_data)
+        end
       end
 
       context 'changed status to "In Development"' do
