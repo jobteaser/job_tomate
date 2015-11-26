@@ -23,7 +23,7 @@ module JobTomate
         # TODO: split
         def self.notify_new_assignee(webhook_data)
           key = issue_key(webhook_data)
-          assignee_change = change('assignee', webhook_data)
+          assignee_change = issue_change('assignee', webhook_data)
           if assignee_change.nil?
             LOGGER.debug "No assignee change for issue #{key}"
             return
@@ -53,7 +53,7 @@ module JobTomate
         # TODO: split
         def self.update_people(webhook_data)
           key = issue_key(webhook_data)
-          status_change = change('status', webhook_data)
+          status_change = issue_change('status', webhook_data)
           if status_change.nil?
             LOGGER.debug "No status change for issue #{key}"
             return
