@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'job_tomate/github_processor'
+require 'job_tomate/input/github/processor'
 
-describe JobTomate::GithubProcessor do
+describe JobTomate::Input::Github::Processor do
 
   describe '.run(webhook_data)' do
 
