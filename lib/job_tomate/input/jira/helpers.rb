@@ -76,12 +76,12 @@ module JobTomate
         # because the issue was changed on the specified
         # field.
         def issue_changed?(field, webhook_data)
-          change(field, webhook_data).present?
+          issue_change(field, webhook_data).present?
         end
 
         # Returns the changelog item for the specified field
         # (first encountered)
-        def change(field, webhook_data)
+        def issue_change(field, webhook_data)
           key = issue_key(webhook_data)
 
           changelog = webhook_data['changelog']
@@ -90,7 +90,9 @@ module JobTomate
             return nil
           end
 
-          items.find { |item| item['field'] == field }
+          change = items.find { |item| item['field'] == field }
+          LOGGER.debug "Status change for issue #{key}: #{change}"
+          change
         end
 
         # @return [JobTomate::Data::User] for the specified JIRA username

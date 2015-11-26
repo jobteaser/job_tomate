@@ -11,8 +11,8 @@ module JobTomate
       #   - a new blocker issues has been created (TODO),
       #   - a new issue has been created and the total number of WIP issues is:
       #     * >= 10, ask for 1 more developer (level 1),
-      #     * >= 14, ask for 2 more developers (level 2),
-      #     * >= 18, ask for a war-room (level 3).
+      #     * >= 15, ask for 2 more developers (level 2),
+      #     * >= 20, ask for a war-room (level 3).
       class AlertingRules
         extend Helpers
 
@@ -42,7 +42,7 @@ module JobTomate
 
         # Apply the rules
         def self.apply(webhook_data)
-          # maintenance_alerts(webhook_data)
+          maintenance_alerts(webhook_data)
           blocker_notification(webhook_data)
         end
 
@@ -62,7 +62,7 @@ module JobTomate
 
           Output::SlackWebhook.send(
             "<!channel>: #{message}",
-            channel: '#maintenance'
+            channel: '@rchampourlier'
           )
         end
 
@@ -79,8 +79,6 @@ module JobTomate
 
         # IMPLEMENTATION
 
-        # :up if the issue was created
-        # :down if the issue
         def self.maintenance_level_change(webhook_data)
           count = count_of_maintenance(:todo) + count_of_maintenance(:wip)
 
@@ -104,7 +102,7 @@ module JobTomate
         end
 
         def self.issue_status_change_to_todo_or_wip?(webhook_data)
-          status_change = change('status', webhook_data)
+          status_change = issue_change('status', webhook_data)
           return false if status_change.nil?
 
           status_change['toString'].in?(JIRA_STATUSES[:todo] + JIRA_STATUSES[:wip])
@@ -118,7 +116,9 @@ module JobTomate
           end
 
           results = search(jql_for_maintenance_with_statuses(jira_statuses))
-          results['total'].to_i
+          count = results['total'].to_i
+          LOGGER.debug "Count of #{status_group} maintenance: #{count}"
+          count
         end
 
         # Builds a JQL query for maintenance issues (using
