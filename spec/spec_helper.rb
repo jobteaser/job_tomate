@@ -15,9 +15,12 @@ require File.expand_path('../../config/boot', __FILE__)
 
 require 'job_tomate/data/user'
 require 'job_tomate/data/toggl_entry'
+require 'job_tomate/data/webhook_payload'
+
 RSpec.configure do |config|
   config.after(:each) do
     JobTomate::Data::User.delete_all
     JobTomate::Data::TogglEntry.delete_all
+    JobTomate::Data::WebhookPayload.delete_all
   end
 end
