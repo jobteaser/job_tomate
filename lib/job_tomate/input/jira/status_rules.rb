@@ -1,5 +1,5 @@
 require 'active_support/all'
-require 'job_tomate/user'
+require 'job_tomate/data/user'
 require 'job_tomate/input/jira/helpers'
 require 'job_tomate/interface/jira_client'
 
@@ -65,10 +65,10 @@ module JobTomate
           reviewer_jira_username = webhook_data['issue']['fields']['customfield_10601'].try(:[], 'key')
           functional_jira_username = functional_reviewer_jira_username(webhook_data)
 
-          webhook_user = JobTomate::User.where(jira_username: webhook_jira_username).first
+          webhook_user = JobTomate::Data::User.where(jira_username: webhook_jira_username).first
           if webhook_user.nil?
             LOGGER.warn "User with JIRA username \"#{webhook_jira_username}\" is unknown"
-            webhook_user = JobTomate::User.first
+            webhook_user = JobTomate::Data::User.first
             LOGGER.warn "Falling back to JIRA user \"#{webhook_user.jira_username}\""
           end
 

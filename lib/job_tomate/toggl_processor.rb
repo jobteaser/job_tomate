@@ -1,7 +1,7 @@
 require 'active_support/all'
-require 'job_tomate/toggl_entry'
+require 'job_tomate/data/toggl_entry'
 require 'job_tomate/toggl_client'
-require 'job_tomate/user'
+require 'job_tomate/data/user'
 require 'job_tomate/interface/jira_client'
 
 module JobTomate
@@ -20,7 +20,7 @@ module JobTomate
 
     # Perform a run where:
     #   - it fetches Toggl entries for today,
-    #   - create the new TogglEntry documents for entries that
+    #   - create the new Data::TogglEntry documents for entries that
     #     have not been created yet,
     #   - update the entries that have already been created
     #     (update their `toggl_update` field and `status`).
@@ -50,12 +50,12 @@ module JobTomate
       toggl_id = toggl_report['id']
       toggl_updated = Time.parse(toggl_report['updated'])
 
-      if (entry = TogglEntry.where(toggl_id: toggl_id).first)
+      if (entry = Data::TogglEntry.where(toggl_id: toggl_id).first)
         if entry.toggl_updated != toggl_updated
           entry.status += '_modified'
         end
       else
-        entry = TogglEntry.new
+        entry = Data::TogglEntry.new
         entry.toggl_id = toggl_id
         entry.status = 'pending'
       end
@@ -90,14 +90,14 @@ module JobTomate
 
     # Returns `true` if the Toggl entry has been sent to JIRA,
     # i.e. the status contains `sent_to_jira`.
-    # @param entry [TogglEntry]
+    # @param entry [Data::TogglEntry]
     def self.sent_to_jira?(entry)
-      !!(entry.status =~ /sent_to_jira/)
+      (entry.status =~ /sent_to_jira/) != nil
     end
 
     def self.credentials_for_toggl_report(toggl_report)
       toggl_user = toggl_report['user']
-      user = User.where(toggl_user: toggl_user).first
+      user = Data::User.where(toggl_user: toggl_user).first
       user ? [user.jira_username, user.jira_password] : nil
     end
 

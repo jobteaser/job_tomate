@@ -29,7 +29,7 @@ describe JobTomate::TogglProcessor do
   end
 
   let(:entry) do
-    double('TogglEntry', status: 'sent_to_jira')
+    double('Data::TogglEntry', status: 'sent_to_jira')
   end
 
   let(:description) { 'jt-2423' }
@@ -97,7 +97,7 @@ describe JobTomate::TogglProcessor do
         expect {
           described_class.create_or_update_entry(report)
         }.not_to change {
-          JobTomate::TogglEntry.count
+          JobTomate::Data::TogglEntry.count
         }
       end
     end
@@ -106,7 +106,7 @@ describe JobTomate::TogglProcessor do
         expect {
           described_class.create_or_update_entry(report)
         }.to change {
-          JobTomate::TogglEntry.count
+          JobTomate::Data::TogglEntry.count
         }.by(1)
       end
     end

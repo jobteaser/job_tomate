@@ -13,11 +13,11 @@ test_environment.each { |k, v| ENV[k] = v }
 
 require File.expand_path('../../config/boot', __FILE__)
 
-require 'job_tomate/user'
-require 'job_tomate/toggl_entry'
+require 'job_tomate/data/user'
+require 'job_tomate/data/toggl_entry'
 RSpec.configure do |config|
   config.after(:each) do
-    JobTomate::User.delete_all
-    JobTomate::TogglEntry.delete_all
+    JobTomate::Data::User.delete_all
+    JobTomate::Data::TogglEntry.delete_all
   end
 end

@@ -39,7 +39,7 @@ module JobTomate
           end
         end
 
-        # Returns the `JobTomate::User`s mentioned in the specified
+        # Returns the `JobTomate::Data::User`s mentioned in the specified
         # JIRA comment body.
         def self.mentioned_users(comment_body)
           mentioned_jira_usernames = comment_body.scan(/\[~[^\]]+\]/).map { |s| s.gsub(/[\[\]~]/, '') }.uniq
@@ -53,7 +53,7 @@ module JobTomate
         # (`@slack.user`).
         #
         # @param comment_body [String] JIRA comment body
-        # @param users [Array of JobTomate::User]
+        # @param users [Array of JobTomate::Data::User]
         def self.rewrite_users_in_jira_comment_for_slack(comment_body, users)
           rewritten_comment = comment_body.clone
           users.each do |user|

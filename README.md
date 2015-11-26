@@ -99,7 +99,7 @@ heroku run bin/console
 JobTomate::TogglClient.fetch_reports(Date.yesterday, Date.today).map{|e| e['user']}.uniq
 
 # The JIRA password can be reset manually for a given user by a JIRA admin
-JobTomate::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password'
+JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password'
 ```
 
 **Reprocess older Toggl reports for a given user**

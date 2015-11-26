@@ -6,7 +6,7 @@ describe JobTomate::Input::Jira::CommentsRules do
   let(:jira_issue_url_base) { ENV['JIRA_ISSUE_URL_BASE'] }
   let(:jira_issue_key) { 'key' }
   let(:user) do
-    JobTomate::User.create(
+    JobTomate::Data::User.create(
       'jira_username' => 'jira_user',
       'slack_username' => 'slack_user'
     )
@@ -78,7 +78,7 @@ describe JobTomate::Input::Jira::CommentsRules do
 
           context 'mentioned several users found in JobTomate\'s DB' do
             let(:other_user) do
-              JobTomate::User.create(
+              JobTomate::Data::User.create(
                 'jira_username' => 'jira_username_2',
                 'slack_username' => 'slack_username_2'
               )

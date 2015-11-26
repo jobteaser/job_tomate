@@ -1,5 +1,5 @@
 require 'active_support/all'
-require 'job_tomate/user'
+require 'job_tomate/data/user'
 require 'job_tomate/interface/jira_client'
 
 module JobTomate
@@ -93,9 +93,9 @@ module JobTomate
           items.find { |item| item['field'] == field }
         end
 
-        # @return [JobTomate::User] for the specified JIRA username
+        # @return [JobTomate::Data::User] for the specified JIRA username
         def user_for_jira_username(jira_username)
-          JobTomate::User.where(jira_username: jira_username).first
+          JobTomate::Data::User.where(jira_username: jira_username).first
         end
 
         def reporter_jira_username(webhook_data)
