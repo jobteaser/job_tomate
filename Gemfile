@@ -9,6 +9,13 @@ gem 'sinatra'
 # For the console
 gem 'pry'
 
+group :development do
+  gem 'guard'
+  gem 'guard-rspec', require: false
+  gem 'guard-shotgun'
+  gem 'terminal-notifier-guard'
+end
+
 group :development, :test do
   gem 'dotenv'
   gem 'awesome_print'
