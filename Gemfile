@@ -9,6 +9,7 @@ gem 'puma'
 
 # For the console
 gem 'pry'
+gem 'awesome_print'
 
 group :development do
   gem 'guard'
@@ -20,7 +21,6 @@ end
 group :development, :test do
   gem 'rake'
   gem 'dotenv'
-  gem 'awesome_print'
 end
 
 group :test do
