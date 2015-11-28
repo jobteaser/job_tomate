@@ -1,26 +1,25 @@
 # JobTomate
 
+[![Code Climate](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/badges/d4a9abf44cad651805e5/gpa.svg)](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/feed)
+
 ## Purpose
 
 Automate as many things as possible in our development workflow.
 
-## What is automated?
+## To what is it connected?
 
 - JIRA
 - Github
 - Toggl
-- Slack
+- Slack (webhook and bot)
 
 ## Implemented workflows
 
-### Toggl and JIRA
-
-- New time entry in Toggl => add worlog in JIRA
-
-### Github and JIRA
-
-- Merge a PR in develop, add the "Merged in develop" comment in JIRA.
-- Creating a PR add a comment in the jira issue with the PR URL.
+Event | Action | Status
+----- | ------ | ------
+**Toggl**: new time entry matching JIRA issue key | **JIRA**: add worklog | DONE
+**Github**: PR merged in develop | **JIRA**: add comment on matching issue | DONE
+**Github**: PR created with name matching JIRA issue key (e.g. `branch-jt-xyz`) | **JIRA**: add a comment with the PR URL on matching issue | DONE
 
 ### JIRA
 
@@ -37,7 +36,7 @@ Automate as many things as possible in our development workflow.
 
 ### Toggl and Slack
 
-- Slack DM if no Toggl report more than 2 hours after a normal work day start
+- Slack DM if no Toggl report more than 2 hours after a normal work day start (not compatible with FTG users)
 
 ### JIRA and Slack
 
