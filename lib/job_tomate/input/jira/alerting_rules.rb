@@ -37,7 +37,7 @@ module JobTomate
           up_to_level_3: '*Maintenance reached level 3* => war room',
           down_from_level_1: '*Maintenance back to normal :)* => no reinforcement required',
           down_from_level_2: '*Maintenance back to level 1* => 1 developer must reinforce the maintenance team',
-          down_from_level_3: '*Maintenance reached level 2* => 2 developers must reinforce the maintenance team'
+          down_from_level_3: '*Maintenance back to level 2* => 2 developers must reinforce the maintenance team'
         }
 
         # Apply the rules
@@ -52,7 +52,7 @@ module JobTomate
         # TODO: use formatted message
         # TODO: add information to message (link to issue, event - creation or status change...)
         def self.maintenance_alerts(webhook_data)
-          return unless issue_category(webhook_data) == :maintenance
+          return unless issue_category(webhook_data) == 'Maintenance'
 
           change = maintenance_level_change(webhook_data)
           return if change.nil?
@@ -82,30 +82,28 @@ module JobTomate
         def self.maintenance_level_change(webhook_data)
           count = count_of_maintenance(:todo) + count_of_maintenance(:wip)
 
-          if issue_created?(webhook_data) ||
-             (issue_updated?(webhook_data) &&
-             issue_status_change_to_todo_or_wip?(webhook_data))
-
-            # Level going up
+          if issue_created?(webhook_data) || issue_status_change_to(webhook_data).in?([:todo, :wip])
             level = ALERT_MAINTENANCE_LEVELS[count]
             return level ? :"up_to_#{level}" : nil
           end
 
-          if issue_updated?(webhook_data) &&
-             !issue_status_change_to_todo_or_wip?(webhook_data)
-
-            # Level going down
+          if issue_status_change_to(webhook_data) == :else
             level = ALERT_MAINTENANCE_LEVELS[count + 1]
             return level ? :"down_from_#{level}" : nil
           end
+
           nil
         end
 
-        def self.issue_status_change_to_todo_or_wip?(webhook_data)
+        # Returns one of JIRA_STATUSES.keys representing the status
+        # the issue changed to. If not in JIRA_STATUSES, returns
+        # :else. If no status change, returns nil.
+        # @return Symbol
+        def self.issue_status_change_to(webhook_data)
           status_change = issue_change('status', webhook_data)
-          return false if status_change.nil?
+          return nil if status_change.nil?
 
-          status_change['toString'].in?(JIRA_STATUSES[:todo] + JIRA_STATUSES[:wip])
+          JIRA_STATUSES.find { |_, v| status_change['toString'].in?(v) }.try(:first) || :else
         end
 
         # @param status [Symbol] key from JIRA_STATUSES
@@ -117,7 +115,6 @@ module JobTomate
 
           results = search(jql_for_maintenance_with_statuses(jira_statuses))
           count = results['total'].to_i
-          LOGGER.debug "Count of #{status_group} maintenance: #{count}"
           count
         end
 

@@ -16,9 +16,6 @@ module JobTomate
       #   ...
       module Helpers
         MAX_RESULTS = 1000
-        CATEGORIES = {
-          'Maintenance' => :maintenance
-        }
 
         # TODO: move this configuration to database
         def_func_review_env_var = ENV['JIRA_DEFAULT_USERNAMES_FOR_FUNCTIONAL_REVIEW']
@@ -45,13 +42,35 @@ module JobTomate
           )
         end
 
+        # Returns a summary on the webhook change:
+        #   - operation: :issue_created or :issue_updated
+        #   - issue:
+        #     - key
+        #     - priority
+        #     - category
+        #     - status_change: present if the webhook
+        #       notifies a change on the status field
+        #       - :from
+        #       - :to
+        # @return Hash
+        def webhook_summary(webhook_data)
+          {
+            operation: issue_operation(webhook_data),
+            issue: {
+              key: issue_key(webhook_data),
+              category: issue_category(webhook_data),
+              priority: issue_priority(webhook_data),
+              status_change: issue_change('status', webhook_data)
+            }
+          }
+        end
+
         def issue_key(webhook_data)
           webhook_data['issue']['key']
         end
 
         def issue_category(webhook_data)
-          jira_category = webhook_data['issue']['fields']['customfield_10400']['value']
-          CATEGORIES[jira_category]
+          webhook_data['issue']['fields']['customfield_10400']['value']
         end
 
         def issue_priority(webhook_data)
@@ -60,16 +79,20 @@ module JobTomate
           nil
         end
 
+        def issue_operation(webhook_data)
+          webhook_data['webhookEvent'].gsub('jira:', '')
+        end
+
         # Returns true if the webhook has been called for
         # a new issue.
         def issue_created?(webhook_data)
-          webhook_data['webhookEvent'] == 'jira:issue_created'
+          issue_operation(webhook_data) == 'issue_created'
         end
 
         # Returns true if the webhook has been called for
         # an issue update.
         def issue_updated?(webhook_data)
-          webhook_data['webhookEvent'] == 'jira:issue_updated'
+          issue_operation(webhook_data) == 'issue_updated'
         end
 
         # Returns true if the webhook has been called
@@ -107,7 +130,7 @@ module JobTomate
         def functional_reviewer_jira_username(webhook_data)
           issue_reporter = reporter_jira_username(webhook_data)
           if issue_reporter.present? &&
-            issue_reporter.in?(ACCEPTED_FOR_FUNCTIONAL_REVIEW)
+             issue_reporter.in?(ACCEPTED_FOR_FUNCTIONAL_REVIEW)
             return issue_reporter
           end
           DEFAULT_FOR_FUNCTIONAL_REVIEW.sample
