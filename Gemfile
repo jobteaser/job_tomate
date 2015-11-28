@@ -17,6 +17,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'rake'
   gem 'dotenv'
   gem 'awesome_print'
 end
