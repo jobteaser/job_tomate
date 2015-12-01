@@ -1,5 +1,4 @@
 require 'mongoid'
-require 'config/mongo'
 
 module JobTomate
   module Data

@@ -11,6 +11,9 @@ gem 'puma'
 gem 'pry'
 gem 'awesome_print'
 
+# Slack bot
+gem 'slack-ruby-bot'
+
 group :development do
   gem 'guard'
   gem 'guard-rspec', require: false
