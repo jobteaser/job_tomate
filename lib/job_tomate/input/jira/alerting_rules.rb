@@ -62,7 +62,7 @@ module JobTomate
 
           Output::SlackWebhook.send(
             "<!channel>: #{message}",
-            channel: '@rchampourlier'
+            channel: '#maintenance'
           )
         end
 
