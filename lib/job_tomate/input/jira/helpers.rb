@@ -65,6 +65,10 @@ module JobTomate
           }
         end
 
+        def issue_type(webhook_data)
+          webhook_data['issue']['fields']['issuetype']['name']
+        end
+
         def issue_key(webhook_data)
           webhook_data['issue']['key']
         end

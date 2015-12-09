@@ -50,14 +50,28 @@ module JobTomate
 
         # Update people (assignee, developer, reviewer)
         # associated to an issue.
+        #
+        # Ignored for issues of type "Spec".
+        #
         # TODO: split
         def self.update_people(webhook_data)
+          return if issue_type(webhook_data) == 'Spec'
+
           key = issue_key(webhook_data)
           status_change = issue_change('status', webhook_data)
           if status_change.nil?
             LOGGER.debug "No status change for issue #{key}"
             return
           end
+
+          perform_update_people(webhook_data)
+        end
+
+        private
+
+        def self.perform_update_people(webhook_data)
+          key = issue_key(webhook_data)
+          status_change = issue_change('status', webhook_data)
 
           new_status = status_change['toString']
           webhook_jira_username = webhook_data['user']['name']
