@@ -194,4 +194,24 @@ describe JobTomate::Input::Jira::AlertingRules do
       end
     end
   end
+
+  describe '.jql_for_maintenance_with_statuses(statuses)' do
+    let(:statuses) { [] }
+    subject { described_class.jql_for_maintenance_with_statuses(statuses) }
+
+    it 'selects issues from "JobTeaser" project' do
+      expect(subject).to match(/project = JobTeaser/)
+    end
+
+    it 'selects issues without "sentry" text in summary' do
+      expect(subject).to match(/summary !~ sentry/)
+    end
+
+    context 'statuses = ["Status1", "Status2"]' do
+      let(:statuses) { %w(Status1 Status2) }
+      it 'selects issues from "Status1" and Status2" JIRA statuses' do
+        expect(subject).to match(/status IN \('Status1', 'Status2'\)/)
+      end
+    end
+  end
 end

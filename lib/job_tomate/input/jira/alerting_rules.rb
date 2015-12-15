@@ -18,7 +18,8 @@ module JobTomate
 
         JQL_MAINTENANCE_ISSUES = 'project = JobTeaser AND ' \
           'cf[10400] = Maintenance AND ' \
-          'fixVersion is EMPTY '
+          'fixVersion is EMPTY ' \
+          'AND summary !~ sentry'
 
         JIRA_STATUSES = {
           todo: ['Open'],
