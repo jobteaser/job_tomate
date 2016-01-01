@@ -5,6 +5,7 @@ ruby '2.2.3'
 gem 'mongoid'
 gem 'httparty'
 gem 'sinatra'
+gem 'sinatra-contrib'
 gem 'puma'
 
 # For the console
