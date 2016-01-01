@@ -2,7 +2,7 @@ require 'job_tomate/data/slack_channel'
 require 'job_tomate/data/slack_message'
 
 module JobTomate
-  module Bot
+  module SlackBot
     module Commands
 
       # A command module to archive all messages on interesting channels or
