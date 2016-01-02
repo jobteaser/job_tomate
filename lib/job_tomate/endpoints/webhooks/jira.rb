@@ -7,7 +7,7 @@ module JobTomate
     class Jira
       def self.define_webhooks
         lambda do
-          post '/webhooks/jira' do
+          post '/jira' do
             json = request.body.read
             return 'no body' if json.empty?
 

@@ -16,10 +16,10 @@ module JobTomate
               return 'no body' if json.empty?
 
               webhook_data = JSON.parse json
-              JobTomate::Data::WebhookPayload.create(source: 'github_pr', data: webhook_data)
+              JobTomate::Data::WebhookPayload.create(source: 'github/pull_request', data: webhook_data)
               JobTomate::Input::Github::Processor.run(webhook_data)
 
-              status_ok
+              { status: 'ok' }.to_json
             end
           end
         end

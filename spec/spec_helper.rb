@@ -2,6 +2,7 @@ require 'rspec'
 require 'pry'
 
 ENV['APP_ENV'] = 'test'
+
 # Setup app-specific environment variables
 test_environment = {
   'JIRA_DEFAULT_USERNAMES_FOR_FUNCTIONAL_REVIEW' => 'func.rev1,func.rev2',

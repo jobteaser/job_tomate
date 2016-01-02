@@ -1,4 +1,5 @@
-require 'rspec'
+require 'spec_helper'
+
 require 'rack/test'
 
 require 'job_tomate/web'
@@ -23,16 +24,16 @@ describe 'JobTomate::Web' do
     end
   end
 
-  describe 'POST /webhooks/pr' do
+  describe 'POST /webhooks/github/pull_request' do
     before { allow(JobTomate::Input::Github::Processor).to receive(:run) }
 
     it 'writes the payload to a WebhookPayload record' do
-      expect { post '/webhooks/pr', data.to_json }.to change { JobTomate::Data::WebhookPayload.count }.by(1)
+      expect { post '/webhooks/github/pull_request', data.to_json }.to change { JobTomate::Data::WebhookPayload.count }.by(1)
       expect(last_response).to be_ok
       expect(last_response.body).to eq({ status: 'ok' }.to_json)
 
       payload = JobTomate::Data::WebhookPayload.last
-      expect(payload.source).to eq('github_pr')
+      expect(payload.source).to eq('github/pull_request')
       expect(payload.data).to eq(data.stringify_keys)
     end
   end
