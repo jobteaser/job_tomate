@@ -4,8 +4,8 @@ require 'rack/test'
 
 require 'job_tomate/web'
 require 'job_tomate/data/webhook_payload'
-require 'job_tomate/input/github/processor'
-require 'job_tomate/input/jira/processor'
+require 'job_tomate/workflows/github/process_webhook'
+require 'job_tomate/workflows/jira/process_webhook'
 
 describe 'JobTomate::Web' do
   include Rack::Test::Methods
@@ -25,7 +25,7 @@ describe 'JobTomate::Web' do
   end
 
   describe 'POST /webhooks/github/pull_request' do
-    before { allow(JobTomate::Input::Github::Processor).to receive(:run) }
+    before { allow(JobTomate::Workflows::Github::ProcessWebhook).to receive(:run) }
 
     it 'writes the payload to a WebhookPayload record' do
       expect { post '/webhooks/github/pull_request', data.to_json }.to change { JobTomate::Data::WebhookPayload.count }.by(1)
@@ -39,7 +39,7 @@ describe 'JobTomate::Web' do
   end
 
   describe 'POST /webhooks/jira' do
-    before { allow(JobTomate::Input::Jira::Processor).to receive(:run) }
+    before { allow(JobTomate::Workflows::Jira::ProcessWebhook).to receive(:run) }
 
     it 'writes the payload to a WebhookPayload record' do
       expect { post '/webhooks/jira', data.to_json }.to change { JobTomate::Data::WebhookPayload.count }.by(1)

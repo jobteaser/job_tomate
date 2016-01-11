@@ -10,7 +10,7 @@ module JobTomate
   #   - Extend by adding files in lib/job_tomate/web
   #   - For webhooks, see lib/job_tomate/web/webhooks
   class Web < Sinatra::Base
-    require 'job_tomate/endpoints/root'
-    require 'job_tomate/endpoints/webhooks'
+    require 'job_tomate/web/root'
+    require 'job_tomate/web/webhooks'
   end
 end

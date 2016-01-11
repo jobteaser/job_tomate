@@ -21,11 +21,7 @@ Event | Action | Status
 **Toggl**: new time entry matching JIRA issue key | **JIRA**: add worklog | DONE
 **Github**: PR merged in develop | **JIRA**: add comment on matching issue | DONE
 **Github**: PR created with name matching JIRA issue key (e.g. `branch-jt-xyz`) | **JIRA**: add a comment with the PR URL on matching issue | DONE
-
-### JIRA
-
-- Automatically assign the appropriate person when changing the issue status.
-- In "maintenance", when the reviewer or developer field is empty, assigns the user.
+**JIRA**: changed issue status | **JIRA**: assign the appropriate person | DONE
 
 ### JIRA and Slack
 

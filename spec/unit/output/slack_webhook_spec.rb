@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'job_tomate/output/slack_webhook'
+require 'job_tomate/commands/slack/send_message'
 
-describe JobTomate::Output::SlackWebhook do
+describe JobTomate::Commands::Slack::SendMessage do
 
-  describe '.send(text, [channel, username, icon_url, icon_emoji])' do
+  describe '.run(text, [channel, username, icon_url, icon_emoji])' do
 
     let(:webhook_url) { 'https://test.slack.com' }
     before { ENV['SLACK_WEBHOOK_URL'] = webhook_url }
@@ -24,7 +24,7 @@ describe JobTomate::Output::SlackWebhook do
           }.to_json
         }
       )
-      described_class.send('test',
+      described_class.run('test',
         channel: '@channel'
       )
     end
