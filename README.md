@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jobteaser/job_tomate.svg?branch=master)](https://travis-ci.org/jobteaser/job_tomate)
 [![Code Climate](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/badges/d4a9abf44cad651805e5/gpa.svg)](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/feed)
+[![Coverage Status](https://coveralls.io/repos/jobteaser/job_tomate/badge.svg?branch=refactor-workflows&service=github)](https://coveralls.io/github/jobteaser/job_tomate?branch=refactor-workflows)
 
 ## Purpose
 
