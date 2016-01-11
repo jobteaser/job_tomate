@@ -7,7 +7,7 @@ module JobTomate
       # TODO
       class SetPeople
         def self.run(*args)
-          Client.set_people(args)
+          Client.set_people(*args)
         end
       end
     end

@@ -7,7 +7,7 @@ module JobTomate
       # TODO
       class AddWorklog
         def self.run(*args)
-          Client.add_worklog(args)
+          Client.add_worklog(*args)
         end
       end
     end
