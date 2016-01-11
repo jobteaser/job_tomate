@@ -3,6 +3,23 @@ require 'pry'
 
 ENV['APP_ENV'] = 'test'
 
+if ENV['CI']
+  # Running on CI, setup Coveralls
+  require 'coveralls'
+  Coveralls.wear!
+else
+  # Running locally, setup simplecov
+  require 'simplecov'
+  require 'simplecov-json'
+  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+  SimpleCov.start do
+    add_filter do |src|
+      # Ignoring files from the spec directory
+      src.filename =~ %r{/spec/}
+    end
+  end
+end
+
 # Setup app-specific environment variables
 test_environment = {
   'JIRA_DEFAULT_USERNAMES_FOR_FUNCTIONAL_REVIEW' => 'func.rev1,func.rev2',

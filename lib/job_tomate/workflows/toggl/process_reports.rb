@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'job_tomate/data/toggl_entry'
 require 'job_tomate/data/user'
+require 'job_tomate/commands/jira/add_worklog'
 require 'job_tomate/commands/toggl/fetch_reports'
 
 module JobTomate
