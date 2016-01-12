@@ -6,7 +6,7 @@ module JobTomate
     module Github
 
       # Processor for Github events triggered through webhook (see `webhooks_handler.rb`).
-      class ProcessWebhook
+      class ProcessPullRequestWebhook
 
         # Perform a run where:
         #   - it takes parsed webhooks datas send by github in params,

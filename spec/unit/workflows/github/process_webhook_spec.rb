@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'job_tomate/workflows/github/process_webhook'
+require 'job_tomate/workflows/github/process_pull_request_webhook'
 
-describe JobTomate::Workflows::Github::ProcessWebhook do
+describe JobTomate::Workflows::Github::ProcessPullRequestWebhook do
 
   describe '.run(webhook_data)' do
 

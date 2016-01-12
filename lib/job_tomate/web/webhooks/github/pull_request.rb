@@ -1,3 +1,6 @@
+require 'job_tomate/data/webhook_payload'
+require 'job_tomate/workflows/github/process_pull_request_webhook'
+
 module JobTomate
   module Webhooks
     module Github
@@ -17,7 +20,7 @@ module JobTomate
 
               webhook_data = JSON.parse json
               JobTomate::Data::WebhookPayload.create(source: 'github/pull_request', data: webhook_data)
-              JobTomate::Workflows::Github::ProcessWebhook.run(webhook_data)
+              JobTomate::Workflows::Github::ProcessPullRequestWebhook.run(webhook_data)
 
               { status: 'ok' }.to_json
             end
