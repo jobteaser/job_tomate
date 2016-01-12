@@ -1,3 +1,6 @@
+require 'job_tomate/data/webhook_payload'
+require 'job_tomate/workflows/jira/process_webhook'
+
 module JobTomate
   module Webhooks
 
