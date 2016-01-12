@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'job_tomate/data/user'
 require 'job_tomate/workflows/jira/helpers'
+require 'job_tomate/commands/jira/set_people'
 
 module JobTomate
   module Workflows
