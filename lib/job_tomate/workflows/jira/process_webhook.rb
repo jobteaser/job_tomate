@@ -31,11 +31,9 @@ module JobTomate
         end
 
         def self.rules_modules
-          rules_module_constants = JobTomate::Input::Jira.constants.select do |rules_module|
-            rules_module.to_s =~ /Rules\Z/
-          end
+          rules_module_constants = JobTomate::Workflows::Jira::Rules.constants
           rules_module_constants.map do |rules_module|
-            JobTomate::Input::Jira.const_get(rules_module)
+            JobTomate::Workflows::Jira::Rules.const_get(rules_module)
           end
         end
       end
