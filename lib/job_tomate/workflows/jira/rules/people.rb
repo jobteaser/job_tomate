@@ -46,7 +46,7 @@ module JobTomate
             end
 
             message = "You've been assigned to #{slack_link_for_jira_issue(key)}"
-            Output::SlackWebhook.send(message, channel: "@#{assignee_slack_username}")
+            JobTomate::Commands::Slack::SendMessage.run(message, channel: "@#{assignee_slack_username}")
           end
 
           # Update people (assignee, developer, reviewer)
