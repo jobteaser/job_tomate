@@ -102,8 +102,10 @@ JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User
 **Reprocess older Toggl reports for a given user**
 
 ```
-reports = JobTomate::TogglClient.fetch_reports(Date.parse("2015-07-01"), Date.today).select {|r| r['user'] == 'some-user' }
-reports.map { |r| JobTomate::TogglProcessor.process_toggl_report(r) }
+require 'job_tomate/commands/toggl/fetch_reports'
+require 'job_tomate/workflows/toggl/process_reports'
+reports = JobTomate::Commands::Toggl::FetchReports.run(3.days.ago, Date.today).select {|r| r['user'] == 'some-user' }
+reports.map { |r| JobTomate::Workflows::Toggl::ProcessReports.process_toggl_report(r) }
 ```
 
 ## Setup
