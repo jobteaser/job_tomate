@@ -12,7 +12,7 @@ module JobTomate
       field :source, type: String
       field :data,   type: Hash
 
-      index({ created_at: 1 }, expire_after_seconds: 1.week)
+      index(created_at: 1)
       store_in collection: 'webhook_payloads'
     end
   end
