@@ -75,10 +75,10 @@ bin/deploy
 
 The deployed code will run a web application that will handle webhooks (see `webhooks_handler.rb`).
 
-A scheduled task must be setup too. Use Heroku's Scheduler plugin, setup the following code:
+A scheduled task must be setup too. Using Heroku's Scheduler plugin, setup the following recurring task:
 
 ```
-ruby script/process_toggl_reports.rb
+bin/run_workflow toggl_reports_to_jira_worklogs YYYY-MM-YY [YYYY-MM-YY]
 ```
 
 **Run a console on Heroku**
@@ -104,9 +104,9 @@ JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User
 
 ```
 require 'job_tomate/commands/toggl/fetch_reports'
-require 'job_tomate/workflows/toggl/process_reports'
+require 'job_tomate/commands/toggl/process_reports'
 reports = JobTomate::Commands::Toggl::FetchReports.run(3.days.ago, Date.today).select {|r| r['user'] == 'some-user' }
-reports.map { |r| JobTomate::Workflows::Toggl::ProcessReports.process_toggl_report(r) }
+reports.map { |r| JobTomate::Commands::Toggl::ProcessReports.process_toggl_report(r) }
 ```
 
 ## Setup

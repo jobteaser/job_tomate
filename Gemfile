@@ -11,6 +11,7 @@ gem 'puma'
 # For the console
 gem 'pry'
 gem 'awesome_print'
+gem 'ruby-progressbar'
 
 # Slack bot
 gem 'slack-ruby-bot'
@@ -33,5 +34,7 @@ group :test do
   gem 'webmock'
   gem 'coveralls', require: false
   gem 'simplecov', require: false
-  gem 'simplecov-json', require: false
+  # gem 'simplecov-json', require: false
+  # gem 'simplecov-lcov', require: false
+  gem 'timecop'
 end

@@ -1,5 +1,5 @@
-require 'active_support/all'
-Dir[File.expand_path('../rules/*.rb', __FILE__)].each { |f| require f }
+require "active_support/all"
+Dir[File.expand_path("../rules/*.rb", __FILE__)].each { |f| require f }
 
 module JobTomate
   module Workflows

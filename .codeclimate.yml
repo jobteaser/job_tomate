@@ -1,4 +1,10 @@
-languages:
-  Ruby: true
-# exclude_paths:
-# - "foo/bar.rb"
+engines:
+  rubocop:
+    enabled: true
+ratings:
+  paths:
+    - config/**
+    - lib/**
+    - "**.rb"
+exclude_paths:
+  - spec/**/*
