@@ -1,6 +1,6 @@
-require 'uri'
-require 'active_support/all'
-require 'httparty'
+require "uri"
+require "active_support/all"
+require "httparty"
 
 module JobTomate
   module Commands
@@ -10,73 +10,54 @@ module JobTomate
       #   - setting people on issues
       #   - adding worklogs
       #   - adding comments
-      class Client
-        API_URL_PREFIX = ENV['JIRA_API_URL_PREFIX']
+      module Client
+        API_URL_PREFIX = ENV["JIRA_API_URL_PREFIX"]
         API_PORT = 443
         DEFAULT_PARAMS = {}
 
-        # Sets the people associated to the issue: assignee, developer,
-        # reviewer.
-        def self.set_people(issue_key, username, password, assignee, developer, reviewer)
-          body = {
-            fields: {
-              assignee:           { name: assignee },
-              customfield_10600:  { name: developer },
-              customfield_10601:  { name: reviewer }
-            }
-          }
-
-          if ENV['APP_ENV'] != 'development'
-            response = exec_request(:put, "/issue/#{issue_key}/", username, password, body)
-            handle_response(response, "assigned user (#{assignee}) to #{issue_key}")
-          else
-            LOGGER.info "Assigned user (#{assignee}) to #{issue_key} - SKIPPED"
-            return true
+        def exec_request(verb, url_suffix, username, password, body, params = {})
+          merged_response = {}
+          start_at = 0
+          loop do
+            merged_response = merge_paginated_responses(
+              merged_response,
+              exec_request_base(verb, url_suffix, username, password, body, params.merge("startAt" => start_at))
+            )
+            return merged_response if verb != :get
+            return merged_response if merged_response["total"].nil?
+            return merged_response if merged_response["total"] <= merged_response["startAt"] + merged_response["maxResults"]
+            start_at += merged_response["maxResults"]
           end
         end
+        module_function :exec_request
 
-        def self.add_comment(issue_key, username, password, comment)
-          body = {
-            body: comment
-          }
+        # If new response doesn"t have the pagination keys we assume
+        # there is no merge to do, the response is not a paginated
+        # one.
+        def merge_paginated_responses(merged_response, new_response)
+          fail "JIRA API error (#{new_response['errorMessages']})" if new_response["errorMessages"].present?
 
-          log_message = "Add comment (#{comment}) to #{issue_key} as #{username}"
-          if ENV['APP_ENV'] != 'development'
-            response = exec_request(:post, "/issue/#{issue_key}/comment", username, password, body)
-            handle_response(response, log_message)
-          else
-            LOGGER.info "#{log_message} - SKIPPED"
-            return true
+          return merged_response if new_response.nil? # e.g. nil on DELETE success
+
+          pagination_keys = %w(startAt total maxResults)
+          return new_response if new_response.slice(*pagination_keys).empty?
+
+          merged_response = merged_response.merge(new_response.slice(*pagination_keys))
+          (new_response.keys - pagination_keys).each do |key|
+            if new_response[key].is_a?(Array)
+              merged_response[key] ||= []
+              merged_response[key] += new_response[key]
+            end
           end
+          merged_response
         end
+        module_function :merge_paginated_responses
 
-        def self.add_worklog(issue_key, username, password, time_spent, start)
-          if time_spent.to_i < 60
-            LOGGER.info 'Ignored worklog < 1 min (not accepted by JIRA)'
-            return true
-          end
-
-          body = {
-            timeSpentSeconds: time_spent,
-            started: start
-          }
-
-          if ENV['APP_ENV'] != 'development'
-            response = exec_request(:post, "/issue/#{issue_key}/worklog", username, password, body)
-            handle_response(response, "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start}")
-          else
-            LOGGER.info "Add worklog (#{time_spent}s) to #{issue_key} as #{username}. Started at #{start} - SKIPPED"
-            return true
-          end
-        end
-
-        # IMPLEMENTATION
-
-        def self.exec_request(verb, url_suffix, username, password, body, params = {})
+        def exec_request_base(verb, url_suffix, username, password, body, params = {})
           url = "#{API_URL_PREFIX}#{url_suffix}"
 
           headers = {
-            'Content-Type' => 'application/json'
+            "Content-Type" => "application/json"
           }
 
           final_params = DEFAULT_PARAMS.merge(params)
@@ -86,24 +67,24 @@ module JobTomate
             password: password
           }
 
-          LOGGER.info "Performing JIRA request: #{verb.upcase} #{url} #{headers} #{final_params} #{body}"
-          HTTParty.send(verb, url, {
+          JobTomate::LOGGER.info "Performing JIRA request: #{verb.upcase} #{url} #{headers} #{final_params} #{body}"
+          HTTParty.send(
+            verb, url,
             headers: headers,
             query: final_params,
             basic_auth: credentials,
             body: body.to_json
-          })
+          )
         end
+        module_function :exec_request_base
 
-        def self.handle_response(response, success_message)
-          LOGGER.info success_message
-          if response.code == 200 || response.code == 201 || response.code == 204
-            true
-          else
-            LOGGER.error "Error (response code #{response.code}, content #{response.body})"
-            false
+        def handle_response(response)
+          if response.code != 200 && response.code != 201 && response.code != 204
+            fail "Error (response code #{response.code}, content #{response.body})"
           end
+          response
         end
+        module_function :handle_response
       end
     end
   end

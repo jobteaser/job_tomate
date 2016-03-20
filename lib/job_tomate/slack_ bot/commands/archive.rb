@@ -1,3 +1,4 @@
+require 'slack-ruby-bot'
 require 'job_tomate/data/slack_channel'
 require 'job_tomate/data/slack_message'
 

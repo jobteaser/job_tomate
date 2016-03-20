@@ -1,5 +1,5 @@
-require 'job_tomate/data/webhook_payload'
-require 'job_tomate/workflows/github/process_pull_request_webhook'
+require "job_tomate/data/webhook_payload"
+require "job_tomate/workflows/github/process_pull_request_webhook"
 
 module JobTomate
   module Webhooks
@@ -14,15 +14,15 @@ module JobTomate
       class PullRequest
         def self.define_webhooks
           lambda do
-            post '/github/pull_request' do
+            post "/github/pull_request" do
               json = request.body.read
-              return 'no body' if json.empty?
+              return "no body" if json.empty?
 
               webhook_data = JSON.parse json
-              JobTomate::Data::WebhookPayload.create(source: 'github/pull_request', data: webhook_data)
+              JobTomate::Data::WebhookPayload.create(source: "github/pull_request", data: webhook_data)
               JobTomate::Workflows::Github::ProcessPullRequestWebhook.run(webhook_data)
 
-              { status: 'ok' }.to_json
+              { status: "ok" }.to_json
             end
           end
         end

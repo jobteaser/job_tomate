@@ -6,6 +6,8 @@ module JobTomate
     module Github
 
       # Processor for Github events triggered through webhook (see `webhooks_handler.rb`).
+      # TODO: rename to Workflows::JiraCommentFromGithubPullRequest
+      # TODO: move to workflows/jira_comment_from_github_pull_request
       class ProcessPullRequestWebhook
 
         # Perform a run where:
