@@ -12,9 +12,16 @@ Style/StringLiterals:
 
 Style/EmptyLinesAroundBody:
   Enabled: false
+
 Style/EmptyLinesAroundBlockBody:
   Enabled: false
+
 Style/EmptyLinesAroundClassBody:
   Enabled: false
+
 Style/EmptyLinesAroundModuleBody:
   Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  Enabled: true

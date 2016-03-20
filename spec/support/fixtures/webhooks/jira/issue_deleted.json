@@ -1,0 +1,221 @@
+{
+    "timestamp": 1459018289764,
+    "webhookEvent": "jira:issue_deleted",
+    "user": {
+        "self": "https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier",
+        "name": "romain.champourlier",
+        "key": "romain.champourlier",
+        "emailAddress": "romain.champourlier@jobteaser.com",
+        "avatarUrls": {
+            "48x48": "https://jobteaser.atlassian.net/secure/useravatar?ownerId=romain.champourlier&avatarId=10400",
+            "24x24": "https://jobteaser.atlassian.net/secure/useravatar?size=small&ownerId=romain.champourlier&avatarId=10400",
+            "16x16": "https://jobteaser.atlassian.net/secure/useravatar?size=xsmall&ownerId=romain.champourlier&avatarId=10400",
+            "32x32": "https://jobteaser.atlassian.net/secure/useravatar?size=medium&ownerId=romain.champourlier&avatarId=10400"
+        },
+        "displayName": "Romain Champourlier",
+        "active": true,
+        "timeZone": "Europe/Berlin"
+    },
+    "issue": {
+        "id": "21815",
+        "self": "https://jobteaser.atlassian.net/rest/api/2/issue/21815",
+        "key": "JT-3838",
+        "fields": {
+            "issuetype": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/issuetype/3",
+                "id": "3",
+                "description": "A task that needs to be done.",
+                "iconUrl": "https://jobteaser.atlassian.net/secure/viewavatar?size=xsmall&avatarId=10718&avatarType=issuetype",
+                "name": "Task",
+                "subtask": false,
+                "avatarId": 10718
+            },
+            "timespent": null,
+            "project": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/project/10103",
+                "id": "10103",
+                "key": "JT",
+                "name": "JobTeaser",
+                "avatarUrls": {
+                    "48x48": "https://jobteaser.atlassian.net/secure/projectavatar?pid=10103&avatarId=10801",
+                    "24x24": "https://jobteaser.atlassian.net/secure/projectavatar?size=small&pid=10103&avatarId=10801",
+                    "16x16": "https://jobteaser.atlassian.net/secure/projectavatar?size=xsmall&pid=10103&avatarId=10801",
+                    "32x32": "https://jobteaser.atlassian.net/secure/projectavatar?size=medium&pid=10103&avatarId=10801"
+                }
+            },
+            "customfield_11000": null,
+            "fixVersions": [],
+            "customfield_11200": null,
+            "aggregatetimespent": null,
+            "resolution": null,
+            "customfield_10302": null,
+            "customfield_10501": null,
+            "customfield_10700": null,
+            "resolutiondate": null,
+            "workratio": -1,
+            "lastViewed": "2016-03-26T19:51:29.752+0100",
+            "watches": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/issue/JT-3838/watchers",
+                "watchCount": 1,
+                "isWatching": true
+            },
+            "created": "2016-03-26T19:48:50.953+0100",
+            "customfield_10020": null,
+            "customfield_10021": "Not started",
+            "customfield_10100": "0|zzqnus:",
+            "priority": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/priority/2",
+                "iconUrl": "https://jobteaser.atlassian.net/images/icons/priorities/critical.svg",
+                "name": "Critical",
+                "id": "2"
+            },
+            "customfield_10024": null,
+            "customfield_10300": null,
+            "customfield_10301": null,
+            "labels": [],
+            "customfield_10016": null,
+            "customfield_10017": null,
+            "customfield_10018": null,
+            "customfield_10019": null,
+            "timeestimate": null,
+            "aggregatetimeoriginalestimate": null,
+            "versions": [],
+            "issuelinks": [],
+            "assignee": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier",
+                "name": "romain.champourlier",
+                "key": "romain.champourlier",
+                "emailAddress": "romain.champourlier@jobteaser.com",
+                "avatarUrls": {
+                    "48x48": "https://jobteaser.atlassian.net/secure/useravatar?ownerId=romain.champourlier&avatarId=10400",
+                    "24x24": "https://jobteaser.atlassian.net/secure/useravatar?size=small&ownerId=romain.champourlier&avatarId=10400",
+                    "16x16": "https://jobteaser.atlassian.net/secure/useravatar?size=xsmall&ownerId=romain.champourlier&avatarId=10400",
+                    "32x32": "https://jobteaser.atlassian.net/secure/useravatar?size=medium&ownerId=romain.champourlier&avatarId=10400"
+                },
+                "displayName": "Romain Champourlier",
+                "active": true,
+                "timeZone": "Europe/Berlin"
+            },
+            "updated": "2016-03-26T19:50:25.337+0100",
+            "status": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/status/3",
+                "description": "This issue is being actively worked on at the moment by the assignee.",
+                "iconUrl": "https://jobteaser.atlassian.net/images/icons/statuses/generic.png",
+                "name": "In Development",
+                "id": "3",
+                "statusCategory": {
+                    "self": "https://jobteaser.atlassian.net/rest/api/2/statuscategory/4",
+                    "id": 4,
+                    "key": "indeterminate",
+                    "colorName": "yellow",
+                    "name": "In Progress"
+                }
+            },
+            "components": [],
+            "timeoriginalestimate": null,
+            "description": null,
+            "customfield_11100": null,
+            "customfield_10012": null,
+            "customfield_11101": null,
+            "customfield_10013": null,
+            "customfield_10014": null,
+            "timetracking": {},
+            "customfield_10015": null,
+            "customfield_10005": null,
+            "customfield_10006": "9223372036854775807",
+            "customfield_10600": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier",
+                "name": "romain.champourlier",
+                "key": "romain.champourlier",
+                "emailAddress": "romain.champourlier@jobteaser.com",
+                "avatarUrls": {
+                    "48x48": "https://jobteaser.atlassian.net/secure/useravatar?ownerId=romain.champourlier&avatarId=10400",
+                    "24x24": "https://jobteaser.atlassian.net/secure/useravatar?size=small&ownerId=romain.champourlier&avatarId=10400",
+                    "16x16": "https://jobteaser.atlassian.net/secure/useravatar?size=xsmall&ownerId=romain.champourlier&avatarId=10400",
+                    "32x32": "https://jobteaser.atlassian.net/secure/useravatar?size=medium&ownerId=romain.champourlier&avatarId=10400"
+                },
+                "displayName": "Romain Champourlier",
+                "active": true,
+                "timeZone": "Europe/Berlin"
+            },
+            "customfield_10007": null,
+            "customfield_10601": null,
+            "customfield_10008": null,
+            "customfield_10800": null,
+            "customfield_10602": null,
+            "attachment": [],
+            "customfield_10801": null,
+            "aggregatetimeestimate": null,
+            "summary": "TEST-ISSUE",
+            "creator": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier",
+                "name": "romain.champourlier",
+                "key": "romain.champourlier",
+                "emailAddress": "romain.champourlier@jobteaser.com",
+                "avatarUrls": {
+                    "48x48": "https://jobteaser.atlassian.net/secure/useravatar?ownerId=romain.champourlier&avatarId=10400",
+                    "24x24": "https://jobteaser.atlassian.net/secure/useravatar?size=small&ownerId=romain.champourlier&avatarId=10400",
+                    "16x16": "https://jobteaser.atlassian.net/secure/useravatar?size=xsmall&ownerId=romain.champourlier&avatarId=10400",
+                    "32x32": "https://jobteaser.atlassian.net/secure/useravatar?size=medium&ownerId=romain.champourlier&avatarId=10400"
+                },
+                "displayName": "Romain Champourlier",
+                "active": true,
+                "timeZone": "Europe/Berlin"
+            },
+            "subtasks": [],
+            "reporter": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier",
+                "name": "romain.champourlier",
+                "key": "romain.champourlier",
+                "emailAddress": "romain.champourlier@jobteaser.com",
+                "avatarUrls": {
+                    "48x48": "https://jobteaser.atlassian.net/secure/useravatar?ownerId=romain.champourlier&avatarId=10400",
+                    "24x24": "https://jobteaser.atlassian.net/secure/useravatar?size=small&ownerId=romain.champourlier&avatarId=10400",
+                    "16x16": "https://jobteaser.atlassian.net/secure/useravatar?size=xsmall&ownerId=romain.champourlier&avatarId=10400",
+                    "32x32": "https://jobteaser.atlassian.net/secure/useravatar?size=medium&ownerId=romain.champourlier&avatarId=10400"
+                },
+                "displayName": "Romain Champourlier",
+                "active": true,
+                "timeZone": "Europe/Berlin"
+            },
+            "customfield_10000": null,
+            "aggregateprogress": {
+                "progress": 0,
+                "total": 0
+            },
+            "customfield_10001": null,
+            "customfield_10002": null,
+            "customfield_10200": null,
+            "customfield_10003": null,
+            "customfield_10004": null,
+            "customfield_10400": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/customFieldOption/10203",
+                "value": "Technical",
+                "id": "10203"
+            },
+            "environment": null,
+            "duedate": null,
+            "progress": {
+                "progress": 0,
+                "total": 0
+            },
+            "comment": {
+                "startAt": 0,
+                "maxResults": 0,
+                "total": 0,
+                "comments": []
+            },
+            "votes": {
+                "self": "https://jobteaser.atlassian.net/rest/api/2/issue/JT-3838/votes",
+                "votes": 0,
+                "hasVoted": false
+            },
+            "worklog": {
+                "startAt": 0,
+                "maxResults": 20,
+                "total": 0,
+                "worklogs": []
+            }
+        }
+    }
+}

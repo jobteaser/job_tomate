@@ -1,6 +1,6 @@
-require_relative './config/boot.rb'
-require 'job_tomate/slack_bot'
-require 'job_tomate/web'
+require_relative "./config/boot.rb"
+require "job_tomate/slackbot"
+require "job_tomate/web"
 
 # Starting Slack bot in a new thread
 Thread.new do

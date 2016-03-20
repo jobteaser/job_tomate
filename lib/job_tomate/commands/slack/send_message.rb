@@ -1,24 +1,24 @@
-require 'uri'
-require 'active_support/all'
-require 'httparty'
+require "uri"
+require "active_support/all"
+require "httparty"
 
 module JobTomate
   module Commands
     module Slack
 
       # Usage:
-      #   SlackWebhook.send('<@username>: Here\'s JobTomate!!!', channel: '#dev-team')
-      #   SlackWebhook.send('<!channel>: Hello channel!')
+      #   SlackWebhook.send("<@username>: Here\"s JobTomate!!!", channel: "#dev-team")
+      #   SlackWebhook.send("<!channel>: Hello channel!")
       class SendMessage
-        DEFAULT_CHANNEL = '#dev-team'
-        DEFAULT_USERNAME = 'JobTomate'
+        DEFAULT_CHANNEL = "#dev-team"
+        DEFAULT_USERNAME = "JobTomate"
         DEFAULT_ICON_URL = nil
-        DEFAULT_ICON_EMOJI = ':japanese_ogre:'
+        DEFAULT_ICON_EMOJI = ":japanese_ogre:"
 
         # Sends a message to Slack incoming webhook.
         #
         # @param text [String] message to send
-        # @param channel [String] the channel to use (e.g. '#channel', '@username')
+        # @param channel [String] the channel to use (e.g. "#channel", "@username")
         # @param username [String] the username user for the message author
         # @param icon_url [String] URL for the icon of the message author (if present,
         #   takes over the emoji icon)
@@ -31,21 +31,16 @@ module JobTomate
 
           payload = build_payload(text, channel, username, icon_url, icon_emoji)
 
-          if ENV['APP_ENV'] != 'development'
-            send_payload(payload)
-            LOGGER.info "Sent \"#{text}\" to Slack channel #{channel} as #{username}"
-          else
-            LOGGER.info "Would send \"#{text}\" to Slack channel #{channel} as #{username} (SKIPPED)"
-          end
+          send_payload(payload)
         end
 
         # IMPLEMENTATION
-        
+
         def self.build_payload(text, channel, username, icon_url, icon_emoji)
           base = {
             text: text,
             channel: channel,
-            username: username,
+            username: username
           }
           return base.merge(icon_url: icon_url) if icon_url
           base.merge(icon_emoji: icon_emoji)
@@ -53,10 +48,12 @@ module JobTomate
 
         def self.send_payload(payload)
           headers = {
-            'Content-Type' => 'application/json'
+            "Content-Type" => "application/json"
           }
 
-          HTTParty.send(:post, ENV['SLACK_WEBHOOK_URL'],
+          HTTParty.send(
+            :post,
+            ENV["SLACK_WEBHOOK_URL"],
             headers: headers,
             body: payload.to_json
           )
