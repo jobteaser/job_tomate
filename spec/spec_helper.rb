@@ -1,7 +1,9 @@
 require "rspec"
+require "webmock/rspec"
+require "rack/test"
 require "pry"
 
-ENV["APP_ENV"] = "test"
+ENV["RACK_ENV"] = ENV["APP_ENV"] = "test"
 ENV["DRY_RUN"] = "true"
 
 if ENV["CI"]
@@ -11,8 +13,8 @@ if ENV["CI"]
 else
   # Running locally, setup simplecov
   require "simplecov"
-  require "simplecov-lcov"
-  SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
+  # require "simplecov-lcov"
+  # SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
   # require "simplecov-json"
   # SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
   SimpleCov.start do
@@ -29,8 +31,8 @@ test_environment = {
   "JIRA_ACCEPTED_USERNAMES_FOR_FUNCTIONAL_REVIEW" => "acc.func",
   "JIRA_ISSUE_URL_BASE" => "url",
   "MONGODB_URI" => "mongodb://127.0.0.1:27017/job_tomate_test",
-  "JIRA_USERNAME" => "jira.username",
-  "JIRA_PASSWORD" => "password"
+  "JIRA_USERNAME" => "job_tomate_username",
+  "JIRA_PASSWORD" => "job_tomate_pwd"
 }
 test_environment.each { |k, v| ENV[k] = v }
 

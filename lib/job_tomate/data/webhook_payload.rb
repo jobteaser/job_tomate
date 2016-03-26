@@ -1,5 +1,5 @@
-require 'mongoid'
-require 'config/mongo'
+require "mongoid"
+require "config/mongo"
 
 module JobTomate
   module Data
@@ -13,7 +13,7 @@ module JobTomate
       field :data,   type: Hash
 
       index(created_at: 1)
-      store_in collection: 'webhook_payloads'
+      store_in collection: "webhook_payloads"
     end
   end
 end

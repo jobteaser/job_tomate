@@ -16,24 +16,17 @@ module JobTomate
 
         private
 
-        def delete_dry_run(issue_key, worklog_id, username, _password)
-          LOGGER.info log_delete_message(issue_key, worklog_id, username)
+        def delete_dry_run(_issue_key, worklog_id, _username, _password)
           [:ok, worklog_id]
         end
 
         def delete(issue_key, worklog_id, username, password)
-          LOGGER.info log_delete_message(issue_key, worklog_id, username)
           response = Client.exec_request(
             :delete, "/issue/#{issue_key}/worklog/#{worklog_id}",
             username, password,
             {}
           )
           [:ok, response["id"]]
-        end
-
-        def log_delete_message(issue_key, worklog_id, username)
-          msg = "Deleted worklog #{worklog_id} for #{issue_key} (via #{username})"
-          ENV["DRY_RUN"] ? "#{msg} -- SKIPPED" : msg
         end
       end
     end

@@ -35,6 +35,6 @@ group :test do
   gem 'coveralls', require: false
   gem 'simplecov', require: false
   # gem 'simplecov-json', require: false
-  gem 'simplecov-lcov', require: false
+  # gem 'simplecov-lcov', require: false
   gem 'timecop'
 end
