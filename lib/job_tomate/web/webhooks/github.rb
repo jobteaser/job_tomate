@@ -11,9 +11,8 @@ module JobTomate
     # Setup the webhook with:
     #   - Path: /webhooks/github
     #   - Choose "Send me everything"
-    class Github
-
-      attr_reader :webhook_data
+    class Github < Base
+      HEADER_EVENT = "X-GitHub-Event"
 
       def definition
         {
@@ -23,22 +22,20 @@ module JobTomate
         }
       end
 
-      def extract_webhook_data(request)
-        json = request.body.read
-        json.empty? ? { error: "no body" } : JSON.parse(json)
-      end
-
-      def run_events(webhook_data)
-        @webhook_data = webhook_data
-
-        return if handled_case_opened?
-        return if handled_case_merged?
-        return if handled_case_closed?
+      def run_events
+        return unless pull_request_event?
+        return if handled_pull_request_opened?
+        return if handled_pull_request_merged?
+        return if handled_pull_request_closed?
       end
 
       private
 
-      def handled_case_opened?
+      def pull_request_event?
+        request.env[HEADER_EVENT] == "pull_request"
+      end
+
+      def handled_pull_request_opened?
         if pr_action == "opened"
           Events::Github::PullRequest::Opened.run(pr_description)
           return true
@@ -46,7 +43,7 @@ module JobTomate
         false
       end
 
-      def handled_case_merged?
+      def handled_pull_request_merged?
         if pr_description[:merged].present?
           Events::Github::PullRequest::Merged.run(pr_description)
           return true
@@ -54,7 +51,7 @@ module JobTomate
         false
       end
 
-      def handled_case_closed?
+      def handled_pull_request_closed?
         if pr_action == "closed"
           Events::Github::PullRequest::Closed.run(pr_description)
           return true
