@@ -2,6 +2,24 @@ require "sinatra/base"
 require "sinatra/namespace"
 
 module JobTomate
+  module Webhooks
+
+    # Superclass for webhooks handlers
+    class Base
+      attr_reader :request
+
+      def set_request(request)
+        @request = request
+      end
+
+      def webhook_data
+        @webhook_data ||= (
+          json = request.body.read
+          json.empty? ? { error: "no body" } : JSON.parse(json)
+        )
+      end
+    end
+  end
 
   # Extends the JobTomate::Web Sinatra app to handle webhook endpoints.
   # New webhooks may be added easily by adding files in the web/webhooks
@@ -25,12 +43,12 @@ module JobTomate
         instance = module_constant.new
         webhook = instance.definition
         send(webhook[:verb], webhook[:path]) do
-          webhook_data = instance.extract_webhook_data(request)
+          instance.set_request(request)
           JobTomate::Data::WebhookPayload.create(
             source: webhook[:name],
-            data: webhook_data
+            data: instance.webhook_data
           )
-          instance.run_events(webhook_data)
+          instance.run_events
           { status: "ok" }.to_json
         end
       end

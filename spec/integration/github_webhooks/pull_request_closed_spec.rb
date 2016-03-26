@@ -7,13 +7,14 @@ describe "/webhooks/github" do
   include WebmockHelpers
 
   let(:request) do
-    post_json "/webhooks/github", payload
+    post_webhook_github(:pull_request, payload)
   end
 
-  context "opened pull request" do
-    let(:payload) do
-      Fixtures::GithubWebhooks.opened_pull_request
+  context "closed pull request" do
+    let(:base_payload) do
+      Fixtures::GithubWebhooks.get(:closed_pull_request)
     end
+    let(:payload) { base_payload }
 
     it "is successful" do
       request
@@ -29,7 +30,7 @@ describe "/webhooks/github" do
     context "branch containing a JIRA issue key" do
 
       let(:payload) do
-        base = JSON.parse Fixtures::GithubWebhooks.opened_pull_request
+        base = base_payload
         base["pull_request"]["head"]["ref"] = "jt-1234"
         base.to_json
       end

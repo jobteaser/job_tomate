@@ -7,7 +7,7 @@ module JobTomate
     # Handling JIRA webhooks
     #
     # TODO: document how to setup the JIRA webhook appropriately
-    class Jira
+    class Jira < Base
 
       def definition
         {
@@ -17,12 +17,7 @@ module JobTomate
         }
       end
 
-      def extract_webhook_data(request)
-        json = request.body.read
-        json.empty? ? { error: "no body" } : JSON.parse(json)
-      end
-
-      def run_events(webhook_data)
+      def run_events
         JobTomate::Workflows::Jira::ProcessWebhook.run(webhook_data)
       end
     end

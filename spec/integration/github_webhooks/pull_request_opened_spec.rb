@@ -3,17 +3,18 @@ require "job_tomate/web"
 require "job_tomate/data/webhook_payload"
 
 describe "/webhooks/github" do
-  include RackTestHelpers
+  include WebhooksHelpers
   include WebmockHelpers
 
   let(:request) do
-    post_json "/webhooks/github", payload
+    post_webhook_github(:pull_request, payload)
   end
 
   context "opened pull request" do
-    let(:payload) do
-      Fixtures::GithubWebhooks.opened_pull_request
+    let(:base_payload) do
+      Fixtures::GithubWebhooks.get(:pull_request_opened)
     end
+    let(:payload) { base_payload }
 
     it "is successful" do
       request
@@ -29,7 +30,7 @@ describe "/webhooks/github" do
     context "branch containing a JIRA issue key" do
 
       let(:payload) do
-        base = JSON.parse Fixtures::GithubWebhooks.opened_pull_request
+        base = base_payload
         base["pull_request"]["head"]["ref"] = "jt-1234"
         base.to_json
       end
