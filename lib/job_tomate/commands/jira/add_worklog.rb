@@ -45,24 +45,17 @@ module JobTomate
 
         # Returns a random 8-char string to fake a JIRA
         # worklog ID.
-        def create_dry_run(issue_key, username, _password, body)
-          LOGGER.info log_creation_message(issue_key, username, body)
+        def create_dry_run(_issue_key, _username, _password, _body)
           [:ok, rand(36**8).to_s(36)]
         end
 
         def create(issue_key, username, password, body)
-          LOGGER.info log_creation_message(issue_key, username, body)
           response = Client.exec_request(
             :post, "/issue/#{issue_key}/worklog",
             username, password,
             body
           )
           [:ok, response["id"]]
-        end
-
-        def log_creation_message(issue_key, username, body)
-          msg = "Add worklog for #{issue_key} with body #{body} (via #{username})"
-          ENV["DRY_RUN"] ? "#{msg} -- SKIPPED" : msg
         end
 
         def format_date(date)

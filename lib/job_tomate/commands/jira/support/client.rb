@@ -6,10 +6,14 @@ module JobTomate
   module Commands
     module Jira
 
-      # A client for JIRA for:
-      #   - setting people on issues
-      #   - adding worklogs
-      #   - adding comments
+      # A JIRA client encapsulating the request logic:
+      #   - performing the request,
+      #   - processing the response,
+      #   - in case of a paginated response, fetching
+      #     all results and aggregating them.
+      #
+      # The client also checks for ENV["DRY_RUN"] and will
+      # only display a log if it's equal to "true".
       module Client
         API_URL_PREFIX = ENV["JIRA_API_URL_PREFIX"]
         API_PORT = 443
@@ -25,13 +29,15 @@ module JobTomate
             )
             return merged_response if verb != :get
             return merged_response if merged_response["total"].nil?
-            return merged_response if merged_response["total"] <= merged_response["startAt"] + merged_response["maxResults"]
+            if merged_response["total"] <= merged_response["startAt"] + merged_response["maxResults"]
+              return merged_response
+            end
             start_at += merged_response["maxResults"]
           end
         end
         module_function :exec_request
 
-        # If new response doesn"t have the pagination keys we assume
+        # If new response doesn't have the pagination keys we assume
         # there is no merge to do, the response is not a paginated
         # one.
         def merge_paginated_responses(merged_response, new_response)

@@ -47,7 +47,6 @@ module JobTomate
         # Returns a random 8-char string to fake a JIRA
         # worklog ID.
         def update_dry_run(issue_key, worklog_id, username, _password, body)
-          LOGGER.info log_update_message(issue_key, worklog_id, username, body)
           [:ok, worklog_id]
         end
 
@@ -57,13 +56,7 @@ module JobTomate
             username, password,
             body
           )
-          LOGGER.info log_update_message(issue_key, worklog_id, username, body)
           [:ok, response["id"]]
-        end
-
-        def log_update_message(issue_key, worklog_id, username, body)
-          msg = "Updated worklog #{worklog_id} for #{issue_key} with body #{body} (via #{username})"
-          ENV["DRY_RUN"] ? "#{msg} -- SKIPPED" : msg
         end
 
         def format_date(date)

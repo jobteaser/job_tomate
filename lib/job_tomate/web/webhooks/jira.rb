@@ -1,5 +1,5 @@
-require 'job_tomate/data/webhook_payload'
-require 'job_tomate/workflows/jira/process_webhook'
+require "job_tomate/data/webhook_payload"
+require "job_tomate/workflows/jira/process_webhook"
 
 module JobTomate
   module Webhooks
@@ -8,19 +8,22 @@ module JobTomate
     #
     # TODO: document how to setup the JIRA webhook appropriately
     class Jira
-      def self.define_webhooks
-        lambda do
-          post '/jira' do
-            json = request.body.read
-            return 'no body' if json.empty?
 
-            webhook_data = JSON.parse json
-            JobTomate::Data::WebhookPayload.create(source: 'jira', data: webhook_data)
-            JobTomate::Workflows::Jira::ProcessWebhook.run(webhook_data)
+      def definition
+        {
+          name: "jira",
+          verb: :post,
+          path: "/jira"
+        }
+      end
 
-            { status: 'ok' }.to_json
-          end
-        end
+      def extract_webhook_data(request)
+        json = request.body.read
+        json.empty? ? { error: "no body" } : JSON.parse(json)
+      end
+
+      def run_events(webhook_data)
+        JobTomate::Workflows::Jira::ProcessWebhook.run(webhook_data)
       end
     end
   end
