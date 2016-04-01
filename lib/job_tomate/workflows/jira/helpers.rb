@@ -62,7 +62,8 @@ module JobTomate
         end
 
         def issue_category(webhook_data)
-          webhook_data['issue']['fields']['customfield_10400']['value']
+          category_field = webhook_data['issue']['fields']['customfield_10400']
+          category_field ? category_field['value'] : nil
         end
 
         def issue_priority(webhook_data)
