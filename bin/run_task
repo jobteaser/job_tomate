@@ -6,6 +6,6 @@
 #
 require_relative "../config/boot"
 
-workflow_name = ARGV[0]
-require File.expand_path("../../lib/job_tomate/workflows/#{workflow_name}", __FILE__)
-"JobTomate::Workflows::#{workflow_name.camelize}".constantize.run(*ARGV[1..-1])
+task_name = ARGV[0]
+require File.expand_path("../../lib/job_tomate/triggers/tasks/#{task_name}", __FILE__)
+"JobTomate::Triggers::Tasks::#{task_name.camelize}".constantize.run(*ARGV[1..-1])

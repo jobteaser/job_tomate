@@ -13,9 +13,13 @@ module JobTomate
       # fetched from Toggl.
       class FetchTogglReports
 
-        def self.run(since_date_str, until_date_str = Date.today.to_s)
-          since_date = Date.parse(since_date_str)
-          until_date = Date.parse(until_date_str)
+        # @param since_date [Date] defaults to 2 days ago
+        # @param until_date [Date] defaults to today
+        #
+        # Default values are required for Tasks::SomeTask.run method so that
+        # it may be started from the command line inside a cron or another
+        # scheduler (e.g. Heroku Scheduler).
+        def self.run(since_date = 2.days.ago.to_date, until_date = Date.today)
           reports = Commands::Toggl::FetchReports.run(since_date, until_date)
           process_reports(reports)
         end

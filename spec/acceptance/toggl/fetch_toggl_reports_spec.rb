@@ -68,7 +68,7 @@ describe "fetch_toggl_reports" do
     # error if any HTTP call was attempted.
     it "records a Toggl entry and does nothing" do
       expect {
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { JobTomate::Data::TogglEntry.count }.by(1)
       entry = JobTomate::Data::TogglEntry.last
       expect(entry.status).to eq("not_related_to_jira")
@@ -82,7 +82,7 @@ describe "fetch_toggl_reports" do
 
     it "records a Toggl entry and does nothing else" do
       expect {
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { JobTomate::Data::TogglEntry.count }.by(1)
       entry = JobTomate::Data::TogglEntry.last
       expect(entry.status).to eq("too_short")
@@ -96,7 +96,7 @@ describe "fetch_toggl_reports" do
     end
 
     it "records a Toggl entry" do
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       expect(JobTomate::Data::TogglEntry.count).to eq(1)
       entry = JobTomate::Data::TogglEntry.last
       expect(entry.status).to eq("synced")
@@ -105,7 +105,7 @@ describe "fetch_toggl_reports" do
 
     it "adds a worklog on the associated JIRA" do
       stub = mock_jira_post_worklog("jt-1234", 580)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       expect(stub).to have_been_requested
     end
   end
@@ -114,7 +114,7 @@ describe "fetch_toggl_reports" do
 
     before do
       mock_toggl(:report_1_base_not_related_to_jira)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       Timecop.return
     end
 
@@ -124,7 +124,7 @@ describe "fetch_toggl_reports" do
       entry = JobTomate::Data::TogglEntry.last
       expect {
         mock_toggl(:report_1_changed_duration)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { entry.reload.updated_at }
     end
   end
@@ -133,7 +133,7 @@ describe "fetch_toggl_reports" do
 
     before do
       mock_toggl(:report_3_base_shorter_than_1_minute)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       Timecop.return
     end
 
@@ -142,7 +142,7 @@ describe "fetch_toggl_reports" do
       entry = JobTomate::Data::TogglEntry.last
       expect {
         mock_toggl(:report_3_changed_duration_less_than_1_minute)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { entry.reload.updated_at }
       expect(entry.jira_worklog_id).to be_nil
     end
@@ -153,7 +153,7 @@ describe "fetch_toggl_reports" do
     before do
       mock_toggl(:report_2_base_syncable_to_jira)
       mock_jira_post_worklog("jt-1234", 580)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       Timecop.return
     end
 
@@ -162,7 +162,7 @@ describe "fetch_toggl_reports" do
       mock_jira_delete_worklog("jt-1234", worklog_id)
       expect {
         mock_toggl(:report_2_changed_duration_less_than_1_minute)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { entry.reload.updated_at }
       expect(entry.jira_worklog_id).to eq(nil)
       expect(entry.status).to eq("too_short")
@@ -171,7 +171,7 @@ describe "fetch_toggl_reports" do
     it "deletes the previous worklog" do
       expected_request = mock_jira_delete_worklog("jt-1234", worklog_id)
       mock_toggl(:report_2_changed_duration_less_than_1_minute)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       expect(expected_request).to have_been_requested
     end
   end
@@ -180,7 +180,7 @@ describe "fetch_toggl_reports" do
 
     before do
       mock_toggl(:report_3_base_shorter_than_1_minute)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       Timecop.return
     end
 
@@ -189,7 +189,7 @@ describe "fetch_toggl_reports" do
       mock_jira_post_worklog("jt-1234", 600)
       expect {
         mock_toggl(:report_3_changed_duration_more_than_1_minute)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { entry.reload.updated_at }
       expect(entry.jira_worklog_id).to eq(worklog_id)
     end
@@ -197,7 +197,7 @@ describe "fetch_toggl_reports" do
     it "adds a worklog to the associated JIRA" do
       expected_request = mock_jira_post_worklog("jt-1234", 600)
       mock_toggl(:report_3_changed_duration_more_than_1_minute)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       expect(expected_request).to have_been_requested
     end
   end
@@ -207,7 +207,7 @@ describe "fetch_toggl_reports" do
     before do
       mock_toggl(:report_2_base_syncable_to_jira)
       mock_jira_post_worklog("jt-1234", 580)
-      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       Timecop.return
     end
 
@@ -216,7 +216,7 @@ describe "fetch_toggl_reports" do
       entry = JobTomate::Data::TogglEntry.last
       expect {
         mock_toggl(:report_2_changed_duration_more_than_1_minute)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { entry.reload.updated_at }
     end
 
@@ -226,14 +226,14 @@ describe "fetch_toggl_reports" do
       it "deletes the previous JIRA worklog" do
         mock_jira_post_worklog("jt-2345", 580)
         expected_stub = mock_jira_delete_worklog("jt-1234", worklog_id)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
         expect(expected_stub).to have_been_requested
       end
 
       it "adds a worklog to the new associated JIRA" do
         expected_stub = mock_jira_post_worklog("jt-2345", 580)
         mock_jira_delete_worklog("jt-1234", worklog_id)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
         expect(expected_stub).to have_been_requested
       end
     end
@@ -243,7 +243,7 @@ describe "fetch_toggl_reports" do
       it "updates the JIRA worklog" do
         stub = mock_jira_put_worklog("jt-1234", worklog_id, 1580)
         mock_toggl(:report_2_changed_duration_more_than_1_minute)
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date.to_s, until_date.to_s)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
         expect(stub).to have_been_requested
       end
     end
