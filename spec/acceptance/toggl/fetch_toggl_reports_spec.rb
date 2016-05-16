@@ -110,6 +110,36 @@ describe "fetch_toggl_reports" do
     end
   end
 
+  describe "existing report unchanged" do
+
+    before do
+      mock_toggl(:report_1_base_not_related_to_jira)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
+      Timecop.return
+    end
+
+    it "does not create a new entry" do
+      expect {
+        mock_toggl(:report_1_base_not_related_to_jira)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
+      }.not_to change { JobTomate::Data::TogglEntry.count }
+    end
+
+    it "does not update the existing entry" do
+      entry = JobTomate::Data::TogglEntry.last
+      expect {
+        mock_toggl(:report_1_base_not_related_to_jira)
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
+      }.not_to change { entry.reload.updated_at }
+    end
+
+    # This one would only fail if some HTTP request was done.
+    it "does nothing else" do
+      mock_toggl(:report_1_base_not_related_to_jira)
+      JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
+    end
+  end
+
   describe "existing report not associated to JIRA with changed worklog" do
 
     before do
@@ -126,6 +156,7 @@ describe "fetch_toggl_reports" do
         mock_toggl(:report_1_changed_duration)
         JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       }.to change { entry.reload.updated_at }
+      expect(JobTomate::Data::TogglEntry.count).to eq(1)
     end
   end
 

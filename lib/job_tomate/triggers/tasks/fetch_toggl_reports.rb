@@ -26,31 +26,27 @@ module JobTomate
 
         def self.process_reports(reports)
           reports.each do |report|
-            entry = find_entry(report)
-            if entry_updated?(entry, report)
+            entry = Commands::Toggl::FindEntry.run(report)
+            if entry.nil?
+              create_entry(entry, report)
+            elsif entry_updated?(entry, report)
               update_entry(entry, report)
-              Events::Toggl::EntryUpdated.run(entry)
-            else
-              entry = create_entry(report)
-              Events::Toggl::EntryCreated.run(entry)
             end
           end
         end
 
-        def self.entry_updated?(entry, report)
-          entry.present? && entry.toggl_updated < Time.parse(report["updated"])
-        end
-
-        def self.find_entry(report)
-          Commands::Toggl::FindEntry.run(report)
-        end
-
-        def self.create_entry(report)
-          Commands::Toggl::CreateEntry.run(report)
+        def self.create_entry(entry, report)
+          entry = Commands::Toggl::CreateEntry.run(report)
+          Events::Toggl::EntryCreated.run(entry)
         end
 
         def self.update_entry(entry, report)
-          Commands::Toggl::UpdateEntry.run(entry, report)
+          entry = Commands::Toggl::UpdateEntry.run(entry, report)
+          Events::Toggl::EntryUpdated.run(entry)
+        end
+
+        def self.entry_updated?(entry, report)
+          entry.present? && entry.toggl_updated < Time.parse(report["updated"])
         end
       end
     end
