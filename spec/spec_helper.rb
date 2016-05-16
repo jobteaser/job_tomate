@@ -3,7 +3,7 @@ require "webmock/rspec"
 require "rack/test"
 require "pry"
 
-ENV["RACK_ENV"] = ENV["APP_ENV"] = "test"
+ENV["RACK_ENV"] = "test"
 
 # Not dry-running since we're mocking external services
 # using WebMock.

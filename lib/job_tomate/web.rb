@@ -10,7 +10,7 @@ module JobTomate
   # Webhooks are defined in /triggers/webhooks.
   class Web < Sinatra::Base
     register Sinatra::Namespace
-    set :show_exceptions, false if ENV["APP_ENV"] == "test"
+    set :show_exceptions, false if ENV["RACK_ENV"] == "test"
 
     get "/" do
       { status: "ok" }.to_json

@@ -100,7 +100,7 @@ reports.map { |r| JobTomate::Commands::Toggl::ProcessReports.process_toggl_repor
 ### Required environment variables
 
 ```
-APP_ENV=development
+RACK_ENV=development
 MONGODB_URI=mongodb://127.0.0.1:27017/job_tomate
 TOGGL_API_TOKEN=REPLACE-ME
 TOGGL_WORKSPACE_ID=REPLACE-ME

@@ -2,7 +2,7 @@
 require "rubygems"
 require "bundler"
 
-env = (ENV["APP_ENV"] ||= "development")
+env = (ENV["RACK_ENV"] ||= "development")
 Bundler.setup(:default, env.to_sym)
 
 ENV["JIRA_DRY_RUN"] = "true" if ENV["JIRA_DRY_RUN"].nil? && env != "production"
