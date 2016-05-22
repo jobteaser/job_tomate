@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-
-uri = `heroku config | grep MONGODB_URI | awk '{print $2}'`
-cmd = "mongodump -h #{uri.host} -d #{uri.path.gsub('/', '')} -u #{uri.user} -p #{uri.password} ./db"
-puts "[RUN] #{cmd}"
-system cmd
-
-cmd = "mongorestore -d job_tomate ./db"

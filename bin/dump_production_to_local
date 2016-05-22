@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+# Import the production database locally
+#
+# Usage:
+#     bin/dump_production_to_local
+
+require "uri"
+require "mongo"
+uri = Mongo::URI.new(`heroku config -a job-tomate | grep MONGODB_URI | awk '{print $2}'`.strip)
+
+def run(cmd)
+  puts "[RUN] #{cmd}"
+  system cmd
+end
+
+cmd = "mongodump -h #{uri.servers.first} -d #{uri.database} -u #{uri.credentials[:user]} -p #{uri.credentials[:password]} -o ./dump"
+run cmd
+
+cmd = "mongorestore -d job_tomate ./dump/#{uri.database}"
+run cmd
+
+cmd = "rm -Rf ./dump"
+run cmd
