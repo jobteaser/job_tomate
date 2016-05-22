@@ -1,6 +1,6 @@
-require 'slack-ruby-bot'
-require 'job_tomate/data/slack_channel'
-require 'job_tomate/data/slack_message'
+require "slack-ruby-bot"
+require "data/slack_channel"
+require "data/slack_message"
 
 module JobTomate
   module SlackBot
@@ -24,13 +24,13 @@ module JobTomate
         end
 
         match(/archive current channel/) do |client, data, _match|
-          channel_id = data['channel']
+          channel_id = data["channel"]
           message = add_archived_channel(channel_id, client)
           send_message client, data.channel, message
         end
 
         match(/stop archiving current channel/) do |client, data, _match|
-          channel_id = data['channel']
+          channel_id = data["channel"]
           name = channel_name(client, channel_id)
 
           message = (
@@ -52,7 +52,7 @@ module JobTomate
           if should_archive_message?(data)
             archive_message(client, data)
             unless in_archived_channel?(data)
-              send_message client, data.channel, 'Got it!'
+              send_message client, data.channel, "Got it!"
             end
           end
         end
@@ -83,9 +83,9 @@ module JobTomate
 
         def self.add_archived_channel(channel_id, client)
           client_channel = find_client_channel(channel_id, client)
-          return 'This is not a channel!' if client_channel.nil?
+          return "This is not a channel!" if client_channel.nil?
 
-          return 'Channel is already archived!' if find_archived_channel(channel_id)
+          return "Channel is already archived!" if find_archived_channel(channel_id)
 
           name = channel_name(client, channel_id)
           message = (
@@ -99,7 +99,7 @@ module JobTomate
         end
 
         def self.find_client_channel(channel_id, client)
-          client.channels.find { |c| c['id'] == channel_id }
+          client.channels.find { |c| c["id"] == channel_id }
         end
 
         def self.remove_archived_channel(channel_id)
@@ -112,26 +112,26 @@ module JobTomate
         def self.channel_name(client, channel_id)
           channel = find_client_channel(channel_id, client)
           return nil if channel.nil?
-          channel['name']
+          channel["name"]
         end
 
         def self.archived_channels_message(client)
           names = archived_channel_names(client)
-          return 'No archived channels yet!' if names.empty?
-          "Archived channels: #{names.join(', ')}"
+          return "No archived channels yet!" if names.empty?
+          "Archived channels: #{names.join(", ")}"
         end
 
         def self.archived_channel_names(client)
           channels = archived_channels(client)
           channels.map do |channel|
-            "##{channel['name']}"
+            "##{channel["name"]}"
           end
         end
 
         def self.archived_channels(client)
           ids = Data::SlackChannel.where(archived: true).map(&:slack_id)
           client.channels.select do |channel|
-            channel['id'].in?(ids)
+            channel["id"].in?(ids)
           end
         end
       end
