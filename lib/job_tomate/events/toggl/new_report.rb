@@ -7,7 +7,7 @@ module JobTomate
       # Event for new TogglEntry created (occurs when
       # a new Toggl report has been fetched and saved
       # to a TogglEntry).
-      class EntryCreated
+      class NewReport
         include Helpers
 
         attr_reader :entry

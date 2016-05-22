@@ -6,6 +6,11 @@ module JobTomate
 
     # JobTomate::Data::TogglEntry
     #
+    # A TogglEntry is a cached version of a Toggl report retrieved
+    # from the Toggl API. It is used to track Toggl report changes
+    # and trigger the appropriate events (`Toggl::NewReport` and
+    # `Toggl::UpdatedReport`).
+    #
     # STATES (`status`)
     # =================
     #   - "pending": when created and not yet processed
@@ -15,6 +20,8 @@ module JobTomate
     #     this report and a JIRA issue
     #   - "too_short": the worklog is too short to be added to JIRA
     #     and is simply ignored
+    #   - "failed": entries that could not be synchronised for some
+    #     reason
     #
     # TRANSITIONS
     # ===========

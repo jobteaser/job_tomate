@@ -7,7 +7,7 @@ module JobTomate
       # Event for TogglEntry update (occurs when
       # a new Toggl report has been fetched and an
       # existing TogglEntry was updated).
-      class EntryUpdated
+      class UpdatedReport
         include Helpers
 
         attr_reader :entry
