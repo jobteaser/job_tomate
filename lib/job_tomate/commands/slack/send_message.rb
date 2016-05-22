@@ -1,6 +1,7 @@
 require "uri"
 require "active_support/all"
 require "httparty"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
@@ -10,6 +11,8 @@ module JobTomate
       #   SlackWebhook.send("<@username>: Here\"s JobTomate!!!", channel: "#dev-team")
       #   SlackWebhook.send("<!channel>: Hello channel!")
       class SendMessage
+        extend ServicePattern
+
         DEFAULT_CHANNEL = "#dev-team"
         DEFAULT_USERNAME = "JobTomate"
         DEFAULT_ICON_URL = nil
@@ -23,7 +26,7 @@ module JobTomate
         # @param icon_url [String] URL for the icon of the message author (if present,
         #   takes over the emoji icon)
         # @param icon_emoji [String] emoji for the icon of the message author
-        def self.run(text,
+        def run(text,
           channel: DEFAULT_CHANNEL,
           username: DEFAULT_USERNAME,
           icon_url: DEFAULT_ICON_URL,
@@ -36,7 +39,7 @@ module JobTomate
 
         # IMPLEMENTATION
 
-        def self.build_payload(text, channel, username, icon_url, icon_emoji)
+        def build_payload(text, channel, username, icon_url, icon_emoji)
           base = {
             text: text,
             channel: channel,
@@ -46,7 +49,7 @@ module JobTomate
           base.merge(icon_emoji: icon_emoji)
         end
 
-        def self.send_payload(payload)
+        def send_payload(payload)
           headers = {
             "Content-Type" => "application/json"
           }

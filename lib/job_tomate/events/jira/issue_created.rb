@@ -1,4 +1,5 @@
 require "actions/slack_notify_jira_new_maintenance_blocker"
+require "support/service_pattern"
 
 module JobTomate
   module Events
@@ -6,9 +7,10 @@ module JobTomate
 
       # Handles JIRA issue created events.
       class IssueCreated
+        extend ServicePattern
 
         # @param issue [Values::Issue]
-        def self.run(issue)
+        def run(issue)
           Actions::SlackNotifyJIRANewMaintenanceBlocker.run(issue)
         end
       end

@@ -1,13 +1,15 @@
 require "data/user"
+require "support/service_pattern"
 
 module JobTomate
   module Actions
 
     # Notifies the JIRA issue's assignee on Slack.
     class SlackNotifyJIRAIssueAssignee
+      extend ServicePattern
 
       # @param issue [Values::JIRA::Issue]
-      def self.run(issue)
+      def run(issue)
         return if issue.assignee_user.nil?
         if issue.assignee_user.slack_username.blank?
           LOGGER.warn "unknown Slack username for user ##{issue.assignee_user.id}"

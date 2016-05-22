@@ -1,13 +1,14 @@
-require "commands/base"
 require "commands/jira/support/client"
 require "errors/jira"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
     module JIRA
 
       # Adds a worklog to the specified JIRA
-      class AddWorklog < Base
+      class AddWorklog
+        extend ServicePattern
 
         # @param issue_key [String]
         # @param username [String] JIRA username

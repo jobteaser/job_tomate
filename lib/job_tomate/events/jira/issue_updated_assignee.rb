@@ -2,6 +2,7 @@ require "actions/jira_update_issue_roles_with_assignee"
 require "actions/slack_notify_jira_issue_assignee"
 require "data/user"
 require "errors/jira"
+require "support/service_pattern"
 
 module JobTomate
   module Events
@@ -16,21 +17,11 @@ module JobTomate
       #   - notify the assignee on Slack.
       #
       class IssueUpdatedAssignee
-        attr_reader :changelog
-        attr_reader :issue
+        extend ServicePattern
 
         # @param issue [Values::JIRA::Issue]
         # @param issue [Values::JIRA::Changelog]
-        def self.run(issue, changelog)
-          new(issue, changelog).run
-        end
-
-        def initialize(issue, changelog)
-          @issue = issue
-          @changelog = changelog
-        end
-
-        def run
+        def run(issue, _changelog)
           Actions::JIRAUpdateIssueRolesWithAssignee.run(issue)
           Actions::SlackNotifyJIRAIssueAssignee.run(issue)
         end

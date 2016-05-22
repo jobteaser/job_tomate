@@ -1,5 +1,5 @@
-require "job_tomate/commands/base"
 require "job_tomate/commands/jira/support/client"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
@@ -7,7 +7,8 @@ module JobTomate
 
       # Updates a JIRA issue using the specified body
       # param.
-      class UpdateIssue < Base
+      class UpdateIssue
+        extend ServicePattern
 
         # @param issue_key [String]
         # @param body [Hash]

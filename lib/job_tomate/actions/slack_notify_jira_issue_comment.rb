@@ -1,4 +1,5 @@
 require "commands/slack/send_message"
+require "support/service_pattern"
 
 module JobTomate
   module Actions
@@ -8,10 +9,11 @@ module JobTomate
     # and forwards the comment to any mentioned user
     # known on Slack.
     class SlackNotifyJIRAIssueComment
+      extend ServicePattern
 
       # @param comment [Values::JIRA::Issue]
       # @param comment [Values::JIRA::Comment]
-      def self.run(issue, comment)
+      def run(issue, comment)
         comment.mentioned_users.each do |user|
           next if user.slack_username.blank?
 

@@ -1,4 +1,5 @@
 require "actions/jira_add_comment_on_github_pull_request_closed"
+require "support/service_pattern"
 
 module JobTomate
   module Events
@@ -9,9 +10,10 @@ module JobTomate
       #   - merged,
       #   - not merged.
       class PullRequestClosed
+        extend ServicePattern
 
         # @param pull_request [Values::Github::PullRequest]
-        def self.run(pull_request)
+        def run(pull_request)
           return if pull_request.jira_issue_key.blank?
           Actions::JIRAAddCommentOnGithubPullRequestClosed.run(pull_request)
         end

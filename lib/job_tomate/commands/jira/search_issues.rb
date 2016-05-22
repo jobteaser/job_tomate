@@ -1,4 +1,5 @@
 require "job_tomate/commands/jira/support/client"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
@@ -7,11 +8,13 @@ module JobTomate
       # SearchIssues.run(jql: {...}) to perform a search on
       # JIRA issues with the specified JQL string.
       class SearchIssues
+        extend ServicePattern
+
         API_USERNAME = ENV["JIRA_USERNAME"]
         API_PASSWORD = ENV["JIRA_PASSWORD"]
         MAX_RESULTS = 1000
 
-        def self.run(jql: jql_query)
+        def run(jql: jql_query)
           JobTomate::Commands::JIRA::Client.exec_request(
             :get, "/search",
             API_USERNAME, API_PASSWORD,

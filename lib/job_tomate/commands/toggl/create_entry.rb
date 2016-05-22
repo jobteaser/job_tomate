@@ -1,5 +1,5 @@
-require "job_tomate/commands/base"
 require "job_tomate/data/toggl_entry"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
@@ -7,7 +7,8 @@ module JobTomate
 
       # Creates a `TogglEntry` record from a report fetched
       # from the Toggl API (untouched).
-      class CreateEntry < Commands::Base
+      class CreateEntry
+        extend ServicePattern
 
         ENTRY_BASE = {
           history: [],

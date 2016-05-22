@@ -1,12 +1,14 @@
 require "commands/jira/add_comment"
+require "support/service_pattern"
 
 module JobTomate
   module Actions
 
     # Adds a JIRA comment as JobTomate
     class JIRAAddCommentOnGithubPullRequestClosed
+      extend ServicePattern
 
-      def self.run(pull_request)
+      def run(pull_request)
         Commands::JIRA::AddComment.run(
           pull_request.jira_issue_key,
           ENV["JIRA_USERNAME"],
@@ -15,7 +17,7 @@ module JobTomate
         )
       end
 
-      def self.comment(pull_request)
+      def comment(pull_request)
         if pull_request.merged?
           "Merged PR in #{pull_request.base_ref}: #{pull_request.html_url}"
         else

@@ -1,4 +1,5 @@
 require "actions/slack_notify_jira_issue_comment"
+require "support/service_pattern"
 
 module JobTomate
   module Events
@@ -11,10 +12,11 @@ module JobTomate
       #   - "body": [String] the body of the comment
       #
       class IssueCommentAdded
+        extend ServicePattern
 
         # @param issue [Values::JIRA::Issue]
         # @param comment [Values::JIRA::Comment]
-        def self.run(issue, comment)
+        def run(issue, comment)
           Actions::SlackNotifyJIRAIssueComment.run(issue, comment)
         end
       end

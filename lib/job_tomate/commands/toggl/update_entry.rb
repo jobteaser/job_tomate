@@ -1,5 +1,5 @@
-require "job_tomate/commands/base"
 require "job_tomate/data/toggl_entry"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
@@ -11,7 +11,9 @@ module JobTomate
       # NB: this assumes the passed entry has been updated, and
       # will not check it before performing the update
       # operation.
-      class UpdateEntry < Commands::Base
+      class UpdateEntry
+        extend ServicePattern
+
         HISTORISED_FIELDS = %i(
           status
           toggl_description

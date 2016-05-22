@@ -1,12 +1,13 @@
-require "job_tomate/commands/base"
 require "job_tomate/commands/jira/support/client"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
     module JIRA
 
       # Update an existing JIRA issue worklog
-      class UpdateWorklog < Base
+      class UpdateWorklog
+        extend ServicePattern
 
         # @param issue_key [String] JIRA issue key
         # @param worklog_id [String] JIRA worklog ID

@@ -1,11 +1,13 @@
 require "job_tomate/commands/jira/support/client"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
     module JIRA
 
       # Adds a worklog to the specified JIRA
-      class DeleteWorklog < Base
+      class DeleteWorklog
+        extend ServicePattern
 
         # @param issue_key [String]
         # @param worklog_id [String]
@@ -22,7 +24,7 @@ module JobTomate
 
         private
 
-        def delete_dry_run(issue_key, worklog_id, username, _password)
+        def delete_dry_run(_issue_key, worklog_id, _username, _password)
           worklog_id
         end
 

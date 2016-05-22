@@ -1,12 +1,13 @@
 require "job_tomate/commands/toggl/support/client"
-require "job_tomate/commands/base"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
     module Toggl
 
       # Fetch reports from Toggl between the specified dates.
-      class FetchReports < Base
+      class FetchReports
+        extend ServicePattern
 
         # @param date_since [Date]
         # @param date_until [Date]

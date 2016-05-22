@@ -1,4 +1,5 @@
 require "commands/slack/send_message"
+require "support/service_pattern"
 
 module JobTomate
   module Actions
@@ -7,10 +8,11 @@ module JobTomate
     # is a maintenance blocker and notifies the Slack
     # #maintenance channel if it's the case.
     class SlackNotifyJIRANewMaintenanceBlocker
+      extend ServicePattern
       NOTIFIED_CHANNEL = "#maintenance"
 
       # @param issue [Values::JIRA::Issue]
-      def self.run(issue)
+      def run(issue)
         return unless issue.maintenance?
         return unless issue.blocker?
         link = "<#{issue.link}|#{issue.key}>"

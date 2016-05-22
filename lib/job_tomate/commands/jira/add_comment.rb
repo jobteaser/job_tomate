@@ -1,12 +1,13 @@
-require "commands/base"
 require "commands/jira/support/client"
+require "support/service_pattern"
 
 module JobTomate
   module Commands
     module JIRA
 
       # Add a comment to a JIRA issue
-      class AddComment < Base
+      class AddComment
+        extend ServicePattern
 
         # @param issue_key [String]
         # @param username [String]
