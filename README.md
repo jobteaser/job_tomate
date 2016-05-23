@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jobteaser/job_tomate.svg?branch=master)](https://travis-ci.org/jobteaser/job_tomate)
 [![Code Climate](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/badges/d4a9abf44cad651805e5/gpa.svg)](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/feed)
-[![Coverage Status](https://coveralls.io/repos/jobteaser/job_tomate/badge.svg?branch=refactor-workflows&service=github)](https://coveralls.io/github/jobteaser/job_tomate?branch=refactor-workflows)
+[![Coverage Status](https://coveralls.io/repos/jobteaser/job_tomate/badge.svg?branch=master&service=github)](https://coveralls.io/github/jobteaser/job_tomate?branch=master)
 
 ## Purpose
 
@@ -13,7 +13,7 @@ Automate as many things as possible in our development workflow.
 - JIRA
 - Github
 - Toggl
-- Slack (webhook and bot)
+- Slack ( and bot)
 
 ## Workflows
 
@@ -21,7 +21,7 @@ Trigger | Event | Action | Status
 ------- | ----- | ------ | ------
 Scheduled task | **Toggl** new time entry | **JIRA** add worklog on matching issue | WIP
 Webhook | **JIRA** new issue | **Slack** alerts #maintenance channel depending on the number of issues in the maintenance board | TODO
-Monitor | **Toggl** not report after N hours | **Slack** notify team member | TODO
+Monitor | **Toggl** no report after N hours | **Slack** notify team member | TODO
 Webhook | **Github** pull request opened | **JIRA** add comment on matching issue (branch named `jt-xyz-...`) | DONE
 Webhook | **Github** pull request closed | **JIRA** add comment on matching issue (indicate if merged or not) | DONE
 Webhook | **JIRA** updated issue **assignee** | **JIRA** depending on the issue status, update the developer | DONE
@@ -55,8 +55,14 @@ bin/console
 
 **Deploy to Heroku**
 
-```
-bin/deploy
+```sh
+# Staging
+bin/set_env_staging
+bin/deploy_staging
+
+# Production
+bin/set_env_production
+bin/deploy_production
 ```
 
 The deployed code will run a web application that will handle webhooks (see `webhooks_handler.rb`).
@@ -64,16 +70,18 @@ The deployed code will run a web application that will handle webhooks (see `web
 A scheduled task must be setup too. Using Heroku's Scheduler plugin, setup the following recurring task:
 
 ```
-bin/run_task fetch_toggl_reports YYYY-MM-YY [YYYY-MM-YY]
+bin/run_task fetch_toggl_reports
 ```
 
 **Run a console on Heroku**
 
 ```
-heroku run bin/console
+heroku run bin/console -a <APP-NAME>
 ```
 
 **Add a new user**
+
+**TO BE UPDATED**
 
 ```
 # In the console on Heroku
@@ -87,6 +95,8 @@ JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User
 ```
 
 **Reprocess older Toggl reports for a given user**
+
+**TO BE UPDATED**
 
 ```
 require 'job_tomate/commands/toggl/fetch_reports'
@@ -116,16 +126,24 @@ You must setup a webhook on JIRA to trigger JIRA-related workflows. You can find
 
 Here is the configuration to use:
 
-- URL: `deployment-domain/webhooks/jira`
+- URL: `https://<your-domain>/webhooks/jira`
 - Select "updated" issue events, on all issues (no filter)
+
+### Github Webhook
+
+For each repository that needs to be connected to JobTomate, setup the webhook like this:
+
+- URL: `https://<your-domain>/webhooks/github`
+- Content type: select "application/json"
+- Select "Send me everything"
 
 ### Slack Webhook
 
-Setup a webhook integration on Slack. Any default will do since they are all overriden by JobTomate.
-
-The webhook URL must be defined in the environment variables (`SLACK_WEBHOOK_URL`).
+Setup a webhook integration on Slack. Any default will do since they are all overriden by JobTomate. The webhook URL must be defined in the environment variables (`SLACK_WEBHOOK_URL`).
 
 ## Contributing
+
+Check the issues.
 
 ### Overall architecture
 
