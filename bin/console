@@ -1,8 +1,13 @@
 #!/usr/bin/env ruby
 
-require_relative '../config/boot'
+require_relative "../config/boot"
 
-Dir[File.expand_path('../../lib/job_tomate/*.rb', __FILE__)].each { |f| require f }
+Dir[File.expand_path("../../lib/job_tomate/**/*.rb", __FILE__)].each do |f|
+  # Ignoring /web/webhooks/**/*.rb because they get autoloaded
+  # by /web/webhooks.rb.
+  next if f =~ %r{/web/webhooks/}
+  require f
+end
 
-require 'pry'
+require "pry"
 Pry.start

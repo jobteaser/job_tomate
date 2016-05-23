@@ -6,6 +6,9 @@ base: &default
 production:
   <<: *default
 
+staging:
+  <<: *default
+
 development:
   <<: *default
 
