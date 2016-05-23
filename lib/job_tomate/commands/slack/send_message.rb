@@ -8,8 +8,8 @@ module JobTomate
     module Slack
 
       # Usage:
-      #   SlackWebhook.send("<@username>: Here\"s JobTomate!!!", channel: "#dev-team")
-      #   SlackWebhook.send("<!channel>: Hello channel!")
+      #   SendMessage.run("<@username>: Here\"s JobTomate!!!", channel: "#dev-team")
+      #   SendMessage.run("<!channel>: Hello channel!")
       class SendMessage
         extend ServicePattern
 
