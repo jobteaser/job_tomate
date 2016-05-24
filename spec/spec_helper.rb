@@ -33,6 +33,7 @@ test_environment = {
   "JIRA_DEFAULT_USERNAMES_FOR_FUNCTIONAL_REVIEW" => "func.rev1,func.rev2",
   "JIRA_ACCEPTED_USERNAMES_FOR_FUNCTIONAL_REVIEW" => "acc.func",
   "JIRA_API_URL_PREFIX" => "https://example.atlassian.net/rest/api/2",
+  "JIRA_BROWSER_ISSUE_PREFIX" => "https://example.atlassian.net/browse",
   "MONGODB_URI" => "mongodb://127.0.0.1:27017/job_tomate_test",
   "JIRA_USERNAME" => "job_tomate_username",
   "JIRA_PASSWORD" => "job_tomate_pwd",

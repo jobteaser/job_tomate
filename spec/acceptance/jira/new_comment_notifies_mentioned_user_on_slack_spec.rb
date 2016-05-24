@@ -50,7 +50,7 @@ describe "new comment on JIRA issue notifies a mentioned user on Slack" do
       )
     end
 
-    let(:issue_link) { "https://jobteaser.atlassian.net/rest/api/2/issue/21816" }
+    let(:issue_link) { "https://example.atlassian.net/browse/JT-3839" }
 
     let(:expected_body) do
       prefix = "You have been mentioned in a comment on <#{issue_link}|JT-3839>:"
@@ -76,7 +76,7 @@ describe "new comment on JIRA issue notifies a mentioned user on Slack" do
       }
     end
 
-    let(:issue_link) { "https://jobteaser.atlassian.net/rest/api/2/issue/21816" }
+    let(:issue_link) { "https://example.atlassian.net/browse/JT-3839" }
 
     def build_expected_body(channel)
       prefix = "You have been mentioned in a comment on <#{issue_link}|JT-3839>:"

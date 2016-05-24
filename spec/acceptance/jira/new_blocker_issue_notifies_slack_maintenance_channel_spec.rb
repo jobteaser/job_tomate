@@ -37,7 +37,8 @@ describe "new JIRA maintenance blocker issue notifies #maintenance channel on Sl
       let(:priority) { "Blocker" }
 
       it "notifies the Slack #maintenance channel" do
-        expected_text = "New blocker issue has just been created! => <https://jobteaser.atlassian.net/rest/api/2/issue/21815|JT-3838>"
+        url_prefix = "https://example.atlassian.net/browse"
+        expected_text = "New blocker issue has just been created! => <#{url_prefix}/JT-3838|JT-3838>"
         stub = stub_slack_send_message_as_job_tomate(expected_text, "#maintenance")
         play_request
         expect(stub).to have_been_requested
