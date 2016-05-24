@@ -19,9 +19,7 @@ Automate as many things as possible in our development workflow.
 
 Trigger | Event | Action | Status
 ------- | ----- | ------ | ------
-Scheduled task | **Toggl** new time entry | **JIRA** add worklog on matching issue | WIP
-Webhook | **JIRA** new issue | **Slack** alerts #maintenance channel depending on the number of issues in the maintenance board | TODO
-Monitor | **Toggl** no report after N hours | **Slack** notify team member | TODO
+Scheduled task | **Toggl** new time entry | **JIRA** add worklog on matching issue | DONE
 Webhook | **Github** pull request opened | **JIRA** add comment on matching issue (branch named `jt-xyz-...`) | DONE
 Webhook | **Github** pull request closed | **JIRA** add comment on matching issue (indicate if merged or not) | DONE
 Webhook | **JIRA** updated issue **assignee** | **JIRA** depending on the issue status, update the developer | DONE
