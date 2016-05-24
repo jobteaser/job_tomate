@@ -34,7 +34,7 @@ module JobTomate
         end
 
         def link
-          data["self"]
+          "#{ENV['JIRA_BROWSER_ISSUE_PREFIX']}/#{key}"
         end
 
         def status

@@ -42,7 +42,7 @@ describe "change assignee notifies her on Slack" do
 
     context "assignee has a Slack username" do
       it "notifies her" do
-        expected_text = "You've been assigned to <https://jobteaser.atlassian.net/rest/api/2/issue/21816|JT-3839> (Open)"
+        expected_text = "You've been assigned to <https://example.atlassian.net/browse/JT-3839|JT-3839> (Open)"
         stub = stub_slack_send_message_as_job_tomate(expected_text, "@rchampourlier")
         play_request
         expect(stub).to have_been_requested

@@ -109,16 +109,7 @@ reports.map { |r| JobTomate::Commands::Toggl::ProcessReports.process_toggl_repor
 
 ### Required environment variables
 
-```
-RACK_ENV=development
-MONGODB_URI=mongodb://127.0.0.1:27017/job_tomate
-TOGGL_API_TOKEN=REPLACE-ME
-TOGGL_WORKSPACE_ID=REPLACE-ME
-SLACK_WEBHOOK_URL=REPLACE-ME
-JIRA_API_URL_PREFIX=https://someproject.atlassian.net/rest/api/2
-JIRA_USERNAME=REPLACE-ME
-JIRA_PASSWORD=REPLACE-ME
-```
+See `.env.example` file.
 
 ### JIRA Webhook
 
