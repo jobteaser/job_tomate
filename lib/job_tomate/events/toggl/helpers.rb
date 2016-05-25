@@ -9,8 +9,13 @@ module JobTomate
     module Toggl
 
       # Contract:
-      #   - #entry method returns [Data::TogglEntry]
+      #   - `@entry instance variable containing [Data::TogglEntry]
+      #     instance
       module Helpers
+
+        def entry
+          @entry
+        end
 
         def related_to_jira?
           entry.jira_issue_key.present?

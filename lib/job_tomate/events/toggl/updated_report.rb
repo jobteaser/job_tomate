@@ -1,4 +1,5 @@
 require "events/toggl/helpers"
+require "support/service_pattern"
 
 module JobTomate
   module Events
@@ -8,20 +9,12 @@ module JobTomate
       # a new Toggl report has been fetched and an
       # existing TogglEntry was updated).
       class UpdatedReport
+        extend ServicePattern
         include Helpers
 
-        attr_reader :entry
-
         # @param entry [Data::TogglEntry]
-        def self.run(entry)
-          new(entry).run
-        end
-
-        def initialize(entry)
+        def run(entry)
           @entry = entry
-        end
-
-        def run
           return update_entry_not_related_to_jira unless related_to_jira?
           return create_worklog_and_update_entry unless previous_worklog?
           return update_entry_unchanged_issue unless changed_issue?
@@ -31,6 +24,7 @@ module JobTomate
         private
 
         def previous_worklog?
+          return false if entry.history.empty?
           entry.history.last["jira_worklog_id"].present?
         end
 
