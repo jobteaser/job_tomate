@@ -47,12 +47,12 @@ Dir[File.expand_path("../support/**/*.rb", __FILE__)].each { |f| require(f) }
 
 require "job_tomate/data/user"
 require "job_tomate/data/toggl_entry"
-require "job_tomate/data/webhook_payload"
+require "job_tomate/data/stored_webhook"
 
 RSpec.configure do |config|
   config.after(:each) do
     JobTomate::Data::User.delete_all
     JobTomate::Data::TogglEntry.delete_all
-    JobTomate::Data::WebhookPayload.delete_all
+    JobTomate::Data::StoredWebhook.delete_all
   end
 end

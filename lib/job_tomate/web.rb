@@ -29,7 +29,7 @@ module JobTomate
         send(webhook[:verb], webhook[:path]) do
           instance = module_constant.new
           instance.request = request
-          JobTomate::Data::WebhookPayload.create(
+          JobTomate::Data::StoredWebhook.create(
             source: webhook[:name],
             data: instance.webhook_data
           )

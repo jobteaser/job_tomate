@@ -1,6 +1,7 @@
 require "uri"
 require "active_support/all"
 require "httparty"
+require "data/stored_request"
 
 module JobTomate
   module Commands
@@ -71,12 +72,22 @@ module JobTomate
           }
 
           JobTomate::LOGGER.info "[JIRA] #{verb.upcase} #{url} #{headers} #{final_params} #{body}"
-          response = HTTParty.send(
-            verb, url,
+
+          request_options = {
             headers: headers,
             query: final_params,
             basic_auth: credentials,
             body: body.present? ? body.to_json : nil
+          }
+          response = HTTParty.send(verb, url, request_options)
+
+          JobTomate::Data::StoredRequest.create(
+            request_verb: verb,
+            request_url: url,
+            request_options: request_options,
+            response_code: response.code,
+            response_headers: response.headers.to_hash,
+            response_body: response.body
           )
           response
         end
