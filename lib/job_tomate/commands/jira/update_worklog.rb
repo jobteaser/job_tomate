@@ -26,7 +26,7 @@ module JobTomate
 
           body = {
             timeSpentSeconds: time_spent,
-            started: format_date(start)
+            started: format_time(start)
           }
 
           if ENV["JIRA_DRY_RUN"] == "true"
@@ -59,8 +59,9 @@ module JobTomate
           response["id"]
         end
 
-        def format_date(date)
-          date.strftime("%Y-%m-%dT%H:%M:%S.%3N%z")
+        # DUPLICATE add_worklog
+        def format_time(time)
+          time.in_time_zone("UTC").strftime("%Y-%m-%dT%H:%M:%S.%3N%z")
         end
       end
     end

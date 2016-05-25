@@ -32,7 +32,7 @@ describe "fetch_toggl_reports" do
     stub_jira_request(
       :post,
       "/issue/#{issue_key}/worklog",
-      "{\"timeSpentSeconds\":#{timespent},\"started\":\"2016-05-06T17:22:09.000+0200\"}",
+      "{\"timeSpentSeconds\":#{timespent},\"started\":\"2016-05-06T15:22:09.000+0000\"}",
       response_body: { id: worklog_id }.to_json,
       username: jira_username,
       password: jira_password
@@ -43,7 +43,7 @@ describe "fetch_toggl_reports" do
     stub_jira_request(
       :put,
       "/issue/#{issue_key}/worklog/#{worklog_id}",
-      "{\"timeSpentSeconds\":#{timespent},\"started\":\"2016-05-06T17:22:09.000+0200\"}",
+      "{\"timeSpentSeconds\":#{timespent},\"started\":\"2016-05-06T15:22:09.000+0000\"}",
       response_body: { id: worklog_id }.to_json,
       username: jira_username,
       password: jira_password
