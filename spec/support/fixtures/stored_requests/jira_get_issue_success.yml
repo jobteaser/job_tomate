@@ -1,0 +1,71 @@
+--- &1 !ruby/object:JobTomate::Data::StoredRequest
+attributes: !ruby/hash:BSON::Document
+  _id: !ruby/object:BSON::ObjectId
+    raw_data: !binary |-
+      V0YtdqVNdfTyAAAA
+  request_verb: get
+  request_url: https://example.atlassian.net/rest/api/2/issue/23825
+  request_options: !ruby/hash:BSON::Document
+    headers: !ruby/hash:BSON::Document
+      Content-Type: application/json
+    query: !ruby/hash:BSON::Document
+      startAt: 0
+    basic_auth: !ruby/hash:BSON::Document
+      username: username
+      password: password
+    body:
+  response_status: 200
+  response_headers: !ruby/hash:BSON::Document
+    server:
+    - nginx
+    date:
+    - Wed, 25 May 2016 22:55:50 GMT
+    content-type:
+    - application/json;charset=UTF-8
+    transfer-encoding:
+    - chunked
+    connection:
+    - close
+    vary:
+    - Accept-Encoding
+    x-arequestid:
+    - 55x31464x1
+    x-asen:
+    - SEN-2783348
+    x-seraph-loginreason:
+    - OUT
+    - OK
+    x-asessionid:
+    - 1qvkj08
+    x-ausername:
+    - username
+    x-atenant-id:
+    - example.atlassian.net
+    cache-control:
+    - no-cache, no-store, no-transform
+    x-content-type-options:
+    - nosniff
+    set-cookie:
+    - JSESSIONID=FD4EE6477B9E4CD43DFAA059679215B0; Path=/; Secure; HttpOnly
+    - studio.crowd.tokenkey=""; Domain=.example.atlassian.net; Expires=Thu, 01-Jan-1970
+      00:00:10 GMT; Path=/; Secure; HttpOnly
+    - studio.crowd.tokenkey=QNYpoM080Nno8CHrVhyvEQ00; Domain=.example.atlassian.net;
+      Path=/; Secure; HttpOnly
+    - atlassian.xsrf.token=B1Z2-Y473-HEIR-W9SM|39cc5ab5b0dd4994c4d1a74bf73091b066e8e987|lin;
+      Path=/; Secure
+    strict-transport-security:
+    - max-age=315360000;includeSubDomains
+  response_body: '{"expand":"renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations","id":"23825","self":"https://example.atlassian.net/rest/api/2/issue/23825","key":"JT-4232","fields":{"issuetype":{"self":"https://example.atlassian.net/rest/api/2/issuetype/3","id":"3","description":"A
+    task that needs to be done.","iconUrl":"https://example.atlassian.net/secure/viewavatar?size=xsmall&avatarId=10718&avatarType=issuetype","name":"Task","subtask":false,"avatarId":10718},"timespent":null,"project":{"self":"https://example.atlassian.net/rest/api/2/project/10103","id":"10103","key":"JT","name":"JobTeaser","avatarUrls":{"48x48":"https://example.atlassian.net/secure/projectavatar?pid=10103&avatarId=10801","24x24":"https://example.atlassian.net/secure/projectavatar?size=small&pid=10103&avatarId=10801","16x16":"https://example.atlassian.net/secure/projectavatar?size=xsmall&pid=10103&avatarId=10801","32x32":"https://example.atlassian.net/secure/projectavatar?size=medium&pid=10103&avatarId=10801"}},"customfield_11000":null,"fixVersions":[],"customfield_11200":null,"aggregatetimespent":null,"resolution":null,"customfield_10302":null,"customfield_10501":null,"customfield_10700":null,"resolutiondate":null,"workratio":-1,"lastViewed":null,"watches":{"self":"https://example.atlassian.net/rest/api/2/issue/JT-4232/watchers","watchCount":1,"isWatching":false},"created":"2016-05-26T00:47:44.473+0200","customfield_10020":null,"customfield_10021":"Not
+    started","customfield_10100":"0|zzqpyc:","priority":{"self":"https://example.atlassian.net/rest/api/2/priority/2","iconUrl":"https://example.atlassian.net/images/icons/priorities/critical.svg","name":"Critical","id":"2"},"customfield_10024":null,"customfield_10300":null,"customfield_10301":null,"labels":[],"customfield_10016":null,"customfield_10017":null,"customfield_10018":null,"customfield_10019":null,"timeestimate":null,"aggregatetimeoriginalestimate":null,"versions":[],"issuelinks":[],"assignee":null,"updated":"2016-05-26T00:47:44.473+0200","status":{"self":"https://example.atlassian.net/rest/api/2/status/1","description":"The
+    issue is open and ready for the assignee to start work on it.","iconUrl":"https://example.atlassian.net/images/icons/statuses/open.png","name":"Open","id":"1","statusCategory":{"self":"https://example.atlassian.net/rest/api/2/statuscategory/2","id":2,"key":"new","colorName":"blue-gray","name":"To
+    Do"}},"components":[],"timeoriginalestimate":null,"description":null,"customfield_11100":null,"customfield_10012":null,"customfield_11101":null,"customfield_10013":null,"customfield_11300":"com.atlassian.servicedesk.plugins.approvals.internal.customfield.ApprovalsCFValue@6bb1d5","customfield_10014":null,"timetracking":{},"customfield_10015":null,"customfield_10005":null,"customfield_10006":"9223372036854775807","customfield_10600":null,"customfield_10007":null,"customfield_10601":null,"customfield_10008":null,"customfield_10800":null,"customfield_10602":null,"attachment":[],"customfield_10801":null,"aggregatetimeestimate":null,"summary":"TEST
+    ISSUE","creator":{"self":"https://example.atlassian.net/rest/api/2/user?username=some.user","name":"some.user","key":"some.user","emailAddress":"some.user@example.com","avatarUrls":{"48x48":"https://example.atlassian.net/secure/useravatar?ownerId=some.user&avatarId=10400","24x24":"https://example.atlassian.net/secure/useravatar?size=small&ownerId=some.user&avatarId=10400","16x16":"https://example.atlassian.net/secure/useravatar?size=xsmall&ownerId=some.user&avatarId=10400","32x32":"https://example.atlassian.net/secure/useravatar?size=medium&ownerId=some.user&avatarId=10400"},"displayName":"Some
+    User","active":true,"timeZone":"Europe/Berlin"},"subtasks":[],"reporter":{"self":"https://example.atlassian.net/rest/api/2/user?username=some.user","name":"some.user","key":"some.user","emailAddress":"some.user@example.com","avatarUrls":{"48x48":"https://example.atlassian.net/secure/useravatar?ownerId=some.user&avatarId=10400","24x24":"https://example.atlassian.net/secure/useravatar?size=small&ownerId=some.user&avatarId=10400","16x16":"https://example.atlassian.net/secure/useravatar?size=xsmall&ownerId=some.user&avatarId=10400","32x32":"https://example.atlassian.net/secure/useravatar?size=medium&ownerId=some.user&avatarId=10400"},"displayName":"Some
+    User","active":true,"timeZone":"Europe/Berlin"},"customfield_10000":null,"aggregateprogress":{"progress":0,"total":0},"customfield_10001":null,"customfield_10002":null,"customfield_10200":null,"customfield_10003":null,"customfield_10004":null,"customfield_10400":{"self":"https://example.atlassian.net/rest/api/2/customFieldOption/10203","value":"Technical","id":"10203"},"environment":null,"duedate":null,"progress":{"progress":0,"total":0},"comment":{"startAt":0,"maxResults":0,"total":0,"comments":[]},"votes":{"self":"https://example.atlassian.net/rest/api/2/issue/JT-4232/votes","votes":0,"hasVoted":false},"worklog":{"startAt":0,"maxResults":20,"total":0,"worklogs":[]}}}'
+  updated_at: 2016-05-25 22:55:50.392000000 Z
+  created_at: 2016-05-25 22:55:50.392000000 Z
+errors: !ruby/object:ActiveModel::Errors
+  base: *1
+  messages: {}
+__selected_fields:

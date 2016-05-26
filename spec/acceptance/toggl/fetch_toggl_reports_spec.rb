@@ -3,6 +3,7 @@ require "triggers/tasks/fetch_toggl_reports"
 require "timecop"
 require "data/toggl_entry"
 require "data/user"
+require "errors/jira"
 
 describe "fetch_toggl_reports" do
   include WebmockHelpers
@@ -107,6 +108,32 @@ describe "fetch_toggl_reports" do
       stub = mock_jira_post_worklog("jt-1234", 580)
       JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
       expect(stub).to have_been_requested
+    end
+  end
+
+  describe "new report for a non-existing user" do
+
+    before do
+      JobTomate::Data::User.last.destroy
+      mock_toggl(:report_2_base_syncable_to_jira)
+    end
+
+    # We expect it not to do an HTTP request. Webmock will raise an error otherwise.
+    it "records a pending Toggl entry" do
+      begin
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
+      rescue JobTomate::Errors::JIRA::UnknownUser
+        expect(JobTomate::Data::TogglEntry.count).to eq(1)
+        entry = JobTomate::Data::TogglEntry.last
+        expect(entry.status).to eq("pending")
+        expect(entry.jira_worklog_id).to be_nil
+      end
+    end
+
+    it "raises a specific error" do
+      expect {
+        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
+      }.to raise_error(JobTomate::Errors::JIRA::UnknownUser, "No user for toggl_user=Some User")
     end
   end
 

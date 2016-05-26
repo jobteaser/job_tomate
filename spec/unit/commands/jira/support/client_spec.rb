@@ -1,63 +1,64 @@
 require "spec_helper"
 require "job_tomate/commands/jira/support/client"
 
+# The client records requests in `Data::StoredRequests`. You can use these
+# stored requests to build test (see `StoredRequest#write_to_fixture`). You
+# can then mock HTTP requests using Webmock thanks to the `webmock_with_stored_request`
+# helper.
 describe JobTomate::Commands::JIRA::Client do
+  include WebmockHelpers
 
   # TODO: test using webmock instead of stubbing HTTParty
   describe "::exec_request(verb, url_suffix, username, password, body, params = {})" do
 
-    context "not paginated" do
-      let(:response) do
-        {
-          "results" => %w(some results)
-        }
+    context "unauthorized" do
+      it "raises a `JIRA::Unauthorized` error" do
+        webmock_with_stored_request(:jira_add_worklog_unauthorized)
+        expect {
+          described_class.exec_request(
+            :post,
+            "/issue/JT-1234/worklog",
+            nil,
+            nil,
+            { "timeSpentSeconds" => 10_000, "started" => "2016-05-26T22:03:39.038+0000" },
+            {}
+          )
+        }.to raise_error(JobTomate::Errors::JIRA::Unauthorized)
       end
+    end
+
+    context "not found" do
+      it "raises a `JIRA::NotFound` error" do
+        webmock_with_stored_request(:jira_get_issue_not_found)
+        expect {
+          described_class.exec_request(
+            :get,
+            "/issue/unknown",
+            "username",
+            "password",
+            nil,
+            {}
+          )
+        }.to raise_error(JobTomate::Errors::JIRA::NotFound)
+      end
+    end
+
+    context "not paginated" do
 
       it "returns the response" do
-        expect(HTTParty).to receive(:send).with(
-          :get,
-          "#{ENV['JIRA_API_URL_PREFIX']}/url_suffix",
-          headers: { "Content-Type" => "application/json" },
-          query: { "startAt" => 0 },
-          basic_auth: {
-            username: "username",
-            password: "password"
-          },
-          body: nil
-        ).and_return(response)
-        result = described_class.exec_request(:get, "/url_suffix", "username", "password", nil, {})
-        expect(result).to eq(response)
+        webmock_with_stored_request(:jira_get_issue_success)
+        result = described_class.exec_request(:get, "/issue/23825", "username", "password", nil, {})
+        expect(result["id"]).to eq("23825")
       end
     end
 
     context "paginated" do
-      let(:response_1) do
-        {
-          "results" => %w(some results),
-          "startAt" => 0,
-          "total" => 11,
-          "maxResults" => 10
-        }
-      end
-      let(:response_2) do
-        {
-          "results" => %w(and other results),
-          "startAt" => 10,
-          "total" => 11,
-          "maxResults" => 10
-        }
-      end
-
-      before do
-        expect(HTTParty).
-          to receive(:send).
-          twice.
-          and_return(response_1, response_2)
-      end
 
       it "returns the merged responses" do
-        result = described_class.exec_request(:get, "/url_suffix", "username", "password", nil, {})
-        expect(result["results"]).to eq(response_1["results"] + response_2["results"])
+        webmock_with_stored_request(:jira_search_issues_page_1)
+        webmock_with_stored_request(:jira_search_issues_page_2)
+        result = described_class.exec_request(:get, "/search", "username", "password", nil, "jql" => 'PROJECT = "JT"')
+        expect(result["issues"].count).to eq(3)
       end
     end
   end

@@ -16,7 +16,7 @@ module JobTomate
         def run(entry)
           @entry = entry
           return update_entry_not_related_to_jira unless related_to_jira?
-          return create_worklog_and_update_entry unless previous_worklog?
+          return add_worklog_and_update_entry unless previous_worklog?
           return update_entry_unchanged_issue unless changed_issue?
           update_entry_changed_issue
         end
@@ -41,7 +41,7 @@ module JobTomate
         # issue.
         def update_entry_changed_issue
           delete_previous_worklog
-          create_worklog_and_update_entry
+          add_worklog_and_update_entry
         end
       end
     end
