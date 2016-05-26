@@ -1,6 +1,8 @@
 require "uri"
 require "active_support/all"
 require "httparty"
+require "data/stored_request"
+require "errors/jira"
 
 module JobTomate
   module Commands
@@ -71,22 +73,34 @@ module JobTomate
           }
 
           JobTomate::LOGGER.info "[JIRA] #{verb.upcase} #{url} #{headers} #{final_params} #{body}"
-          response = HTTParty.send(
-            verb, url,
+
+          request_options = {
             headers: headers,
             query: final_params,
             basic_auth: credentials,
             body: body.present? ? body.to_json : nil
+          }
+          response = HTTParty.send(verb, url, request_options)
+          handle_response(response)
+
+          JobTomate::Data::StoredRequest.create(
+            request_verb: verb,
+            request_url: url,
+            request_options: request_options,
+            response_status: response.code,
+            response_headers: response.headers.to_hash,
+            response_body: response.body
           )
           response
         end
         module_function :exec_request_base
 
+        # Raise an appropriate error if the response is not successful.
         def handle_response(response)
-          if response.code != 200 && response.code != 201 && response.code != 204
-            fail "Error (response code #{response.code}, content #{response.body})"
-          end
-          response
+          return if response.code.in? [200, 201, 204]
+          fail Errors::JIRA::Unauthorized if response.code == 401
+          fail Errors::JIRA::NotFound if response.code == 404
+          fail Errors::JIRA::UnknownError, "status: #{response.code}, content: #{response.body})"
         end
         module_function :handle_response
       end

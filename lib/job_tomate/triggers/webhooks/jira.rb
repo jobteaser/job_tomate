@@ -1,4 +1,4 @@
-require "data/webhook_payload"
+require "data/stored_webhook"
 require "errors/jira"
 require "triggers/webhooks"
 require "values/jira/changelog"

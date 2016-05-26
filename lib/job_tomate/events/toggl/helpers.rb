@@ -27,8 +27,8 @@ module JobTomate
           true
         end
 
-        def create_worklog_and_update_entry
-          worklog_id = create_worklog
+        def add_worklog_and_update_entry
+          worklog_id = add_worklog
           entry.status = :synced
           entry.jira_worklog_id = worklog_id
           entry.save
@@ -48,7 +48,7 @@ module JobTomate
           entry.save
         end
 
-        def create_worklog
+        def add_worklog
           username, password = jira_credentials
           Commands::JIRA::AddWorklog.run(
             entry.jira_issue_key,
@@ -86,7 +86,8 @@ module JobTomate
 
         def jira_credentials
           user = Data::User.where(toggl_user: entry.toggl_user).first
-          user ? [user.jira_username, user.jira_password] : nil
+          fail Errors::JIRA::UnknownUser, "No user for toggl_user=#{entry.toggl_user}" if user.nil?
+          [user.jira_username, user.jira_password]
         end
       end
     end

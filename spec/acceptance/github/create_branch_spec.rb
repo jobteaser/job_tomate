@@ -1,6 +1,6 @@
 require "spec_helper"
 require "job_tomate/web"
-require "job_tomate/data/webhook_payload"
+require "job_tomate/data/stored_webhook"
 
 describe "/webhooks/github" do
   include WebhooksHelpers

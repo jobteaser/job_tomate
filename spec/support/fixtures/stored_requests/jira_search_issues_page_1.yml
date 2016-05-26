@@ -1,0 +1,62 @@
+--- !ruby/object:JobTomate::Data::StoredRequest
+__selected_fields:
+attributes: !ruby/hash:BSON::Document
+  _id: !ruby/object:BSON::ObjectId
+    raw_data: !binary |-
+      V0dgSqVNddnWAAAa
+  request_verb: get
+  request_url: https://example.atlassian.net/rest/api/2/search
+  request_options: !ruby/hash:BSON::Document
+    headers: !ruby/hash:BSON::Document
+      Content-Type: application/json
+    query: !ruby/hash:BSON::Document
+      jql: PROJECT = "JT"
+      startAt: 0
+    basic_auth: !ruby/hash:BSON::Document
+      username: username
+      password: password
+    body:
+  response_status: 200
+  response_headers: !ruby/hash:BSON::Document
+    server:
+    - nginx
+    date:
+    - Thu, 26 May 2016 20:44:58 GMT
+    content-type:
+    - application/json;charset=UTF-8
+    transfer-encoding:
+    - chunked
+    connection:
+    - close
+    vary:
+    - Accept-Encoding
+    x-arequestid:
+    - 1364x16316x1
+    x-asen:
+    - SEN-2783348
+    x-seraph-loginreason:
+    - OUT
+    - OK
+    x-asessionid:
+    - 1fn230e
+    x-ausername:
+    - username
+    x-atenant-id:
+    - example.atlassian.net
+    cache-control:
+    - no-cache, no-store, no-transform
+    x-content-type-options:
+    - nosniff
+    set-cookie:
+    - JSESSIONID=BD58711F0672EF47BCA850A716CF02F7; Path=/; Secure; HttpOnly
+    - studio.crowd.tokenkey=""; Domain=.example.atlassian.net; Expires=Thu, 01-Jan-1970
+      00:00:10 GMT; Path=/; Secure; HttpOnly
+    - studio.crowd.tokenkey=QNYpoM080Nno8CHrVhyvEQ00; Domain=.example.atlassian.net;
+      Path=/; Secure; HttpOnly
+    - atlassian.xsrf.token=B1Z2-Y473-HEIR-W9SM|ac911cbf8093b34903db846384f95e6e6a0fab26|lin;
+      Path=/; Secure
+    strict-transport-security:
+    - max-age=315360000;includeSubDomains
+  response_body: '{"expand":"schema,names","startAt":0,"maxResults":2,"total":3,"issues":[{"id":"ISSUE-1"},{"id":"ISSUE-2"}]}'
+  updated_at: 2016-05-26 20:44:58.301000000 Z
+  created_at: 2016-05-26 20:44:58.301000000 Z

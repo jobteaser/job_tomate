@@ -1,5 +1,11 @@
 # Defines a set of helpers for stubbing specific types
 # of requests.
+#
+# `webmock_with_stored_request` is an helper that can be used
+# in conjunction with `fixtures/stored_requests/<name>.yml` files.
+# These files can be generated with `StoredRequest#write_to_fixture("<name>")`.
+# You can then use these fixture files to mock requests using this helper.
+# `spec/unit/jira/support/client_spec.rb` specs uses this approach.
 module WebmockHelpers
 
   TOGGL_API_BASE_URL = "https://:api_token@toggl.com/reports/api/v2/details"
@@ -10,6 +16,34 @@ module WebmockHelpers
     body: "",
     headers: { "Content-Type" => "application/json" }
   }
+
+  # @param fixture_name [Symbol] name of the fixture, for example, for
+  #   :get_issue, the corresponding file is `spec/support/fixtures/stored_requests/get_issue.yml`
+  def webmock_with_stored_request(fixture_name)
+    fixture = JobTomate::Data::StoredRequest.load_from_fixture(fixture_name)
+
+    credentials = fixture[:request_options]["basic_auth"]
+    if credentials.present?
+      username = credentials["username"]
+      password = credentials["password"]
+      url = fixture.request_url.gsub("https://", "https://#{username}:#{password}@")
+    else
+      url = fixture.request_url
+    end
+    url += "?#{fixture.request_options["query"].to_query}"
+
+    stub_request(
+      fixture.request_verb.to_sym,
+      url).
+      with(
+        body: fixture.request_options["body"],
+        headers: fixture.request_options["headers"]).
+      to_return(
+        status: fixture.response_status,
+        headers: fixture.response_headers,
+        body: fixture.response_body
+      )
+  end
 
   # @param verb [Symbol] e.g. :post
   # @param url_suffix [String]: will stub a request with url:

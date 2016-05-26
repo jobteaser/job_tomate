@@ -1,6 +1,6 @@
 require "spec_helper"
 require "job_tomate/web"
-require "job_tomate/data/webhook_payload"
+require "job_tomate/data/stored_webhook"
 
 describe "/webhooks/github" do
   include WebhooksHelpers
@@ -36,7 +36,7 @@ describe "/webhooks/github" do
 
         it "stores the payload" do
           expect { play_request }.
-            to change { JobTomate::Data::WebhookPayload.count }.
+            to change { JobTomate::Data::StoredWebhook.count }.
             by(1)
         end
 
