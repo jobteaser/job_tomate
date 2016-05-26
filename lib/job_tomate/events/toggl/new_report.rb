@@ -23,7 +23,7 @@ module JobTomate
 
         def run
           return update_entry_not_related_to_jira unless related_to_jira?
-          create_worklog_and_update_entry
+          add_worklog_and_update_entry
         end
       end
     end
