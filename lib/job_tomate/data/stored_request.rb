@@ -18,7 +18,7 @@ module JobTomate
       field :request_verb, type: String
       field :request_url, type: String
       field :request_options, type: Hash
-      field :response_code, type: Integer
+      field :response_status, type: Integer
       field :response_headers, type: Hash
       field :response_body, type: String
 
