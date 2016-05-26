@@ -31,13 +31,29 @@ module JobTomate
 
       def update_assignee(role)
         new_assignee = user_for_role(role)
-        return if new_assignee.nil?
 
+        if new_assignee.nil?
+          unassign
+        else
+          assign_to new_assignee
+        end
+      end
+
+      def unassign
+        Commands::JIRA::UpdateIssue.run(
+          @issue.key,
+          fields: {
+            assignee: nil
+          }
+        )
+      end
+
+      def assign_to(assignee)
         Commands::JIRA::UpdateIssue.run(
           @issue.key,
           fields: {
             assignee: {
-              name: new_assignee.jira_username
+              name: assignee.jira_username
             }
           }
         )
