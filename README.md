@@ -1,4 +1,4 @@
-# JobTomate
+
 
 [![Build Status](https://travis-ci.org/jobteaser/job_tomate.svg?branch=master)](https://travis-ci.org/jobteaser/job_tomate)
 [![Code Climate](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/badges/d4a9abf44cad651805e5/gpa.svg)](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/feed)
@@ -45,13 +45,15 @@ Webhook | **JIRA** updated issue **status** | **JIRA** assign the appropriate pe
 
 ## How to use
 
-**Open a console locally**
+### Open a console locally
 
 ```
 bin/console
 ```
 
-**Deploy to Heroku**
+NB: by default in non-production environments (see `RACK_ENV` environment variable), the `JIRA_DRY_RUN` is set to `"true"` to prevent JIRA API calls with effects (e.g. update, delete).
+
+### Deploy to Heroku
 
 ```sh
 # Staging
@@ -63,29 +65,42 @@ bin/set_env_production
 bin/deploy_production
 ```
 
-The deployed code will run a web application that will handle webhooks (see `webhooks_handler.rb`).
+The deployed code will run a web application that will handle webhooks (see `triggers/webhooks.rb`).
 
-A scheduled task must be setup too. Using Heroku's Scheduler plugin, setup the following recurring task:
+Scheduled tasks must be setup for _tasks_ triggers (`triggers/tasks`). Using Heroku's Scheduler plugin, setup the following recurring task:
 
-```
-bin/run_task fetch_toggl_reports
-```
+- `bin/run_task fetch_toggl_reports`: every 1 hour is fine
 
-**Run a console on Heroku**
+Some maintenance scripts must be scheduled too (Heroku's Scheduler plugin is fine too):
+
+- `script/cleanup_stored_webhooks_and_requests`: every day
+
+### Run a console on Heroku
 
 ```
 heroku run bin/console -a <APP-NAME>
 ```
 
-**Add a new user**
+### Dump the production database
 
-**TO BE UPDATED**
+_NB: this assumes you have deployed to Heroku_
 
 ```
-# In the console on Heroku
+bin/dump_production_to_local
+bin/dump_production_to_staging
+```
 
+### Add a new user
+
+If the user started using Toggl, some `TogglEntry` records should be pending for this user. We can use them to find the user's Toggl username. We also need to process them after the user has been created.
+
+_In an application console:_
+
+```
 # Get the Toggl username
-require 'job_tomate/commands/toggl/fetch_reports'
+JobTomate::Data::TogglEntry.where(status: "pending").all.map(&:toggl_user).uniq
+=> ["New User"]
+
 reports = JobTomate::Commands::Toggl::FetchReports.run(Date.yesterday, Date.today).map{|e| e['user']}.uniq
 
 # The JIRA password can be reset manually for a given user by a JIRA admin
@@ -136,27 +151,34 @@ Check the issues.
 
 ### Overall architecture
 
+#### Workflows
+
 JobTomate is built on a set of components that interact together to perform workflows:
 
-#### Actions
-
-#### Commands
+- **Triggers** (webhooks, tasks) generate **events** (e.g. `Github::PullRequestOpened`, `JIRA::IssueCommentAdded`)
+- **Events** trigger **actions** (e.g. `JIRAAddCommentOnGithubPullRequest`, `SlackNotifyJIRAIssueAssignee`)
+- **Actions** perform effects through **commands** (e.g. `JIRA::AddComment`, `Slack::SendMessage`)
 
 #### Data
 
-#### Events
-
-#### Triggers
+Some workflows may rely on local data (e.g. Toggl reports are cached in `TogglEntry` records to allow more complex processing, such as detecting changes). We also need users to store credentials to perform actions on some services (e.g. JIRA) or which username to mention in messages (e.g. in Slack). This is the purpose of `Data` objects.
 
 #### Values
+
+We use `Values` objects (e.g. `Github::PullRequest`, `JIRA::Changelog`) to pass data in a structured way between the triggers, actions and commands. Even if this is not enforced, value objects are intended to be immutable to limit bugs and provide helpers on raw data (e.g. `Value::JIRA#link`).
+
 
 ### Architecture decisions
 
 #### Using acceptance tests only
 
-Except some specific cases for which unit tests may be helpful (`Commands::JIRA::Support::Client` and `Commands::Slack::SendMessage`), only acceptance tests are used.
+Except some specific cases for which unit tests may be helpful (`Commands::JIRA::Client` and `Commands::Slack::SendMessage`), only acceptance tests are used.
 
 Why has this approach been chosen?
   - It gives more freedom to change the implementation of underlying components, without having a lot of intermediate tests to be updated in the meanwhile.
   - The purpose of JobTomate is essentially to perform calls to external services in response to events triggered by other external services, so performing the tests at the level the nearer to these services felt right.
   - JobTomate will not be provided without actual workflows which will be acceptance-tested. Testing these workflows also ensures the underlying components are tested. Unit-testing the components would only provide a second and extraneous layer of tests.
+
+#### Stored requests and custom VCR-like testing
+
+Since 0.2.1, the `JIRA::Client` will store a `Data::StoredRequest` for each request. This will ease debugging but also helps in setting up new acceptance tests. You may perform the request you want to test in your development environment and persist it to a fixture for reuse in specs. See `webmock_helpers.rb` for more details.
