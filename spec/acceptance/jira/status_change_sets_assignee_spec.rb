@@ -49,9 +49,15 @@ describe "status change sets assignee" do
           }
         end
 
-        it "is successful and does nothing" do
+        it "unassigns the issue" do
+          expected_body = { fields: { assignee: nil } }.to_json
+          stub = stub_jira_request(
+            :put,
+            "/issue/JT-3838",
+            expected_body
+          )
           play_request
-          expect(last_response).to be_ok
+          expect(stub).to have_been_requested
         end
       end
 
