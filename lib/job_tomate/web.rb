@@ -1,5 +1,6 @@
 require "sinatra/base"
 require "sinatra/namespace"
+require "values/webhook"
 
 module JobTomate
 
@@ -27,13 +28,12 @@ module JobTomate
 
         webhook = module_constant.definition
         send(webhook[:verb], webhook[:path]) do
-          instance = module_constant.new
-          instance.request = request
+          webhook = JobTomate::Values::Webhook.with_request(request)
           JobTomate::Data::StoredWebhook.create(
-            source: webhook[:name],
-            data: instance.webhook_data
+            headers: webhook.headers,
+            body: webhook.body
           )
-          instance.run_events
+          module_constant.new.run_events(webhook)
           { status: "ok" }.to_json
         end
       end

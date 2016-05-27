@@ -1,5 +1,6 @@
 require "mongoid"
 require "config/mongo"
+require "values/webhook"
 
 module JobTomate
   module Data
@@ -12,11 +13,16 @@ module JobTomate
       include Mongoid::Document
       include Mongoid::Timestamps
 
-      field :source, type: String
-      field :data,   type: Hash
+      field :headers, type: Hash
+      field :body, type: String
 
       index(created_at: 1)
       store_in collection: "stored_webhooks"
+
+      # @return [Values::Webhook]
+      def value
+        Values::Webhook.new(headers, body)
+      end
     end
   end
 end

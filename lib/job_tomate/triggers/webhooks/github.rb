@@ -1,6 +1,5 @@
 require "events/github/pull_request_opened"
 require "events/github/pull_request_closed"
-require "triggers/webhooks"
 require "values/github/pull_request"
 
 module JobTomate
@@ -12,7 +11,7 @@ module JobTomate
       # Setup the webhook with:
       #   - Path: /webhooks/github
       #   - Choose "Send me everything"
-      class Github < Base
+      class Github
         HEADER_EVENT = "X-GitHub-Event"
 
         def self.definition
@@ -23,13 +22,16 @@ module JobTomate
           }
         end
 
-        def run_events
+        def run_events(webhook)
+          @webhook = webhook
           return unless pull_request_event?
           handle_pull_request_opened
           handle_pull_request_closed
         end
 
         private
+
+        attr_reader :webhook
 
         def handle_pull_request_opened
           return unless pull_request_action?(:opened)
@@ -42,15 +44,15 @@ module JobTomate
         end
 
         def pull_request_event?
-          request.env[HEADER_EVENT] == "pull_request"
+          webhook.headers[HEADER_EVENT] == "pull_request"
         end
 
         def pull_request_action?(action)
-          webhook_data["action"] == action.to_s
+          webhook.parsed_body["action"] == action.to_s
         end
 
         def pr_value
-          Values::Github::PullRequest.new(webhook_data["pull_request"])
+          Values::Github::PullRequest.new(webhook.parsed_body["pull_request"])
         end
       end
     end

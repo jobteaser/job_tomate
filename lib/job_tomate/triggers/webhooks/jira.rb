@@ -1,6 +1,5 @@
 require "data/stored_webhook"
 require "errors/jira"
-require "triggers/webhooks"
 require "values/jira/changelog"
 require "values/jira/comment"
 require "values/jira/issue"
@@ -39,7 +38,7 @@ module JobTomate
       # event is run. So to add a new event, you just have
       # to add the appropriate class, and the mapping if
       # necessary;
-      class Jira < Base
+      class Jira
 
         def self.definition
           {
@@ -49,7 +48,8 @@ module JobTomate
           }
         end
 
-        def run_events
+        def run_events(webhook)
+          @webhook = webhook
           run_events_for_issue_created if issue_created?
           run_events_for_issue_deleted if issue_deleted?
           run_events_for_issue_new_comment if issue_new_comment?
@@ -57,6 +57,8 @@ module JobTomate
         end
 
         private
+
+        attr_reader :webhook
 
         def issue_created?
           webhook_event == "issue_created"
@@ -68,12 +70,12 @@ module JobTomate
 
         def issue_new_comment?
           return false unless webhook_event == "issue_updated"
-          webhook_data["comment"].present?
+          webhook.parsed_body["comment"].present?
         end
 
         def issue_changelog?
           return false unless webhook_event == "issue_updated"
-          webhook_data["changelog"].present?
+          webhook.parsed_body["changelog"].present?
         end
 
         def run_events_for_issue_created
@@ -92,7 +94,7 @@ module JobTomate
         # Multiple events may be run if the changelog contains
         # multiple items.
         def run_events_for_issue_changelog
-          webhook_data["changelog"]["items"].each do |item|
+          webhook.parsed_body["changelog"]["items"].each do |item|
             run_event_for_issue_changelog_item(item)
           end
         end
@@ -121,17 +123,17 @@ module JobTomate
         # Accessors for on webhook data
 
         def issue_value
-          @issue_value ||= Values::JIRA::Issue.build(webhook_data["issue"])
+          @issue_value ||= Values::JIRA::Issue.build(webhook.parsed_body["issue"])
         end
 
         def comment_value
-          @comment_value ||= Values::JIRA::Comment.build(webhook_data["comment"])
+          @comment_value ||= Values::JIRA::Comment.build(webhook.parsed_body["comment"])
         end
 
         # @return [String] issue_created, issue_updated,
         #   or issue_deleted
         def webhook_event
-          @webhook_event ||= webhook_data["webhookEvent"].gsub("jira:", "")
+          @webhook_event ||= webhook.parsed_body["webhookEvent"].gsub("jira:", "")
         end
       end
     end
