@@ -12,7 +12,7 @@ module JobTomate
       #   - Path: /webhooks/github
       #   - Choose "Send me everything"
       class Github
-        HEADER_EVENT = "HTTP_X_GITHUB_EVENT"
+        HEADER_EVENT = "HTTP_X_GITHUB_EVENT".freeze
 
         def self.definition
           {
