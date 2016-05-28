@@ -1,3 +1,5 @@
+require "data/stored_webhook"
+
 # A set of helpers to simulate webhook requests
 # easily, including headers specific to the service.
 module WebhooksHelpers
@@ -11,26 +13,16 @@ module WebhooksHelpers
   }
 
   JIRA_HEADERS = {}
+  IGNORED_HEADERS = %w(CONTENT_LENGTH)
 
-  # TODO: remove
-  def post_webhook_github(event, payload)
-    post "/webhooks/github", payload, GITHUB_HEADERS.merge(
-      "X-GitHub-Event" => event.to_s
-    )
-  end
-
-  # TODO: rename to post_webhook_github
-  def post_webhook_github_super(event, payload_name, override = {})
-    payload = JSON.parse Fixtures.webhook(:github, payload_name)
-    if override[:pull_request_head_ref]
-      payload["pull_request"]["head"]["ref"] = override[:pull_request_head_ref]
-    end
-
-    headers = GITHUB_HEADERS.merge(
-      "X-GitHub-Event" => event.to_s
-    )
-
-    post "/webhooks/github", payload.to_json, headers
+  def receive_stored_webhook(name)
+    webhook = JobTomate::Data::StoredWebhook.load_from_fixture(name)
+    verb = webhook.headers["REQUEST_METHOD"].downcase
+    path = webhook.headers["REQUEST_PATH"]
+    headers = webhook.headers.except(*IGNORED_HEADERS)
+    headers_true_hash = {}.merge(headers)
+    # Otherwise a BSON object, not handled correctly by Rack::Test#post
+    send(verb, path, webhook.body, headers_true_hash)
   end
 
   def post_webhook_jira(payload_name, override = {})

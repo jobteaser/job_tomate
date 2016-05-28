@@ -6,50 +6,23 @@ describe "/webhooks/github" do
   include WebhooksHelpers
   include WebmockHelpers
 
-  let(:request) do
-    post_webhook_github(:pull_request, payload)
+  context "opened pull request related to JIRA issue" do
+    it "adds a comment on the JIRA with the PR link" do
+      expected_body = "{\"body\":\"Opened PR: https://github.com/jobteaser/job_tomate/pull/3\"}"
+      stub = stub_jira_request(
+        :post,
+        "/issue/jt-1234/comment",
+        expected_body
+      )
+      receive_stored_webhook(:github_pull_request_opened_jira_related)
+      expect(stub).to have_been_requested
+    end
   end
 
-  context "opened pull request" do
-    let(:base_payload) do
-      Fixtures.webhook(:github, :pull_request_opened)
-    end
-    let(:payload) { base_payload }
-
+  context "opened pull request not related to JIRA issue" do
     it "is successful and does nothing" do
-      request
+      receive_stored_webhook(:github_pull_request_opened_not_jira_related)
       expect(last_response).to be_ok
-    end
-
-    context "branch containing a JIRA issue key" do
-
-      let(:payload) do
-        base = JSON.parse base_payload
-        base["pull_request"]["head"]["ref"] = "jt-1234"
-        base.to_json
-      end
-
-      let(:expected_body) do
-        "{\"body\":\"Opened PR: https://github.com/jobteaser/job_tomate/pull/3\"}"
-      end
-
-      it "adds a comment on the JIRA with the PR link" do
-        stub = stub_jira_request(
-          :post,
-          "/issue/jt-1234/comment",
-          expected_body
-        )
-        request
-        expect(stub).to have_been_requested
-      end
-    end
-
-    context "branch not containing a JIRA issue key" do
-      it "doesn't add a JIRA comment" do
-        request
-        # Fails if a request is done because we don't
-        # stub the JIRA request.
-      end
     end
   end
 end

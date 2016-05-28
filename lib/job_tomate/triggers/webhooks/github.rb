@@ -12,7 +12,7 @@ module JobTomate
       #   - Path: /webhooks/github
       #   - Choose "Send me everything"
       class Github
-        HEADER_EVENT = "X-GitHub-Event"
+        HEADER_EVENT = "HTTP_X_GITHUB_EVENT"
 
         def self.definition
           {
@@ -22,24 +22,23 @@ module JobTomate
           }
         end
 
+        # @param webhook [Values::Webhook]
         def run_events(webhook)
           @webhook = webhook
           return unless pull_request_event?
-          handle_pull_request_opened
-          handle_pull_request_closed
+          process_pull_request_opened if pull_request_action?(:opened)
+          process_pull_request_closed if pull_request_action?(:closed)
         end
 
         private
 
         attr_reader :webhook
 
-        def handle_pull_request_opened
-          return unless pull_request_action?(:opened)
+        def process_pull_request_opened
           Events::Github::PullRequestOpened.run(pr_value)
         end
 
-        def handle_pull_request_closed
-          return unless pull_request_action?(:closed)
+        def process_pull_request_closed
           Events::Github::PullRequestClosed.run(pr_value)
         end
 

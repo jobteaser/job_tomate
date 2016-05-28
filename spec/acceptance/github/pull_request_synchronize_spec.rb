@@ -6,16 +6,10 @@ describe "/webhooks/github" do
   include WebhooksHelpers
   include WebmockHelpers
 
-  let(:request) do
-    post_webhook_github(:pull_request, payload)
-  end
-
-  let(:payload) do
-    Fixtures.webhook(:github, :pull_request_synchronize)
-  end
-
-  it "is successful and does nothing" do
-    request
-    expect(last_response).to be_ok
+  context "opened pull request not related to JIRA issue" do
+    it "is successful and does nothing" do
+      receive_stored_webhook(:github_pull_request_synchronize)
+      expect(last_response).to be_ok
+    end
   end
 end

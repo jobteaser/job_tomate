@@ -26,14 +26,14 @@ module JobTomate
         module_segments = module_path.split("/").reject(&:blank?)
         module_constant = (["JobTomate"] + module_segments.map(&:camelize)).join("::").constantize
 
-        webhook = module_constant.definition
-        send(webhook[:verb], webhook[:path]) do
-          webhook = JobTomate::Values::Webhook.with_request(request)
+        webhook_def = module_constant.definition
+        send(webhook_def[:verb], webhook_def[:path]) do
+          webhook_value = JobTomate::Values::Webhook.with_request(request)
           JobTomate::Data::StoredWebhook.create(
-            headers: webhook.headers,
-            body: webhook.body
+            headers: webhook_value.headers,
+            body: webhook_value.body
           )
-          module_constant.new.run_events(webhook)
+          module_constant.new.run_events(webhook_value)
           { status: "ok" }.to_json
         end
       end
