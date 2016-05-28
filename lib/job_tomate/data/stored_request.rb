@@ -25,6 +25,8 @@ module JobTomate
       index(created_at: 1)
       store_in collection: "stored_requests"
 
+      # DUPLICATE of StoredWebhook
+
       FIXTURES_DIR = File.expand_path("./spec/support/fixtures/stored_requests").freeze
 
       # Writes the stored request to a fixture file in `spec/support/fixtures/stored_requests`.

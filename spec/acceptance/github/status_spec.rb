@@ -6,28 +6,16 @@ describe "/webhooks/github" do
   include WebhooksHelpers
   include WebmockHelpers
 
-  let(:request) do
-    post_webhook_github(:status, payload)
-  end
-
-  context "Coveralls success" do
-    let(:payload) do
-      Fixtures.webhook(:github, :status_coveralls_success)
-    end
-
+  context "status codeclimate no change" do
     it "is successful and does nothing" do
-      request
+      receive_stored_webhook(:github_status_codeclimate_no_change)
       expect(last_response).to be_ok
     end
   end
 
-  context "TravisCI build in progress" do
-    let(:payload) do
-      Fixtures.webhook(:github, :status_travis_build_in_progress)
-    end
-
+  context "status circleci build successful" do
     it "is successful and does nothing" do
-      request
+      receive_stored_webhook(:github_status_circleci_success)
       expect(last_response).to be_ok
     end
   end
