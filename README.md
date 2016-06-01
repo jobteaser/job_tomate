@@ -29,19 +29,6 @@ Webhook | **JIRA** updated issue **assignee** | **Slack** notify the assignee | 
 Webhook | **JIRA new comment** on issue | **Slack** notify the mentioned user(s) | DONE
 Webhook | **JIRA** updated issue **status** | **JIRA** assign the appropriate person | DONE
 
-### Other ideas
-
-- Send a Slack DM to the developer if the JIRA is changed to status "In Review" without a PR in the comments.
-- Send a Slack DM if an issue is an a given threshold of its due date (3 days before, on due date, every day after due date)
-- Send a Slack DM if an issue hasn't been updated for X days
-- Send a Slack DM if an issue makes more than 2 returns to "In Dev" status after review or functional review
-- JIRA: if there is a subtask, change its status to the same status than the task.
-- PR validated in review (`:+1:` in the comments), add a comment in JIRA and change the issue's status to "Functional Review".
-- PR validated in review (`:-1:` in the comments), add a comment in JIRA (including the comment on the PR) and change the issue's status to "In Dev".
-- On a deploy, update the JIRA issue status and fix version for deployed issues (based on PRs merged in the deployed commit)
-- On a deploy, generate a beautiful release note
-- Issue in functional review and GO from product and tests are green => merge in develop
-- Using the maintenance calendar, send the maintenance to-do list to whoever is in charge.
 
 ## How to use
 
