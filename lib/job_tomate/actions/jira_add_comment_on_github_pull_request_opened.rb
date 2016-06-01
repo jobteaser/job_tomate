@@ -13,7 +13,7 @@ module JobTomate
           pull_request.jira_issue_key,
           ENV["JIRA_USERNAME"],
           ENV["JIRA_PASSWORD"],
-          "Opened PR: #{pull_request.html_url}"
+          "Opened PR: #{pull_request.html_url} - branch: #{pull_request.head_ref}"
         )
       end
     end

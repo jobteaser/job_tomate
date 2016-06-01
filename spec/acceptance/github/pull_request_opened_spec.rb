@@ -8,7 +8,8 @@ describe "/webhooks/github" do
 
   context "opened pull request related to JIRA issue" do
     it "adds a comment on the JIRA with the PR link" do
-      expected_body = "{\"body\":\"Opened PR: https://github.com/jobteaser/job_tomate/pull/3\"}"
+      expected_comment = "Opened PR: https://github.com/jobteaser/job_tomate/pull/3 - branch: jt-1234-create-crawler"
+      expected_body = "{\"body\":\"#{expected_comment}\"}"
       stub = stub_jira_request(
         :post,
         "/issue/jt-1234/comment",
