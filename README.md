@@ -88,21 +88,16 @@ _In an application console:_
 JobTomate::Data::TogglEntry.where(status: "pending").all.map(&:toggl_user).uniq
 => ["New User"]
 
-reports = JobTomate::Commands::Toggl::FetchReports.run(Date.yesterday, Date.today).map{|e| e['user']}.uniq
-
 # The JIRA password can be reset manually for a given user by a JIRA admin
-JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password'
+JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password', jira_developer: true, jira_reviewer: true, jira_feature_owner: false, jira_functional_reviewer: false, slack_username: 'Slack User'
 ```
 
 **Reprocess older Toggl reports for a given user**
 
-**TO BE UPDATED**
+All unprocessed Toggl reports are stored as `Data::TogglEntry` records with the status `"pending"`. Use the following task to process them:
 
 ```
-require 'job_tomate/commands/toggl/fetch_reports'
-require 'job_tomate/commands/toggl/process_reports'
-reports = JobTomate::Commands::Toggl::FetchReports.run(3.days.ago, Date.today).select {|r| r['user'] == 'some-user' }
-reports.map { |r| JobTomate::Commands::Toggl::ProcessReports.process_toggl_report(r) }
+bin/run_task process_pending_entries
 ```
 
 ## Setup
