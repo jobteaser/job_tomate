@@ -1,6 +1,8 @@
 require "events/github/pull_request_opened"
 require "events/github/pull_request_closed"
+require "events/github/status_updated"
 require "values/github/pull_request"
+require "values/github/status"
 
 module JobTomate
   module Triggers
@@ -25,14 +27,34 @@ module JobTomate
         # @param webhook [Values::Webhook]
         def run_events(webhook)
           @webhook = webhook
-          return unless pull_request_event?
-          process_pull_request_opened if pull_request_action?(:opened)
-          process_pull_request_closed if pull_request_action?(:closed)
+          process_pull_request_event if pull_request_event?
+          process_status_event if status_event?
         end
 
         private
 
         attr_reader :webhook
+
+        def status_event?
+          webhook.headers[HEADER_EVENT] == "status"
+        end
+
+        def process_status_event
+          Events::Github::StatusUpdated.run(status_value)
+        end
+
+        def status_value
+          Values::Github::Status.new(webhook.parsed_body)
+        end
+
+        def pull_request_event?
+          webhook.headers[HEADER_EVENT] == "pull_request"
+        end
+
+        def process_pull_request_event
+          process_pull_request_opened if pull_request_action?(:opened)
+          process_pull_request_closed if pull_request_action?(:closed)
+        end
 
         def process_pull_request_opened
           Events::Github::PullRequestOpened.run(pr_value)
@@ -40,10 +62,6 @@ module JobTomate
 
         def process_pull_request_closed
           Events::Github::PullRequestClosed.run(pr_value)
-        end
-
-        def pull_request_event?
-          webhook.headers[HEADER_EVENT] == "pull_request"
         end
 
         def pull_request_action?(action)
