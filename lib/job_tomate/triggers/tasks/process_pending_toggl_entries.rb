@@ -1,6 +1,4 @@
-require "commands/toggl/find_entry"
-require "commands/toggl/update_entry"
-require "events/toggl/new_report"
+require "commands/toggl/find_pending_entries"
 require "events/toggl/updated_report"
 require "support/service_pattern"
 
