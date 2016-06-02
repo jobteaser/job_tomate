@@ -11,7 +11,7 @@ describe "/webhooks/github" do
   context "status change received" do
     let!(:stub) do
       expected_text = "[jira-issue] ci/circleci - Your tests passed on CircleCI!"
-      expected_channel = "slack_user"
+      expected_channel = "@slack_user"
       stub_slack_send_message_as_job_tomate(expected_text, expected_channel)
     end
 

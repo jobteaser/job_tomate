@@ -36,7 +36,7 @@ module JobTomate
         message = "[#{status.branch}] #{status.context} - #{status.description}"
         Commands::Slack::SendMessage.run(
           message,
-          channel: slack_username
+          channel: "@#{slack_username}"
         )
       end
     end
