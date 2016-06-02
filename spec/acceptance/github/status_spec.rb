@@ -18,7 +18,7 @@ describe "/webhooks/github" do
     context "pull request sender is known" do
       before do
         JobTomate::Data::User.create(
-          github_user: "developer",
+          github_user: "author",
           slack_username: "slack_user"
         )
       end
@@ -45,7 +45,7 @@ describe "/webhooks/github" do
     context "pull request sender has no Slack username" do
       before do
         JobTomate::Data::User.create(
-          github_user: "developer",
+          github_user: "author",
           slack_username: ""
         )
       end

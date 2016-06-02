@@ -8,6 +8,7 @@ module JobTomate
       class Status
         STORED_DATA_ATTRIBUTES = %w(
           branches
+          commit
           context
           description
           name
@@ -25,12 +26,12 @@ module JobTomate
           @data = data.slice(*STORED_DATA_ATTRIBUTES)
         end
 
-        def sender_github_user
-          data["sender"]["login"]
+        def author_github_user
+          data["commit"]["author"]["login"]
         end
 
-        def sender_user
-          JobTomate::Data::User.where(github_user: sender_github_user).first
+        def author_user
+          JobTomate::Data::User.where(github_user: author_github_user).first
         end
 
         def branch

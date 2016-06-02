@@ -13,8 +13,8 @@ module JobTomate
 
       # @param issue [Values::Github::Status]
       def run(status)
-        user = status.sender_user
-        raise_unknown_github_user(status.sender_github_user) if user.nil?
+        user = status.author_user
+        raise_unknown_github_user(status.author_github_user) if user.nil?
 
         slack_username = user.slack_username
         raise_missing_slack_username(user) if slack_username.blank?
