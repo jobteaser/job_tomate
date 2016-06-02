@@ -167,6 +167,6 @@ Why has this approach been chosen?
 
 The `JIRA::Client` will store a `Data::StoredRequest` for each request. This will ease debugging but also helps in setting up new acceptance tests. You may perform the request you want to test in your development environment and persist it to a fixture for reuse in specs. See `webmock_helpers.rb` for more details.
 
-#### Stored webhooks
+##### Stored webhooks
 
 When receiving a webhook, a `Data::StoredWebhook` record is created. You can store it to a fixture (using `#write_to_fixture`) and use it in tests using `receive_stored_webhook`. See `webhooks_helpers.rb` for more details.
