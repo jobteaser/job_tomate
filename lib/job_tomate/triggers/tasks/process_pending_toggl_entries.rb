@@ -1,4 +1,5 @@
 require "commands/toggl/find_pending_entries"
+require "errors/jira"
 require "events/toggl/updated_report"
 require "support/service_pattern"
 
@@ -31,7 +32,11 @@ module JobTomate
 
         def process_entries(entries)
           entries.each do |entry|
-            Events::Toggl::UpdatedReport.run(entry)
+            begin
+              Events::Toggl::UpdatedReport.run(entry)
+            rescue JobTomate::Errors::JIRA::NotFound
+              LOGGER.error "JIRA issue not found"
+            end
           end
         end
       end
