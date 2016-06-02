@@ -12,10 +12,18 @@ module JobTomate
       # Triggers the `Toggl::UpdatedReport` event for each pending
       # entry.
       #
+      # Usage:
+      #
+      #     # From shell
+      #     bin/run_task process_pending_entries
+      #
+      #     # In console
+      #     JobTomate::Triggers::Tasks::ProcessPendingTogglEntries.run
+      #
       # NB: This event is appropriate because it handles all
       # possible cases and is compatible for both new and updated
       # report cases.
-      class FetchTogglReports
+      class ProcessPendingTogglEntries
         extend ServicePattern
 
         def run
