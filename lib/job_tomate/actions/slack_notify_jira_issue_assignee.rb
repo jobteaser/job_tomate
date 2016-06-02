@@ -9,6 +9,7 @@ module JobTomate
       extend ServicePattern
 
       # @param issue [Values::JIRA::Issue]
+      # TODO: fail if slack username not set, with Slack::MissingUsername set
       def run(issue)
         return if issue.assignee_user.nil?
         if issue.assignee_user.slack_username.blank?
