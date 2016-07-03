@@ -39,7 +39,7 @@ module JobTomate
         end
 
         user = user_for_name(username)
-        if user_matches_role?(user, new_status_role)
+        if user_appropriate_for_role?(user, new_status_role, issue)
           update_assignee_and_role(issue, user, new_status_role)
           return
         end
@@ -60,12 +60,30 @@ module JobTomate
         role_for_new_status(changelog).nil?
       end
 
-      def issue_role_set?(issue, role)
-        issue.send(:"#{role}_name").present?
+      def issue_role_username(issue, role)
+        issue.send(:"#{role}_name")
       end
 
-      def user_matches_role?(user, role)
-        user.send(:"jira_#{role}")
+      def issue_role_set?(issue, role)
+        issue_role_username(issue, role).present?
+      end
+
+      # The user is appropriate for the role if:
+      #   - the user record specifies the user can take the role (e.g.
+      #     `user.jira_developer == true`), and,
+      #   - either:
+      #     - if the role is "developer", the user is not "reviewer" of the issue, or,
+      #     - if the role is "reviewer", the user is not "developer" of the issue.
+      def user_appropriate_for_role?(user, role, issue)
+        return false unless user.send(:"jira_#{role}")
+        conflicting_role = (
+          case role
+          when "developer" then "reviewer"
+          when "reviewer" then "developer"
+          end
+        )
+        return true if conflicting_role.nil?
+        issue_role_username(issue, conflicting_role) != user.jira_username
       end
 
       def update_assignee(issue, role)

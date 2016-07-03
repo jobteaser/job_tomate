@@ -45,11 +45,35 @@ describe "change issue status" do
 
   context "to \"Open\"" do
     let(:changelog_to_string) { "Open" }
-    let(:changelog_to) { "1" }
 
     it "is successful and does nothing" do
       receive_stored_webhook(webhook)
       expect(last_response).to be_ok
+    end
+  end
+
+  # Special case: the developer may move the issue to "In Review" and herself
+  # be a potential reviewer. In the case the user is already the issue's
+  # developer, we must not set her as the reviewer and instead unassign the
+  # issue.
+  context "to \"In Review\" with no reviewer set and user is reviewer and the issue's developer" do
+    let(:changelog_to_string) { "In Review" }
+    let(:issue_developer_name) { jira_username }
+    let(:user_is_reviewer) { true }
+
+    it "is unassigns the issue" do
+      expected_body = {
+        fields: {
+          assignee: nil
+        }
+      }.to_json
+      stub = stub_jira_request(
+        :put,
+        "/issue/#{issue_key}",
+        expected_body
+      )
+      receive_stored_webhook(webhook)
+      expect(stub).to have_been_requested
     end
   end
 
