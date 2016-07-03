@@ -32,22 +32,26 @@ module JobTomate
         return if no_role_for_new_status?(changelog)
 
         new_status_role = role_for_new_status(changelog)
-
-        if issue_role_set?(issue, new_status_role)
-          update_assignee(issue, new_status_role)
-          return
-        end
-
-        user = user_for_name(username)
-        if user_appropriate_for_role?(user, new_status_role, issue)
-          update_assignee_and_role(issue, user, new_status_role)
-          return
-        end
-
+        return if update_assignee_based_on_role(issue, new_status_role)
+        return if update_assignee_and_roles(issue, username, new_status_role)
         unassign(issue)
       end
 
       private
+
+      # @return [Bool] true if the operation was done, false otherwise
+      def update_assignee_based_on_role(issue, role)
+        return false unless issue_role_set?(issue, role)
+        update_assignee(issue, role)
+        true
+      end
+
+      # @return [Bool] true if the operation was done, false otherwise
+      def update_assignee_and_roles(issue, username, new_status_role)
+        user = user_for_name(username)
+        return unless user_appropriate_for_role?(user, new_status_role, issue)
+        update_assignee_and_role(issue, user, new_status_role)
+      end
 
       def role_for_new_status(changelog)
         @role_for_new_status ||= (
@@ -104,37 +108,18 @@ module JobTomate
       end
 
       def update_assignee_and_role(issue, user, role)
-        update_issue(
-          issue,
-          fields: {
-            assignee: {
-              name: user.jira_username
-            },
-            Values::JIRA::Issue.jira_field(role).to_sym => {
-              name: user.jira_username
-            }
-          }
-        )
+        update_issue(issue, fields: {
+                       assignee: { name: user.jira_username },
+                       Values::JIRA::Issue.jira_field(role).to_sym => { name: user.jira_username }
+                     })
       end
 
       def unassign(issue)
-        update_issue(
-          issue,
-          fields: {
-            assignee: nil
-          }
-        )
+        update_issue(issue, fields: { assignee: nil })
       end
 
       def assign_to(issue, assignee)
-        update_issue(
-          issue,
-          fields: {
-            assignee: {
-              name: assignee.jira_username
-            }
-          }
-        )
+        update_issue(issue, fields: { assignee: { name: assignee.jira_username } })
       end
 
       def user_for_role(issue, role)
