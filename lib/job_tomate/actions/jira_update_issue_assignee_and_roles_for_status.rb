@@ -9,6 +9,11 @@ module JobTomate
     #   - "In Review": assign to reviewer,
     #   - "In Functional Review": assign to feature owner,
     #   - "Ready for Release": assign to developer.
+    #
+    # Technical debts:
+    #   - Using status labels instead of status identifiers. We use the changelog's
+    #     `toString` value instead of `to`, so if the labels of the statuses are changed
+    #     the code may get broken, while the identifiers would not change.
     class JIRAUpdateIssueAssigneeAndRolesForStatus
       extend ServicePattern
 
@@ -23,56 +28,66 @@ module JobTomate
       # @param changelog [Values::JIRA::Changelog]
       # @param username [String]: name of the JIRA user which performed the
       #   change
-      def run(issue, _changelog, username)
-        @issue = issue
+      def run(issue, changelog, username)
+        return if no_role_for_new_status?(changelog)
 
-        new_status_role = ROLE_FOR_STATUS[@issue.status]
-        return if new_status_role.nil?
+        new_status_role = role_for_new_status(changelog)
+
+        if issue_role_set?(issue, new_status_role)
+          update_assignee(issue, new_status_role)
+          return
+        end
 
         user = user_for_name(username)
-
-        if issue_role_set?(new_status_role)
-          update_assignee(new_status_role)
-          return
-        end
-
         if user_matches_role?(user, new_status_role)
-          update_assignee_and_role(user, new_status_role)
+          update_assignee_and_role(issue, user, new_status_role)
           return
         end
 
-        unassign
+        unassign(issue)
       end
 
       private
 
-      def issue_role_set?(role)
-        @issue.send(:"#{role}_name").present?
+      def role_for_new_status(changelog)
+        @role_for_new_status ||= (
+          new_status = changelog.to_string
+          ROLE_FOR_STATUS[new_status]
+        )
+      end
+
+      def no_role_for_new_status?(changelog)
+        role_for_new_status(changelog).nil?
+      end
+
+      def issue_role_set?(issue, role)
+        issue.send(:"#{role}_name").present?
       end
 
       def user_matches_role?(user, role)
         user.send(:"jira_#{role}")
       end
 
-      def update_assignee(role)
-        new_assignee = user_for_role(role)
+      def update_assignee(issue, role)
+        new_assignee = user_for_role(issue, role)
 
         if new_assignee.nil?
-          unassign
+          unassign(issue)
         else
-          assign_to new_assignee
+          assign_to(issue, new_assignee)
         end
       end
 
-      def update_issue(payload)
+      def update_issue(issue, payload)
         Commands::JIRA::UpdateIssue.run(
-          @issue.key,
+          issue.key,
           payload
         )
       end
 
-      def update_assignee_and_role(user, role)
+      def update_assignee_and_role(issue, user, role)
         update_issue(
+          issue,
           fields: {
             assignee: {
               name: user.jira_username
@@ -84,16 +99,18 @@ module JobTomate
         )
       end
 
-      def unassign
+      def unassign(issue)
         update_issue(
+          issue,
           fields: {
             assignee: nil
           }
         )
       end
 
-      def assign_to(assignee)
+      def assign_to(issue, assignee)
         update_issue(
+          issue,
           fields: {
             assignee: {
               name: assignee.jira_username
@@ -102,8 +119,8 @@ module JobTomate
         )
       end
 
-      def user_for_role(role)
-        username = @issue.send(:"#{role}_name")
+      def user_for_role(issue, role)
+        username = issue.send(:"#{role}_name")
         return if username.blank?
         user_for_name(username)
       end
