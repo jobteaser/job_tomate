@@ -21,7 +21,8 @@ module JobTomate
 
         # @param issue [Values::JIRA::Issue]
         # @param issue [Values::JIRA::Changelog]
-        def run(issue, _changelog)
+        # @param webhook_user_name [String]
+        def run(issue, _changelog, _webhook_user_name)
           Actions::JIRAUpdateIssueRolesWithAssignee.run(issue)
           Actions::SlackNotifyJIRAIssueAssignee.run(issue)
         end
