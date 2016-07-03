@@ -2,6 +2,28 @@ require "data/stored_webhook"
 
 # A set of helpers to simulate webhook requests
 # easily, including headers specific to the service.
+#
+# ### Usage
+#
+# Include the module in your spec file:
+#
+#     include WebhooksHelpers
+#
+# When you want to simulate an incoming webhook (you need
+# to have a file named `fixture_file` in the appropriate
+# fixtures directory: `support/fixtures/stored_webhooks`).
+#
+#     receive_stored_webhook(:fixture_name)
+#
+# To add a webhook fixture, you may load a real webhook from the database
+# (using `Data::StoredWebhook` records) and call `#write_to_fixture`).
+#
+# If you need to load a webhook fixture from the console (e.g. if you
+# want to customize it):
+#
+#     webhook = JobTomate::Data::StoredWebhook.load_from_fixture(...)
+#     receive_stored_webhook(webhook)
+#
 module WebhooksHelpers
   include RackTestHelpers
 
@@ -10,19 +32,30 @@ module WebhooksHelpers
     "USER_AGENT" => "GitHub-Hookshot/7a65dd9",
     "X-GitHub-Delivery" => "abdde180-f370-11e5-8c32-6da404003d66",
     "X-GitHub-Event" => ""
-  }
+  }.freeze
 
-  JIRA_HEADERS = {}
-  IGNORED_HEADERS = %w(CONTENT_LENGTH)
+  JIRA_HEADERS = {}.freeze
+  IGNORED_HEADERS = %w(CONTENT_LENGTH).freeze
 
-  def receive_stored_webhook(name)
-    webhook = JobTomate::Data::StoredWebhook.load_from_fixture(name)
+  # @param name_or_webhook [String or Data::StoredWebhook]
+  def receive_stored_webhook(name_or_webhook)
+    webhook = webhook_from_name_or_webhook(name_or_webhook)
     verb = webhook.headers["REQUEST_METHOD"].downcase
     path = webhook.headers["REQUEST_PATH"]
     headers = webhook.headers.except(*IGNORED_HEADERS)
     headers_true_hash = {}.merge(headers)
     # Otherwise a BSON object, not handled correctly by Rack::Test#post
     send(verb, path, webhook.body, headers_true_hash)
+  end
+
+  def webhook_from_name_or_webhook(name_or_webhook)
+    if name_or_webhook.is_a?(Symbol) || name_or_webhook.is_a?(String)
+      return JobTomate::Data::StoredWebhook.load_from_fixture(name_or_webhook)
+    end
+    if name_or_webhook.is_a? JobTomate::Data::StoredWebhook
+      return name_or_webhook
+    end
+    raise ArgumentError, "Argument must be String or StoredWebhook"
   end
 
   def post_webhook_jira(payload_name, override = {})

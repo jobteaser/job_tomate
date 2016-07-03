@@ -109,7 +109,7 @@ module JobTomate
             # no event to trigger.
             return
           end
-          module_constant.run(issue_value, changelog_value)
+          module_constant.run(issue_value, changelog_value, webhook_user_name)
         end
 
         def changelog_field(changelog_value)
@@ -134,6 +134,10 @@ module JobTomate
         #   or issue_deleted
         def webhook_event
           @webhook_event ||= webhook.parsed_body["webhookEvent"].gsub("jira:", "")
+        end
+
+        def webhook_user_name
+          webhook.parsed_body["user"]["name"]
         end
       end
     end

@@ -16,6 +16,11 @@ module JobTomate
         # Returns the JIRA field for a custom field.
         # @param custom_field [String] name of the custom field
         #   as used within JobTomate
+        #
+        # Usage:
+        #
+        #   Issue.jira_field("developer")
+        #   # => "customfield_10600"
         def self.jira_field(custom_field)
           CUSTOM_FIELDS_MAPPING[custom_field]
         end
