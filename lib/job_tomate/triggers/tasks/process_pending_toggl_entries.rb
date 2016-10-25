@@ -34,8 +34,8 @@ module JobTomate
           entries.each do |entry|
             begin
               Events::Toggl::UpdatedReport.run(entry)
-            rescue JobTomate::Errors::JIRA::NotFound
-              LOGGER.error "JIRA issue not found"
+            rescue JobTomate::Errors::JIRA::BaseError => e
+              LOGGER.error "JIRA error: #{e}"
             end
           end
         end

@@ -3,12 +3,13 @@ module JobTomate
 
     # JIRA errors
     module JIRA
-      NotFound = Class.new(StandardError)
-      Unauthorized = Class.new(StandardError)
-      UnknownError = Class.new(StandardError)
-      UnknownUser = Class.new(StandardError)
-      UnknownCustomField = Class.new(StandardError)
-      WorklogTooShort = Class.new(StandardError)
+      BaseError = Class.new(StandardError)
+      NotFound = Class.new(BaseError)
+      Unauthorized = Class.new(BaseError)
+      UnknownError = Class.new(BaseError)
+      UnknownUser = Class.new(BaseError)
+      UnknownCustomField = Class.new(BaseError)
+      WorklogTooShort = Class.new(BaseError)
     end
   end
 end
