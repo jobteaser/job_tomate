@@ -1,4 +1,4 @@
-
+# JobTomate
 
 [![Build Status](https://travis-ci.org/jobteaser/job_tomate.svg?branch=master)](https://travis-ci.org/jobteaser/job_tomate)
 [![Code Climate](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/badges/d4a9abf44cad651805e5/gpa.svg)](https://codeclimate.com/repos/5659c9ee09af1e152f00d540/feed)
@@ -97,7 +97,7 @@ JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User
 All unprocessed Toggl reports are stored as `Data::TogglEntry` records with the status `"pending"`. Use the following task to process them:
 
 ```
-bin/run_task process_pending_entries
+bin/run_task process_pending_toggl_entries
 ```
 
 ## Setup
