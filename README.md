@@ -127,6 +127,16 @@ For each repository that needs to be connected to JobTomate, setup the webhook l
 
 Setup a webhook integration on Slack. Any default will do since they are all overriden by JobTomate. The webhook URL must be defined in the environment variables (`SLACK_WEBHOOK_URL`).
 
+## Troubleshooting
+
+### Pending Toggl entries
+
+Use this script to analyze reasons for pending Toggl entries:
+
+```
+ruby script/analyze_pending_toggl_entries.rb
+```
+
 ## Contributing
 
 Check the issues.
