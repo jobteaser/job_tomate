@@ -5,11 +5,11 @@ require "bundler"
 env = (ENV["RACK_ENV"] ||= "development")
 Bundler.setup(:default, env.to_sym)
 
-ENV["JIRA_DRY_RUN"] = "true" if ENV["JIRA_DRY_RUN"].nil? && env != "production"
 if env == "development"
   require "dotenv"
   Dotenv.load
 end
+ENV["JIRA_DRY_RUN"] = "true" if ENV["JIRA_DRY_RUN"].nil? && env != "production"
 
 root_dir = File.expand_path "../..", __FILE__
 
