@@ -27,10 +27,16 @@ Webhook | **JIRA** updated issue **assignee** | **JIRA** depending on the issue 
 Webhook | **JIRA** updated issue **assignee** | **JIRA** depending on the issue status, update the feature owner | DONE
 Webhook | **JIRA** updated issue **assignee** | **Slack** notify the assignee | DONE
 Webhook | **JIRA new comment** on issue | **Slack** notify the mentioned user(s) | DONE
-Webhook | **JIRA** updated issue **status** | **JIRA** assign the appropriate person | DONE
+
 
 
 ## How to use
+
+### Start dependencies (MongoDB)
+
+```
+docker-compose up -d
+```
 
 ### Open a console locally
 
