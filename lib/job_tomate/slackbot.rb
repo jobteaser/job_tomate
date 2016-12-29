@@ -1,6 +1,6 @@
 require "slack-ruby-bot"
 
-Dir[File.expand_path("../slackbot/**/*.rb", __FILE__)].each do |f|
+Dir[File.expand_path("../triggers/slackbot_commands/*.rb", __FILE__)].each do |f|
   require f
 end
 
