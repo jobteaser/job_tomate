@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "commands/slack/send_message"
 require "errors/github"
 require "errors/slack"
@@ -10,6 +11,9 @@ module JobTomate
     # (the sender of status' pull request).
     class SlackNotifyOnGithubStatusUpdate
       extend ServicePattern
+      FILTERED_DESCRIPTION_PATTERNS = [
+        /Code Climate is analyzing this code/
+      ].freeze
 
       # @param issue [Values::Github::Status]
       def run(status)
@@ -19,10 +23,19 @@ module JobTomate
         slack_username = user.slack_username
         raise_missing_slack_username(user) if slack_username.blank?
 
+        return if filtered_description?(status)
+
         send_message(slack_username, status)
       end
 
       private
+
+      def filtered_description?(status)
+        FILTERED_DESCRIPTION_PATTERNS.each do |regexp|
+          return true if status.description =~ regexp
+        end
+        false
+      end
 
       def raise_unknown_github_user(github_user)
         raise Errors::Github::UnknownUser, "Unknown user with github_user '#{github_user}'"
