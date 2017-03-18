@@ -35,6 +35,9 @@ module JobTomate
         rescue Errors::JIRA::WorklogTooShort => _error
           entry.status = :too_short
           entry.save
+        rescue Errors::JIRA::NotFound => _error
+          entry.status = :failed
+          entry.save
         end
 
         def update_worklog_and_update_entry
