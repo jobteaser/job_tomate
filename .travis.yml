@@ -1,10 +1,10 @@
 language: ruby
 rvm:
-  - 2.2.3
+  - 2.3.3
 before_install: gem install bundler -v 1.10.3
 services:
   - mongodb
 env:
   global:
     - RACK_ENV=test
-    - MONGODB_URI=mongodb://127.0.0.1:27017/agilizer
+    - MONGODB_URI=mongodb://127.0.0.1:27017/job_tomate

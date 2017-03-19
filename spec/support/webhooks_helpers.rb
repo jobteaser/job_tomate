@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "data/stored_webhook"
 
 # A set of helpers to simulate webhook requests
@@ -37,14 +38,25 @@ module WebhooksHelpers
   JIRA_HEADERS = {}.freeze
   IGNORED_HEADERS = %w(CONTENT_LENGTH).freeze
 
+  # Simulate the specified webhook (by name - will fetch in
+  # `support/fixtures/stored_webhooks` or `StoredWebhook`
+  # instance directly.
+  #
   # @param name_or_webhook [String or Data::StoredWebhook]
-  def receive_stored_webhook(name_or_webhook)
+  # @param &block [Block] a block that enables rewriting the 
+  #   `StoredWebhook` object before triggering it. Enables dynamically
+  #   updating the payload or headers.
+  def receive_stored_webhook(name_or_webhook, &block)
     webhook = webhook_from_name_or_webhook(name_or_webhook)
     verb = webhook.headers["REQUEST_METHOD"].downcase
     path = webhook.headers["REQUEST_PATH"]
     headers = webhook.headers.except(*IGNORED_HEADERS)
     headers_true_hash = {}.merge(headers)
     # Otherwise a BSON object, not handled correctly by Rack::Test#post
+
+    # Dynamic update of the webhook
+    yield(webhook) if block_given?
+
     send(verb, path, webhook.body, headers_true_hash)
   end
 
