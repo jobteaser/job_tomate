@@ -9,22 +9,16 @@ ENV["RACK_ENV"] = "test"
 # using WebMock.
 ENV["JIRA_DRY_RUN"] = "false"
 
-if ENV["CI"]
-  # Running on CI, setup Coveralls
-  require "coveralls"
-  Coveralls.wear!
-else
-  # Running locally, setup simplecov
-  require "simplecov"
-  # require "simplecov-lcov"
-  # SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
-  # require "simplecov-json"
-  # SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
-  SimpleCov.start do
-    add_filter do |src|
-      # Ignoring files from the spec directory
-      src.filename =~ %r{/spec/}
-    end
+# Running locally, setup simplecov
+require "simplecov"
+# require "simplecov-lcov"
+# SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
+# require "simplecov-json"
+# SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+SimpleCov.start do
+  add_filter do |src|
+    # Ignoring files from the spec directory
+    src.filename =~ %r{/spec/}
   end
 end
 
