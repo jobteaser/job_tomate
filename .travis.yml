@@ -2,9 +2,11 @@ language: ruby
 rvm:
   - 2.3.3
 before_install: gem install bundler -v 1.10.3
+after_success: bundle exec codeclimate-test-reporter
 services:
   - mongodb
 env:
   global:
     - RACK_ENV=test
     - MONGODB_URI=mongodb://127.0.0.1:27017/job_tomate
+

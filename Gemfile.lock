@@ -13,6 +13,8 @@ GEM
     awesome_print (1.7.0)
     backports (3.6.8)
     bson (4.2.1)
+    codeclimate-test-reporter (1.0.7)
+      simplecov
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
     crack (0.4.3)
@@ -152,6 +154,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  codeclimate-test-reporter (~> 1.0.0)
   dotenv
   guard
   guard-rspec
