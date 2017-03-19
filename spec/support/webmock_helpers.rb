@@ -7,8 +7,7 @@
 # You can then use these fixture files to mock requests using this helper.
 # `spec/unit/jira/support/client_spec.rb` specs uses this approach.
 module WebmockHelpers
-
-  TOGGL_API_BASE_URL = "https://:api_token@toggl.com/reports/api/v2/details"
+  TOGGL_API_BASE_URL = "https://toggl.com/reports/api/v2/details"
   TOGGL_BASE_PARAMS = "&user_agent=JobTomate&workspace_id=twid"
 
   RETURN_VALUES = {
@@ -24,12 +23,12 @@ module WebmockHelpers
 
     credentials = fixture[:request_options]["basic_auth"]
     if credentials.present?
-      username = credentials["username"]
-      password = credentials["password"]
-      url = fixture.request_url.gsub("https://", "https://#{username}:#{password}@")
-    else
-      url = fixture.request_url
+      fixture.request_options["headers"]["Authorization"] = basic_auth_header(
+        account: credentials["username"],
+        password: credentials["password"]
+      )
     end
+    url = fixture.request_url
     url += "?#{fixture.request_options["query"].to_query}"
 
     stub_request(
@@ -59,15 +58,22 @@ module WebmockHelpers
   #       expected_body
   #     )
   #
-  def stub_jira_request(verb, url_suffix, expected_request_body, response_body: "", username: "job_tomate_username", password: "job_tomate_pwd")
-    url_prefix = ENV["JIRA_API_URL_PREFIX"].gsub("https://", "https://#{username}:#{password}@")
+  def stub_jira_request(verb, url, expected_request_body, response_body: "", username: "job_tomate_username", password: "job_tomate_pwd")
+    basic_auth_creds = { account: username, password: password }
     stub_request(
       verb,
-      "#{url_prefix}#{url_suffix}?startAt=0").
+      "#{ENV["JIRA_API_URL_PREFIX"]}#{url}?startAt=0").
       with(
         body: expected_request_body,
-        headers: { "Content-Type" => "application/json" }).
-      to_return(RETURN_VALUES.merge(body: response_body))
+        headers: {
+          "Authorization" => basic_auth_header(basic_auth_creds),
+          "Content-Type" => "application/json"
+        },
+      ).to_return(RETURN_VALUES.merge(body: response_body))
+  end
+
+  def basic_auth_header(account:, password:)
+    'Basic ' + ["#{account}:#{password}"].pack('m').delete("\r\n")
   end
 
   def stub_slack_request(expected_body, return_values: RETURN_VALUES)
@@ -97,7 +103,11 @@ module WebmockHelpers
     stub_request(
       :get,
       "#{TOGGL_API_BASE_URL}?page=#{page}&since=#{since_date_str}&until=#{until_date_str}#{TOGGL_BASE_PARAMS}").
-      with( headers: { "Content-Type" => "application/json" }).
-      to_return(RETURN_VALUES.merge(body: response_body))
+      with(
+        headers: {
+          "Authorization" => basic_auth_header(account: "", password: "api_token"),
+          "Content-Type" => "application/json"
+        }
+      ).to_return(RETURN_VALUES.merge(body: response_body))
   end
 end
