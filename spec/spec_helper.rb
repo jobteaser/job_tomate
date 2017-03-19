@@ -11,10 +11,6 @@ ENV["JIRA_DRY_RUN"] = "false"
 
 # Running locally, setup simplecov
 require "simplecov"
-# require "simplecov-lcov"
-# SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
-# require "simplecov-json"
-# SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 SimpleCov.start do
   add_filter do |src|
     # Ignoring files from the spec directory
@@ -28,7 +24,7 @@ test_environment = {
   "JIRA_ACCEPTED_USERNAMES_FOR_FUNCTIONAL_REVIEW" => "acc.func",
   "JIRA_API_URL_PREFIX" => "https://example.atlassian.net/rest/api/2",
   "JIRA_BROWSER_ISSUE_PREFIX" => "https://example.atlassian.net/browse",
-  "MONGODB_URI" => "mongodb://127.0.0.1:27018/job_tomate",
+  "MONGODB_URI" => ENV["MONGODB_URI"] || "mongodb://127.0.0.1:27018/job_tomate",
   "JIRA_USERNAME" => "job_tomate_username",
   "JIRA_PASSWORD" => "job_tomate_pwd",
   "SLACK_WEBHOOK_URL" => "https://hooks.slack.com/services/abcd1234",
