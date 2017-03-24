@@ -16,9 +16,15 @@ module JobTomate
       ].freeze
 
       # @param issue [Values::Github::Status]
+      # @raise [Errors::Github::UnknownUser] if the status author's login
+      #   does not match any user in the database.
+      #
+      # NB: The status payload may not contain an author login. In this
+      #     case, it does nothing.
       def run(status)
-        user = status.author_user
-        raise_unknown_github_user(status.author_github_user) if user.nil?
+        return if status.author_github_login.nil?
+        user = user_for_github_login(status.author_github_login)
+        raise_unknown_github_login(status.author_github_login) if user.nil?
 
         slack_username = user.slack_username
         raise_missing_slack_username(user) if slack_username.blank?
@@ -30,6 +36,10 @@ module JobTomate
 
       private
 
+      def user_for_github_login(login)
+        JobTomate::Data::User.where(github_user: login).first
+      end
+
       def filtered_description?(status)
         FILTERED_DESCRIPTION_PATTERNS.each do |regexp|
           return true if status.description =~ regexp
@@ -37,8 +47,8 @@ module JobTomate
         false
       end
 
-      def raise_unknown_github_user(github_user)
-        raise Errors::Github::UnknownUser, "Unknown user with github_user '#{github_user}'"
+      def raise_unknown_github_login(login)
+        raise Errors::Github::UnknownUser, "Unknown user with github login '#{login}'"
       end
 
       def raise_missing_slack_username(user)

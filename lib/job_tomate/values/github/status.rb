@@ -26,12 +26,8 @@ module JobTomate
           @data = data.slice(*STORED_DATA_ATTRIBUTES)
         end
 
-        def author_github_user
-          data["commit"]["author"]["login"]
-        end
-
-        def author_user
-          JobTomate::Data::User.where(github_user: author_github_user).first
+        def author_github_login
+          data.dig("commit", "author", "login")
         end
 
         def branch
