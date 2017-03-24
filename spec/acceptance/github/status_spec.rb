@@ -33,12 +33,23 @@ describe "/webhooks/github" do
       expect(stub).to have_been_requested
     end
 
-    context "received status update is filtered" do
+    context "status update is filtered" do
       it "does not notify the status update author" do
         receive_stored_webhook(:github_status_update) do |webhook|
           source = "Your tests passed on CircleCI!"
           replacement = "Code Climate is analyzing this code"
           webhook.body.gsub!(source, replacement)
+        end
+        expect(stub).not_to have_been_requested
+      end
+    end
+
+    context "status has no author login" do
+      it "does nothing" do
+        receive_stored_webhook(:github_status_update) do |webhook|
+          body = webhook.value.parsed_body
+          body["commit"]["author"] = nil
+          webhook.body = body.to_json
         end
         expect(stub).not_to have_been_requested
       end
