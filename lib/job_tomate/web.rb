@@ -17,7 +17,11 @@ module JobTomate
       { status: "ok" }.to_json
     end
 
-    # Extends the JobTomate::Web Sinatra app to handle webhook endpoints. These are defined in /triggers/webhooks.
+    # Extends the JobTomate::Web Sinatra app to handle webhook endpoints.
+    # These are defined in /triggers/webhooks.
+    #
+    # A `/webhooks/some_integration` webhook will use the
+    # `JobTomate::Triggers::Webhooks::SomeIntegration` class for processing.
     namespace "/webhooks" do
       base_path = File.expand_path("..", __FILE__)
       Dir[File.expand_path("../triggers/webhooks/**/*.rb", __FILE__)].each do |file|
