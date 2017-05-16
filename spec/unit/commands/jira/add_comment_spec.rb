@@ -6,11 +6,6 @@ describe JobTomate::Commands::JIRA::AddComment do
   describe ".run(issue_key, username, password, time_spent, start)" do
     context "JIRA_DRY_RUN" do
 
-      let(:time) do
-        Timecop.freeze(Time.now)
-        Time.now
-      end
-
       before { ENV["JIRA_DRY_RUN"] = "true" }
       after  { ENV["JIRA_DRY_RUN"] = "false" }
 
@@ -20,8 +15,10 @@ describe JobTomate::Commands::JIRA::AddComment do
       end
 
       it "logs the request details" do
-        expected_log = "JobTomate::Commands::JIRA::AddComment.run [\"JT-1234\", \"jira_username\", \"jira_password\", \"comment text\"]"
-        expect(JobTomate::LOGGER).to receive(:info).with(expected_log)
+        expected_log = "JobTomate::Commands::JIRA::AddComment.run in transaction 'tuuid' - "
+        expect(JobTomate::LOGGER).to receive(:info).twice do |string|
+          string =~ Regexp.new(expected_log)
+        end
         described_class.run("JT-1234", "jira_username", "jira_password", "comment text")
       end
     end
