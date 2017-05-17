@@ -1,7 +1,7 @@
 require "spec_helper"
 require "data/user"
 
-describe "new comment on JIRA issue notifies a mentioned user on Slack" do
+describe "Slack notify on JIRA issue comment" do
   include WebhooksHelpers
   include WebmockHelpers
 
