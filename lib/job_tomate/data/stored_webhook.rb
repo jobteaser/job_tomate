@@ -13,6 +13,7 @@ module JobTomate
       include Mongoid::Document
       include Mongoid::Timestamps
 
+      field :transaction_uuid, type: String
       field :headers, type: Hash
       field :body, type: String
 

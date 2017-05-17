@@ -21,9 +21,25 @@ module JobTomate
     # Example:
     #     MyService.run(arg, another)
     #     #=> will run MyService.new.run(arg, another)
+    #
+    # NB: the transaction UUID is set at the thread level.
     def run(*args)
-      LOGGER.info "#{name}.run #{args}"
-      new.run(*args)
+      within_log { new.run(*args) }
+    end
+
+    private
+
+    def within_log
+      start = Time.now
+      LOGGER.info "#{name}.run in transaction '#{transaction_uuid}' - START"
+      result = yield
+      duration = (Time.now - start) / 1_000
+      LOGGER.info "#{name}.run in transaction '#{transaction_uuid}' - END (#{duration}s)"
+      result
+    end
+
+    def transaction_uuid
+      Thread.current.thread_variable_get("transaction_uuid")
     end
   end
 end

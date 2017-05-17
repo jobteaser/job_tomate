@@ -15,8 +15,11 @@ describe JobTomate::Commands::JIRA::AddWorklog do
       end
 
       it "logs the request details" do
-        expected_log = "JobTomate::Commands::JIRA::AddWorklog.run [\"JT-1234\", \"jira_username\", \"jira_password\", 100, #{time}]"
-        expect(JobTomate::LOGGER).to receive(:info).with(expected_log)
+        expected_log = "JobTomate::Commands::JIRA::AddWorklog.run in transaction 'tuuid' - "
+        expect(JobTomate::LOGGER).to receive(:info).with(expected_log + "START")
+        expect(JobTomate::LOGGER).to receive(:info) do |args|
+          args =~ %r{#{expected_log}END.*}
+        end
         described_class.run("JT-1234", "jira_username", "jira_password", 100, Time.now)
       end
     end
