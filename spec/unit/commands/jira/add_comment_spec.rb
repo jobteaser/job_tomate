@@ -15,7 +15,7 @@ describe JobTomate::Commands::JIRA::AddComment do
       end
 
       it "logs the request details" do
-        expected_log = "JobTomate::Commands::JIRA::AddComment.run in transaction 'tuuid' - "
+        expected_log = "JobTomate::Commands::JIRA::AddComment.run transaction='tuuid' - "
         expect(JobTomate::LOGGER).to receive(:info).twice do |string|
           string =~ Regexp.new(expected_log)
         end

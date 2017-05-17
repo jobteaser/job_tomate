@@ -31,10 +31,10 @@ module JobTomate
 
     def within_log
       start = Time.now
-      LOGGER.info "#{name}.run in transaction '#{transaction_uuid}' - START"
+      LOGGER.info "#{name}.run transaction='#{transaction_uuid}' - START"
       result = yield
       duration = (Time.now - start) / 1_000
-      LOGGER.info "#{name}.run in transaction '#{transaction_uuid}' - END (#{duration}s)"
+      LOGGER.info "#{name}.run transaction='#{transaction_uuid}' - END (#{duration}s)"
       result
     end
 
