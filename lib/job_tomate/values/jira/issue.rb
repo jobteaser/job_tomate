@@ -10,7 +10,8 @@ module JobTomate
         CUSTOM_FIELDS_MAPPING = {
           "developer" => "customfield_10600",
           "reviewer" => "customfield_10601",
-          "feature_owner" => "customfield_11200"
+          "feature_owner" => "customfield_11200",
+          'bug_cause' => 'customfield_11101'
         }
 
         # Returns the JIRA field for a custom field.
@@ -59,6 +60,10 @@ module JobTomate
         # @return [String]
         def category
           data["fields"]["customfield_10400"]["name"]
+        end
+
+        def issue_type
+          data['fields']['issuetype']['name']
         end
 
         def maintenance?
@@ -115,6 +120,15 @@ module JobTomate
           user = Data::User.where(jira_username: username).first
           fail Errors::JIRA::UnknownUser, "no user with jira_username == \"#{username}\"" if user.nil?
           user
+        end
+
+         def is_bug?
+          issue_type == 'Bug'
+        end
+
+        # customfield_11101 corresponds to `bug_cause`
+        def has_bug_cause?
+          !custom_field('bug_cause').empty? 
         end
       end
     end

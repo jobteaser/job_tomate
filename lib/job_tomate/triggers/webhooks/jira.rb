@@ -25,14 +25,14 @@ module JobTomate
       # Handling update events
       # ----------------------
       # To handle update events, you need to have the appropriate
-      # event classe defined. For example, if you need to generate
+      # event class defined. For example, if you need to generate
       # an event for a change on the "status" field, you need to
       # define the Events::JIRA::IssueUpdatedStatus class.
       #
       # If you're not dealing with a default JIRA attribute, you
       # can specify the mapping in `Values::JIRA::Changelog`.
       #
-      # All classes under /events/jira gets required at
+      # All classes under /events/jira get required at
       # the beginning of this file, so if an event class
       # matching the updated field is found, the corresponding
       # event is run. So to add a new event, you just have
@@ -54,6 +54,7 @@ module JobTomate
           run_events_for_issue_deleted if issue_deleted?
           run_events_for_issue_new_comment if issue_new_comment?
           run_events_for_issue_changelog if issue_changelog?
+          run_events_for_bug_without_cause if bug_without_cause?
         end
 
         private
@@ -68,14 +69,25 @@ module JobTomate
           webhook_event == "issue_deleted"
         end
 
+        def issue_updated?
+          webhook_event == "issue_updated"
+        end
+
         def issue_new_comment?
-          return false unless webhook_event == "issue_updated"
+          return false unless issue_updated?
           webhook.parsed_body["comment"].present?
         end
 
         def issue_changelog?
-          return false unless webhook_event == "issue_updated"
+          return false unless issue_updated?
           webhook.parsed_body["changelog"].present?
+        end
+
+        def bug_without_cause?
+          return false unless issue_updated?
+          issue = issue_value
+          return false unless issue.is_bug? && issue.has_bug_cause?
+          true     
         end
 
         def run_events_for_issue_created
@@ -110,6 +122,10 @@ module JobTomate
             return
           end
           module_constant.run(issue_value, changelog_value, webhook_user_name)
+        end
+
+        def run_events_for_bug_without_cause
+          Events::JIRA::BugIssueWithoutCauseUpdated.run(issue_value)
         end
 
         def changelog_field(changelog_value)
