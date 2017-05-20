@@ -15,6 +15,7 @@ module JobTomate
       #   - Choose "Send me everything"
       class Github
         HEADER_EVENT = "HTTP_X_GITHUB_EVENT".freeze
+        HEADER_EVENT_VALID_VALUES = %w(issue_comment status pull_request pull_request_review_comment)
 
         def self.definition
           {
@@ -27,6 +28,7 @@ module JobTomate
         # @param webhook [Values::Webhook]
         def run_events(webhook)
           @webhook = webhook
+          raise Web::InvalidWebhook unless valid_webhook?
           process_pull_request_event if pull_request_event?
           process_status_event if status_event?
         end
@@ -34,6 +36,10 @@ module JobTomate
         private
 
         attr_reader :webhook
+
+        def valid_webhook?
+          webhook.headers[HEADER_EVENT].in? HEADER_EVENT_VALID_VALUES
+        end
 
         def status_event?
           webhook.headers[HEADER_EVENT] == "status"
