@@ -20,13 +20,13 @@ module JobTomate
 
         match(/archived channels/) do |client, data, _match|
           message = archived_channels_message(client)
-          send_message client, data.channel, message
+          client.say(channel: data.channel, text: message)
         end
 
         match(/archive current channel/) do |client, data, _match|
           channel_id = data["channel"]
           message = add_archived_channel(channel_id, client)
-          send_message client, data.channel, message
+          client.say(channel: data.channel, text: message)
         end
 
         match(/stop archiving current channel/) do |client, data, _match|
@@ -42,7 +42,7 @@ module JobTomate
           )
           message << " #{archived_channels_message(client)}"
 
-          send_message client, data.channel, message
+          client.say(channel: data.channel, text: message)
         end
 
         # Archive the message if:
@@ -52,7 +52,7 @@ module JobTomate
           if should_archive_message?(data)
             archive_message(client, data)
             unless in_archived_channel?(data)
-              send_message client, data.channel, "Got it!"
+              client.say(channel: data.channel, text: "Got it!")
             end
           end
         end
@@ -99,7 +99,7 @@ module JobTomate
         end
 
         def self.find_client_channel(channel_id, client)
-          client.channels.find { |c| c["id"] == channel_id }
+          client.channels.find { |id, _| id == channel_id }
         end
 
         def self.remove_archived_channel(channel_id)
@@ -130,8 +130,8 @@ module JobTomate
 
         def self.archived_channels(client)
           ids = Data::SlackChannel.where(archived: true).map(&:slack_id)
-          client.channels.select do |channel|
-            channel["id"].in?(ids)
+          client.channels.select do |id, _info|
+            id.in?(ids)
           end
         end
       end
