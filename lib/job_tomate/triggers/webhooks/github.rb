@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "events/github/pull_request_opened"
 require "events/github/pull_request_closed"
 require "events/github/status_updated"
@@ -14,8 +16,13 @@ module JobTomate
       #   - Path: /webhooks/github
       #   - Choose "Send me everything"
       class Github
-        HEADER_EVENT = "HTTP_X_GITHUB_EVENT".freeze
-        HEADER_EVENT_VALID_VALUES = %w(issue_comment status pull_request pull_request_review_comment)
+        HEADER_EVENT = "HTTP_X_GITHUB_EVENT"
+        HEADER_EVENT_VALID_VALUES = %w(
+          issue_comment
+          status
+          pull_request
+          pull_request_review_comment
+        ).freeze
 
         def self.definition
           {

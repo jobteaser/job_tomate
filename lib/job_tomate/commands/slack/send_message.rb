@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "uri"
 require "active_support/all"
 require "httparty"

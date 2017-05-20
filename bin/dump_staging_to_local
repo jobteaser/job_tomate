@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Import the staging database locally
 #
@@ -13,13 +14,18 @@ require "uri"
 require "mongo"
 uri = Mongo::URI.new(`heroku config -a job-tomate-staging | grep MONGODB_URI | awk '{print $2}'`.strip)
 
-
 def run(cmd)
   puts "[RUN] #{cmd}"
   system cmd
 end
 
-cmd = "mongodump -h #{uri.servers.first} -d #{uri.database} -u #{uri.credentials[:user]} -p #{uri.credentials[:password]} -o ./dump"
+cmd = \
+  "mongodump " \
+  "-h #{uri.servers.first} " \
+  "-d #{uri.database} " \
+  "-u #{uri.credentials[:user]} " \
+  "-p #{uri.credentials[:password]} " \
+  "-o ./dump"
 run cmd
 
 cmd = "mongo job_tomate --eval \"db.dropDatabase()\""

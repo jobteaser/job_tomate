@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "slack-ruby-bot"
 require "data/slack_channel"
 require "data/slack_message"
@@ -84,17 +86,15 @@ module JobTomate
         def self.add_archived_channel(channel_id, client)
           client_channel = find_client_channel(channel_id, client)
           return "This is not a channel!" if client_channel.nil?
-
           return "Channel is already archived!" if find_archived_channel(channel_id)
 
           name = channel_name(client, channel_id)
           message = (
             if Data::SlackChannel.create slack_id: channel_id, archived: true
               "Archiving channel ##{name}!"
-            else
-              "Could not archive channel ##{name}..."
-            end
-          )
+            else "Could not archive channel ##{name}..."
+            end)
+
           message + " #{archived_channels_message(client)}"
         end
 
@@ -118,13 +118,13 @@ module JobTomate
         def self.archived_channels_message(client)
           names = archived_channel_names(client)
           return "No archived channels yet!" if names.empty?
-          "Archived channels: #{names.join(", ")}"
+          "Archived channels: #{names.join(', ')}"
         end
 
         def self.archived_channel_names(client)
           channels = archived_channels(client)
-          channels.map do |id, info|
-            "##{info["name"]}"
+          channels.map do |_id, info|
+            "##{info['name']}"
           end
         end
 

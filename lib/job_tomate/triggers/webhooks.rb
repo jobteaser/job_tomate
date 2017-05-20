@@ -1,6 +1,10 @@
 # frozen_string_literal: true
+
 module JobTomate
   module Triggers
+
+    # Handle webhook triggers. Enables integration with third-party
+    # services (e.g. JIRA, Github...).
     module Webhooks
       InvalidWebhook = Class.new(StandardError)
 
@@ -13,6 +17,11 @@ module JobTomate
         Transaction.new.run(trigger, request, async)
       end
 
+      # Wrap the execution of the webhook inside a "transaction" to
+      # associate services (including `ServicePattern`) execution
+      # with an unique transaction UUID. Also provides facility to
+      # execute the transaction asynchronously and respond to the
+      # webhook's request instantly.
       class Transaction
 
         def run(trigger, request, async)
