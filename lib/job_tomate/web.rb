@@ -1,5 +1,6 @@
 require "sinatra/base"
 require "sinatra/namespace"
+require "triggers/webhooks"
 
 module JobTomate
 
@@ -12,8 +13,6 @@ module JobTomate
     register Sinatra::Namespace
     set :show_exceptions, false if ENV["RACK_ENV"] == "test"
     enable :async_web_transactions
-
-    InvalidWebhook = Class.new(StandardError)
 
     get "/" do
       { status: "ok" }.to_json
@@ -39,51 +38,21 @@ module JobTomate
         module_path = file.gsub(base_path, "").gsub(/\.rb\Z/, "")
         module_segments = module_path.split("/").reject(&:blank?)
         trigger_module = (["JobTomate"] + module_segments.map(&:camelize)).join("::").constantize
-
         webhook_def = trigger_module.definition
+
         send(webhook_def[:verb], webhook_def[:path]) do
-          transaction_uuid = run_transaction do |uuid|
-            webhook_value = JobTomate::Values::Webhook.with_request(request)
-            JobTomate::Data::StoredWebhook.create(
-              transaction_uuid: uuid,
-              headers: webhook_value.headers,
-              body: webhook_value.body
+          begin
+            transaction_uuid = JobTomate::Triggers::Webhooks.run(
+              trigger: trigger_module.new,
+              request: request,
+              async: settings.async_web_transactions
             )
-            begin
-              trigger_module.new.run_events(webhook_value)
-            rescue InvalidWebhook
-              return [400, { status: "invalid webhook" }.to_json]
-            end
+          rescue JobTomate::Triggers::Webhooks::InvalidWebhook
+            return [400, { status: "invalid webhook" }.to_json]
           end
           { status: "ok", transaction_uuid: transaction_uuid }.to_json
         end
       end
-    end
-
-    private
-
-    def run_transaction(async: settings.async_web_transactions?, &block)
-      raise("Missing block") unless block_given?
-      async ? run_transaction_async(&block) : run_transaction_sync(&block)
-    end
-
-    def run_transaction_async
-      uuid = generate_uuid
-      Thread.new do
-        Thread.current.thread_variable_set("transaction_uuid", uuid)
-        yield(uuid)
-      end
-      uuid
-    end
-
-    def run_transaction_sync
-      uuid = generate_uuid
-      yield
-      uuid
-    end
-
-    def generate_uuid
-      SecureRandom.uuid
     end
   end
 end

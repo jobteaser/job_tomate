@@ -28,7 +28,7 @@ module JobTomate
         # @param webhook [Values::Webhook]
         def run_events(webhook)
           @webhook = webhook
-          raise Web::InvalidWebhook unless valid_webhook?
+          raise InvalidWebhook unless valid_webhook?
           process_pull_request_event if pull_request_event?
           process_status_event if status_event?
         end
