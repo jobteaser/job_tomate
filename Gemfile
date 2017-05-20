@@ -14,6 +14,7 @@ gem "awesome_print"
 gem "ruby-progressbar"
 
 # Slack bot
+gem "faye-websocket"
 gem "slack-ruby-bot"
 
 group :development do
