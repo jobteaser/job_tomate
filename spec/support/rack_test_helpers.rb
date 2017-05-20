@@ -14,7 +14,9 @@ module RackTestHelpers
   include Rack::Test::Methods
 
   def app
-    JobTomate::Web
+    web = JobTomate::Web
+    web.disable :async_web_transactions
+    web
   end
 
   def post_json(path, payload)

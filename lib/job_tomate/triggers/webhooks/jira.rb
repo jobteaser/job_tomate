@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "data/stored_webhook"
 require "errors/jira"
 require "values/jira/changelog"
@@ -50,6 +52,7 @@ module JobTomate
 
         def run_events(webhook)
           @webhook = webhook
+          raise(InvalidWebhook, "Received webhook is not valid") unless valid_webhook?
           run_events_for_issue_created if issue_created?
           run_events_for_issue_deleted if issue_deleted?
           run_events_for_issue_new_comment if issue_new_comment?
@@ -59,6 +62,10 @@ module JobTomate
         private
 
         attr_reader :webhook
+
+        def valid_webhook?
+          webhook.parsed_body["webhookEvent"].present?
+        end
 
         def issue_created?
           webhook_event == "issue_created"
