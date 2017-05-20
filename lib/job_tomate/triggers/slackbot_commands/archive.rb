@@ -123,8 +123,8 @@ module JobTomate
 
         def self.archived_channel_names(client)
           channels = archived_channels(client)
-          channels.map do |channel|
-            "##{channel["name"]}"
+          channels.map do |id, info|
+            "##{info["name"]}"
           end
         end
 
