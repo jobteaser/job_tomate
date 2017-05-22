@@ -16,13 +16,19 @@ module JobTomate
           return
         end
 
+        send_message(issue)
+      end
+
+      def send_message(issue)
         link = "<#{issue.link}|#{issue.key}>"
-        message = "The bug issue you're working on doesn't have a cause specified. Please do something about it! #{link} (#{issue.status})"
+        message = 
+          "The bug issue you're working on doesn't have a cause specified. 
+          Please do something about it! #{link} (#{issue.status})"
         Commands::Slack::SendMessage.run(
           message,
           channel: "@#{issue.assignee_user.slack_username}",
-          username: 'Bug Monster',
-          icon_emoji: ':smiling_imp:'
+          username: "Bug Monster",
+          icon_emoji: ":smiling_imp:"
         )
       end
     end

@@ -116,7 +116,6 @@ module JobTomate
           module_constant.run(issue_value, changelog_value, webhook_user_name)
         end
 
-
         def changelog_field(changelog_value)
           return changelog_value.field
         rescue Errors::JIRA::UnknownCustomField

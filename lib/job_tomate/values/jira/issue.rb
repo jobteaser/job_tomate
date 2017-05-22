@@ -11,8 +11,8 @@ module JobTomate
           "developer" => "customfield_10600",
           "reviewer" => "customfield_10601",
           "feature_owner" => "customfield_11200",
-          'bug_cause' => 'customfield_11101'
-        }
+          "bug_cause" => "customfield_11101"
+        }.freeze
 
         # Returns the JIRA field for a custom field.
         # @param custom_field [String] name of the custom field
@@ -63,7 +63,7 @@ module JobTomate
         end
 
         def issue_type
-          data['fields']['issuetype']['name']
+          data["fields"]["issuetype"]["name"]
         end
 
         def maintenance?
@@ -122,13 +122,13 @@ module JobTomate
           user
         end
 
-         def is_bug?
-          issue_type == 'Bug'
+        def bug?
+          issue_type == "Bug"
         end
 
         # customfield_11101 corresponds to `bug_cause`
-        def has_bug_cause?
-          !custom_field('bug_cause').empty? 
+        def bug_cause?
+          !custom_field("bug_cause").empty? 
         end
       end
     end
