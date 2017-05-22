@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "data/user"
 require "support/service_pattern"
 
@@ -21,8 +22,8 @@ module JobTomate
 
       def send_message(issue)
         link = "<#{issue.link}|#{issue.key}>"
-        message = 
-          "The bug issue you're working on doesn't have a cause specified. 
+        message =
+          "The bug issue you're working on doesn't have a cause specified.
           Please do something about it! #{link} (#{issue.status})"
         Commands::Slack::SendMessage.run(
           message,

@@ -128,7 +128,7 @@ module JobTomate
 
         # customfield_11101 corresponds to `bug_cause`
         def bug_cause?
-          !custom_field("bug_cause").empty? 
+          !custom_field("bug_cause").empty?
         end
       end
     end
