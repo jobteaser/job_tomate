@@ -54,7 +54,6 @@ module JobTomate
           run_events_for_issue_deleted if issue_deleted?
           run_events_for_issue_new_comment if issue_new_comment?
           run_events_for_issue_changelog if issue_changelog?
-          run_events_for_bug_without_cause if bug_without_cause?
         end
 
         private
@@ -81,13 +80,6 @@ module JobTomate
         def issue_changelog?
           return false unless issue_updated?
           webhook.parsed_body["changelog"].present?
-        end
-
-        def bug_without_cause?
-          return false unless issue_updated?
-          issue = issue_value
-          return false unless issue.is_bug? && issue.has_bug_cause?
-          true     
         end
 
         def run_events_for_issue_created
@@ -124,9 +116,6 @@ module JobTomate
           module_constant.run(issue_value, changelog_value, webhook_user_name)
         end
 
-        def run_events_for_bug_without_cause
-          Events::JIRA::BugIssueWithoutCauseUpdated.run(issue_value)
-        end
 
         def changelog_field(changelog_value)
           return changelog_value.field

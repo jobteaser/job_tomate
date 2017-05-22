@@ -16,6 +16,7 @@ module JobTomate
         # @param user_name [String]
         def run(issue, changelog, user_name)
           Actions::JIRAUpdateIssueAssigneeAndRolesForStatus.run(issue, changelog, user_name)
+          Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause.run(issue) if issue.is_bug? && !issue.has_bug_cause?
         end
       end
     end

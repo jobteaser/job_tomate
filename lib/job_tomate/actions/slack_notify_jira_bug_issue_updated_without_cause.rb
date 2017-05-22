@@ -5,7 +5,7 @@ module JobTomate
   module Actions
 
     # Notifies the JIRA issue's assignee on Slack.
-    class SlackNotifyJIRABugIssueWithoutCauseUpdated
+    class SlackNotifyJIRABugIssueUpdatedWithoutCause
       extend ServicePattern
 
       # @param issue [Values::JIRA::Issue]
