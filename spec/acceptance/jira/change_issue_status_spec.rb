@@ -183,7 +183,7 @@ describe "change issue status" do
       let(:expected_slack_body) do
         issue_link = "<https://example.atlassian.net/browse/JT-4467|JT-4467>"
         {
-          text: "The bug issue you're working on doesn't have a cause specified. 
+          text: "The bug issue you're working on doesn't have a cause specified.
 Please do something about it! #{issue_link} (#{changelog_to_string})",
           channel: "@#{slack_username}",
           username: "Bug Monster",
