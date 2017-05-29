@@ -75,6 +75,10 @@ module JobTomate
           value ? value["name"] : nil
         end
 
+        def set_assignee_name(username)
+          data["fields"]["assignee"] = { "name" => username }
+        end
+
         def assignee_user
           user_for_name(assignee_name)
         end

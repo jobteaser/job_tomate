@@ -116,10 +116,13 @@ module JobTomate
 
       def unassign(issue)
         update_issue(issue, fields: { assignee: nil })
+        issue.set_assignee_name(nil)
       end
 
       def assign_to(issue, assignee)
-        update_issue(issue, fields: { assignee: { name: assignee.jira_username } })
+        username = assignee.jira_username
+        update_issue(issue, fields: { assignee: { name: username } })
+        issue.set_assignee_name(username)
       end
 
       def user_for_role(issue, role)

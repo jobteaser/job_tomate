@@ -163,11 +163,11 @@ describe "change issue status" do
   end
 
   context "for a bug issue and" do
-    before do 
+    before do
       allow(JobTomate::Commands::JIRA::UpdateIssue).to receive(:run).and_return(WebmockHelpers::RETURN_VALUES)
     end
     let(:issue_developer_name) { jira_username }
-    
+
     context "get a slack notification because" do
       let(:webhook_for_slack_notification) do
         wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
@@ -175,7 +175,6 @@ describe "change issue status" do
         parsed_body["issue"]["fields"]["customfield_10600"] = issue_developer
         parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
         parsed_body["issue"]["fields"]["customfield_11101"] = nil
-        parsed_body["issue"]["fields"]["assignee"] = issue_developer
         wh.body = parsed_body.to_json
         wh
       end
@@ -199,7 +198,7 @@ Please do something about it! #{issue_link} (#{changelog_to_string})",
     end
 
     context "have no slack notifications because" do
-      let(:webhook_for_no_slack_notification) do 
+      let(:webhook_for_no_slack_notification) do
         wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
         parsed_body = wh.value.parsed_body
         parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
