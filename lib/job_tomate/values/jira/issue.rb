@@ -116,6 +116,12 @@ module JobTomate
           fail Errors::JIRA::UnknownUser, "no user with jira_username == \"#{username}\"" if user.nil?
           user
         end
+
+        def missing_feature_env?(changelog)
+          # most probably this is not the right field designation. To check!
+          return false unless data['fields']['environment'].nil?
+          changelog.requires_feature_env?
+        end
       end
     end
   end
