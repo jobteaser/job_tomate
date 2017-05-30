@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "data/user"
 require "support/service_pattern"
 
@@ -14,7 +15,10 @@ module JobTomate
           LOGGER.warn "unknown Slack username for user ##{issue.assignee_user.id}"
           return
         end
+        send_message(issue, changelog)
+      end
 
+      def send_message(issue, changelog)
         link = "<#{issue.link}|#{issue.key}>"
         message = "This JIRA issue #{link} (#{changelog.to_string}) requires a feature env. Why don't you add it?"
         Commands::Slack::SendMessage.run(

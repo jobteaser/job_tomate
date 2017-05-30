@@ -14,7 +14,7 @@ module JobTomate
           "feature_env" => "customfield_12300",
           "tribe" => "customfield_12100",
           "type_of_issue" => "customfield_12404"
-        }
+        }.freeze
 
         # Returns the JIRA field for a custom field.
         # @param custom_field [String] name of the custom field
@@ -121,7 +121,7 @@ module JobTomate
         end
 
         def missing_feature_env?(changelog)
-          return false unless custom_field('feature_env').nil?
+          return false unless custom_field("feature_env").nil?
           changelog.requires_feature_env?
         end
       end
