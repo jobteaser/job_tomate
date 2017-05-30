@@ -28,4 +28,3 @@ module JobTomate
     end
   end
 end
-
