@@ -10,7 +10,10 @@ module JobTomate
         CUSTOM_FIELDS_MAPPING = {
           "developer" => "customfield_10600",
           "reviewer" => "customfield_10601",
-          "feature_owner" => "customfield_11200"
+          "feature_owner" => "customfield_11200",
+          "feature_env" => "customfield_12300",
+          "tribe" => "customfield_12100",
+          "type_of_issue" => "customfield_12404"
         }
 
         # Returns the JIRA field for a custom field.
@@ -118,8 +121,7 @@ module JobTomate
         end
 
         def missing_feature_env?(changelog)
-          # most probably this is not the right field designation. To check!
-          return false unless data['fields']['environment'].nil?
+          return false unless custom_field('feature_env').nil?
           changelog.requires_feature_env?
         end
       end
