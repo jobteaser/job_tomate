@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "triggers/tasks/fetch_toggl_reports"
 require "timecop"
@@ -10,16 +12,12 @@ describe "fetch_toggl_reports" do
 
   before do
     Timecop.freeze(1.minute.ago)
-
-    # Necessary to ensure the JIRA API calls are performed using the
-    # correct user (the one associated to the worklog).
-    JobTomate::Data::User.create(toggl_user: "Some User", jira_username: jira_username, jira_password: jira_password)
   end
 
   let(:since_date) { 1.day.ago.to_date }
   let(:until_date) { Date.today }
-  let(:jira_username) { "jira-user" }
-  let(:jira_password) { "jira-pwd" }
+  let(:jira_username) { ENV["JIRA_USERNAME"] }
+  let(:jira_password) { ENV["JIRA_PASSWORD"] }
   let(:worklog_id) { rand(36**8).to_s(36) }
 
   # Returns the corresponding Toggl report fixture
@@ -111,34 +109,7 @@ describe "fetch_toggl_reports" do
     end
   end
 
-  describe "new report for a non-existing user" do
-
-    before do
-      JobTomate::Data::User.last.destroy
-      mock_toggl(:report_2_base_syncable_to_jira)
-    end
-
-    # We expect it not to do an HTTP request. Webmock will raise an error otherwise.
-    it "records a pending Toggl entry" do
-      begin
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
-      rescue JobTomate::Errors::JIRA::UnknownUser
-        expect(JobTomate::Data::TogglEntry.count).to eq(1)
-        entry = JobTomate::Data::TogglEntry.last
-        expect(entry.status).to eq("pending")
-        expect(entry.jira_worklog_id).to be_nil
-      end
-    end
-
-    it "raises a specific error" do
-      expect {
-        JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
-      }.to raise_error(JobTomate::Errors::JIRA::UnknownUser, "No user for toggl_user=Some User")
-    end
-  end
-
   describe "existing report unchanged" do
-
     before do
       mock_toggl(:report_1_base_not_related_to_jira)
       JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
@@ -179,10 +150,10 @@ describe "fetch_toggl_reports" do
     # error if any HTTP call was attempted.
     it "updates the Toggl entry and does nothing" do
       entry = JobTomate::Data::TogglEntry.last
-      expect {
+      expect do
         mock_toggl(:report_1_changed_duration)
         JobTomate::Triggers::Tasks::FetchTogglReports.run(since_date, until_date)
-      }.to change { entry.reload.updated_at }
+      end.to change { entry.reload.updated_at }
       expect(JobTomate::Data::TogglEntry.count).to eq(1)
     end
   end

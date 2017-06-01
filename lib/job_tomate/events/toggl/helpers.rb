@@ -88,9 +88,13 @@ module JobTomate
         end
 
         def jira_credentials
-          user = Data::User.where(toggl_user: entry.toggl_user).first
-          fail Errors::JIRA::UnknownUser, "No user for toggl_user=#{entry.toggl_user}" if user.nil?
-          [user.jira_username, user.jira_password]
+          username = ENV["JIRA_USERNAME"]
+          password = ENV["JIRA_PASSWORD"]
+          if username.blank? || password.blank?
+            raise Errors::JIRA::MissingSharedUser,
+              "Missing shared JIRA user (set JIRA_USERNAME and JIRA_PASSWORD environment variables)"
+          end
+          [username, password]
         end
       end
     end
