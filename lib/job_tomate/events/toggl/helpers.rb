@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "commands/jira/add_worklog"
 require "commands/jira/delete_worklog"
 require "commands/jira/update_worklog"
@@ -12,6 +14,7 @@ module JobTomate
       #   - `@entry instance variable containing [Data::TogglEntry]
       #     instance
       module Helpers
+        private
 
         def entry
           @entry
@@ -58,7 +61,8 @@ module JobTomate
             username,
             password,
             entry.toggl_duration,
-            entry.toggl_started
+            entry.toggl_started,
+            comment
           )
         end
 
@@ -71,7 +75,8 @@ module JobTomate
             username,
             password,
             entry.toggl_duration,
-            entry.toggl_started
+            entry.toggl_started,
+            comment
           )
         end
 
@@ -95,6 +100,10 @@ module JobTomate
               "Missing shared JIRA user (set JIRA_USERNAME and JIRA_PASSWORD environment variables)"
           end
           [username, password]
+        end
+
+        def comment
+          "#{entry.toggl_user} logged work from Toggl (via JobTomate)"
         end
       end
     end

@@ -19,6 +19,8 @@ describe "fetch_toggl_reports" do
   let(:jira_username) { ENV["JIRA_USERNAME"] }
   let(:jira_password) { ENV["JIRA_PASSWORD"] }
   let(:worklog_id) { rand(36**8).to_s(36) }
+  let(:started) { started = "2016-05-06T15:22:09.000+0000" }
+  let(:comment) { "Some User logged work from Toggl (via JobTomate)" }
 
   # Returns the corresponding Toggl report fixture
   def mock_toggl(name, page: 1)
@@ -31,7 +33,7 @@ describe "fetch_toggl_reports" do
     stub_jira_request(
       :post,
       "/issue/#{issue_key}/worklog",
-      "{\"timeSpentSeconds\":#{timespent},\"started\":\"2016-05-06T15:22:09.000+0000\"}",
+      "{\"timeSpentSeconds\":#{timespent},\"started\":\"#{started}\",\"comment\":\"#{comment}\"}",
       response_body: { id: worklog_id }.to_json,
       username: jira_username,
       password: jira_password
@@ -42,7 +44,7 @@ describe "fetch_toggl_reports" do
     stub_jira_request(
       :put,
       "/issue/#{issue_key}/worklog/#{worklog_id}",
-      "{\"timeSpentSeconds\":#{timespent},\"started\":\"2016-05-06T15:22:09.000+0000\"}",
+      "{\"timeSpentSeconds\":#{timespent},\"started\":\"#{started}\",\"comment\":\"#{comment}\"}",
       response_body: { id: worklog_id }.to_json,
       username: jira_username,
       password: jira_password

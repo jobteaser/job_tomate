@@ -8,9 +8,10 @@ module JobTomate
         attr_reader :data
 
         CUSTOM_FIELDS_MAPPING = {
-          "developer" => "customfield_10600",
+          "developer_backend" => "customfield_10600",
           "reviewer" => "customfield_10601",
-          "feature_owner" => "customfield_11200"
+          "feature_owner" => "customfield_11200",
+          "developer_frontend" => "customfield_12404"
         }
 
         # Returns the JIRA field for a custom field.
@@ -19,7 +20,7 @@ module JobTomate
         #
         # Usage:
         #
-        #   Issue.jira_field("developer")
+        #   Issue.jira_field("developer_backend")
         #   # => "customfield_10600"
         def self.jira_field(custom_field)
           CUSTOM_FIELDS_MAPPING[custom_field]
@@ -74,13 +75,13 @@ module JobTomate
           user_for_name(assignee_name)
         end
 
-        def developer_name
-          value = custom_field("developer")
+        def developer_backend_name
+          value = custom_field("developer_backend")
           value ? value["name"] : nil
         end
 
-        def developer_user
-          user_for_name(developer_name)
+        def developer_backend_user
+          user_for_name(developer_backend_name)
         end
 
         def reviewer_name

@@ -15,11 +15,13 @@ module JobTomate
         # @param password [String] JIRA password
         # @param time_spent [Integer] number of seconds of the worklog
         # @param start [Time]
+        # @param comment [String] optional, defaults to nil (comment unchanged,
+        #   to clear the comment, use `''`)
         # @return [String] ID of the updated worklog
         # @raise [Errors::JIRA::WorklogTooShort] if the worklog is too short
         #   to be sent to JIRA (< 1 min)
         # @raise [?] if some error occured with the API
-        def run(issue_key, worklog_id, username, password, time_spent, start)
+        def run(issue_key, worklog_id, username, password, time_spent, start, comment = nil)
           if handled_ignored_worklog(time_spent)
             fail Errors::JIRA::WorklogTooShort, "Ignored worklog < 1 min (not accepted by JIRA)"
           end
@@ -28,6 +30,7 @@ module JobTomate
             timeSpentSeconds: time_spent,
             started: format_time(start)
           }
+          body[:comment] = comment unless comment.nil?
 
           if ENV["JIRA_DRY_RUN"] == "true"
             update_dry_run(issue_key, worklog_id, username, nil, body)

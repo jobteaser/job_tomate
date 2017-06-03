@@ -2,7 +2,7 @@ require "spec_helper"
 require "data/user"
 require "errors/jira"
 
-describe "change assignee sets developer" do
+describe "change assignee sets backend developer" do
   include WebhooksHelpers
   include WebmockHelpers
 
@@ -15,14 +15,15 @@ describe "change assignee sets developer" do
   let!(:assignee) do
     JobTomate::Data::User.create(
       jira_username: "romain.champourlier",
-      jira_developer: jira_developer,
+      developer_backend: developer_backend,
       jira_reviewer: jira_reviewer,
       jira_feature_owner: jira_feature_owner
     )
   end
-  let(:jira_developer) { false }
+  let(:developer_backend) { false }
   let(:jira_reviewer) { false }
   let(:jira_feature_owner) { false }
+  after { assignee.destroy if assignee }
 
   context "assignee is unknown" do
     let!(:assignee) { nil }
@@ -34,8 +35,8 @@ describe "change assignee sets developer" do
     end
   end
 
-  context "assignee is a JIRA developer" do
-    let(:jira_developer) { true }
+  context "assignee is a backend developer" do
+    let(:developer_backend) { true }
 
     ["Open", "In Development"].each do |status|
       context "status is \"#{status}\"" do
@@ -44,7 +45,7 @@ describe "change assignee sets developer" do
           { fields: { customfield_10600: { name: "romain.champourlier" } } }.to_json
         end
 
-        it "sets the developer with the assignee" do
+        it "sets the backend developer with the assignee" do
           stub = stub_jira_request(
             :put,
             "/issue/JT-3839",
@@ -67,8 +68,8 @@ describe "change assignee sets developer" do
       end
     end
 
-    context "issue already has a developer" do
-      let(:payload_override) { { issue_developer: "anyone" } }
+    context "issue already has a backend developer" do
+      let(:payload_override) { { issue_developer_backend: "anyone" } }
 
       it "is successful and does nothing" do
         play_request
@@ -77,8 +78,8 @@ describe "change assignee sets developer" do
     end
   end
 
-  context "assignee is not a JIRA developer" do
-    let(:jira_developer) { false }
+  context "assignee is not a backend developer" do
+    let(:developer_backend) { false }
 
     it "is successful and does nothing" do
       play_request

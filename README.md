@@ -94,7 +94,7 @@ JobTomate::Data::TogglEntry.where(status: "pending").all.map(&:toggl_user).uniq
 => ["New User"]
 
 # The JIRA password can be reset manually for a given user by a JIRA admin
-JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password', jira_developer: true, jira_reviewer: true, jira_feature_owner: false, jira_functional_reviewer: false, slack_username: 'Slack User'
+JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password', developer_backend: true, developer_frontend: false, jira_reviewer: true, jira_feature_owner: false, jira_functional_reviewer: false, slack_username: 'Slack User'
 ```
 
 **Reprocess older Toggl reports for a given user**
