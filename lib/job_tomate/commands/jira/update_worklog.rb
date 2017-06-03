@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "job_tomate/commands/jira/support/client"
 require "support/service_pattern"
 
@@ -23,7 +25,7 @@ module JobTomate
         # @raise [?] if some error occured with the API
         def run(issue_key, worklog_id, username, password, time_spent, start, comment = nil)
           if handled_ignored_worklog(time_spent)
-            fail Errors::JIRA::WorklogTooShort, "Ignored worklog < 1 min (not accepted by JIRA)"
+            raise Errors::JIRA::WorklogTooShort, "Ignored worklog < 1 min (not accepted by JIRA)"
           end
 
           body = {
@@ -32,14 +34,17 @@ module JobTomate
           }
           body[:comment] = comment unless comment.nil?
 
-          if ENV["JIRA_DRY_RUN"] == "true"
-            update_dry_run(issue_key, worklog_id, username, nil, body)
-          else
-            update(issue_key, worklog_id, username, password, body)
-          end
+          do_update(issue_key, worklog_id, username, password, body)
         end
 
         private
+
+        def do_update(issue_key, worklog_id, username, password, body)
+          if ENV["JIRA_DRY_RUN"] == "true"
+            return update_dry_run(issue_key, worklog_id, username, nil, body)
+          end
+          update(issue_key, worklog_id, username, password, body)
+        end
 
         def handled_ignored_worklog(time_spent)
           return false if time_spent.to_i >= 60
@@ -49,7 +54,7 @@ module JobTomate
 
         # Returns a random 8-char string to fake a JIRA
         # worklog ID.
-        def update_dry_run(issue_key, worklog_id, username, _password, body)
+        def update_dry_run(_issue_key, worklog_id, _username, _password, _body)
           worklog_id
         end
 

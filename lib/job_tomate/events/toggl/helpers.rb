@@ -72,8 +72,7 @@ module JobTomate
           Commands::JIRA::UpdateWorklog.run(
             entry.jira_issue_key,
             worklog_id,
-            username,
-            password,
+            username, password,
             entry.toggl_duration,
             entry.toggl_started,
             comment

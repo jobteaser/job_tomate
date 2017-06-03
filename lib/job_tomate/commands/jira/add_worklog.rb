@@ -29,7 +29,7 @@ module JobTomate
           end
           body = {
             timeSpentSeconds: time_spent,
-            started: format_time(start),
+            started: format_time(start)
           }
           body[:comment] = comment unless comment.blank?
 
@@ -50,7 +50,7 @@ module JobTomate
 
         # Returns a random 8-char string to fake a JIRA
         # worklog ID.
-        def create_dry_run(issue_key, username, _password, body)
+        def create_dry_run(issue_key, _username, _password, body)
           rand(36**8).to_s(36)
         end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JobTomate
   module Values
     module JIRA
@@ -12,7 +14,7 @@ module JobTomate
           "reviewer" => "customfield_10601",
           "feature_owner" => "customfield_11200",
           "developer_frontend" => "customfield_12404"
-        }
+        }.freeze
 
         # Returns the JIRA field for a custom field.
         # @param custom_field [String] name of the custom field

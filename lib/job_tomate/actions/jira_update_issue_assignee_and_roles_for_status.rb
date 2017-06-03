@@ -79,12 +79,7 @@ module JobTomate
       #     - if the role is "developer_backend", the user is not "reviewer" of the issue, or,
       #     - if the role is "reviewer", the user is not "developer_backend" of the issue.
       def user_appropriate_for_role?(user, role, issue)
-        return false unless user.send(:"jira_#{role}") unless role == "developer_backend"
-        return false unless user.developer_backend if role == "developer_backend"
-        # This double guard clause is necessary because we have migrated 
-        # `jira_developer` to `developer_backend` (not prefixed with `jira`).
-        # Migration of other roles without the `jira` prefix will enable removing
-        # the first clause.
+        return false unless user_can_take_role?(user, role)
 
         conflicting_role = (
           case role
@@ -94,6 +89,19 @@ module JobTomate
         )
         return true if conflicting_role.nil?
         issue_role_username(issue, conflicting_role) != user.jira_username
+      end
+
+      # NB: the condition is necessary because we have migrated
+      # `jira_developer` to `developer_backend` (not prefixed with `jira`).
+      # Migration of other roles without the `jira` prefix will enable removing
+      # the first clause.
+      def user_can_take_role?(user, role)
+        if role == "developer_backend"
+          return false unless user.developer_backend
+        else
+          return false unless user.send(:"jira_#{role}")
+        end
+        true
       end
 
       def update_assignee(issue, role)
