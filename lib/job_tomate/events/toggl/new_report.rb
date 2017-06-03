@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "events/toggl/helpers"
 require "support/service_pattern"
 

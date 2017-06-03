@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "commands/jira/support/client"
 require "errors/jira"
 require "support/service_pattern"
@@ -15,12 +17,13 @@ module JobTomate
         # @param password [String] JIRA password
         # @param time_spent [Integer] number of seconds of the worklog
         # @param start [Time]
+        # @param comment [String] (optional)
         # @return [String] the ID of the worklog if correctly
         #   created.
         # @raise [Errors::JIRA::WorklogTooShort] if the worklog is too short
         #   to be sent to JIRA (< 1 min)
         # @raise [?] if some API error occurs
-        def run(issue_key, username, password, time_spent, start)
+        def run(issue_key, username, password, time_spent, start, comment = nil)
           if handled_ignored_worklog(time_spent)
             fail Errors::JIRA::WorklogTooShort, "Ignored worklog < 1 min (not accepted by JIRA)"
           end
@@ -28,6 +31,7 @@ module JobTomate
             timeSpentSeconds: time_spent,
             started: format_time(start)
           }
+          body[:comment] = comment unless comment.blank?
 
           if ENV["JIRA_DRY_RUN"] == "true"
             create_dry_run(issue_key, username, nil, body)
@@ -46,7 +50,7 @@ module JobTomate
 
         # Returns a random 8-char string to fake a JIRA
         # worklog ID.
-        def create_dry_run(issue_key, username, _password, body)
+        def create_dry_run(issue_key, _username, _password, body)
           rand(36**8).to_s(36)
         end
 

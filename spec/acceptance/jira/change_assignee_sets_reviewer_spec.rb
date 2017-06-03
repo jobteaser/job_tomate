@@ -15,12 +15,12 @@ describe "change assignee sets reviewer" do
   let!(:assignee) do
     JobTomate::Data::User.create(
       jira_username: "romain.champourlier",
-      jira_developer: jira_developer,
+      developer_backend: developer_backend,
       jira_reviewer: jira_reviewer,
       jira_feature_owner: jira_feature_owner
     )
   end
-  let(:jira_developer) { false }
+  let(:developer_backend) { false }
   let(:jira_reviewer) { false }
   let(:jira_feature_owner) { false }
 

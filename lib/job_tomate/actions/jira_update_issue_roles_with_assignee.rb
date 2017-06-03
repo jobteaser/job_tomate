@@ -17,18 +17,18 @@ module JobTomate
       def run(issue)
         @issue = issue
         return if @issue.assignee_user.nil?
-        set_developer
+        set_developer_backend
         set_reviewer
         set_feature_owner
       end
 
       private
 
-      def set_developer
-        return if @issue.developer_name.present?
-        return unless @issue.assignee_user.jira_developer?
+      def set_developer_backend
+        return if @issue.developer_backend_name.present?
+        return unless @issue.assignee_user.developer_backend?
         return unless @issue.status.in?(["Open", "In Development"])
-        update_for_custom_field("developer", name: @issue.assignee_user.jira_username)
+        update_for_custom_field("developer_backend", name: @issue.assignee_user.jira_username)
       end
 
       def set_reviewer
