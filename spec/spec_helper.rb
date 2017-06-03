@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rspec"
 require "webmock/rspec"
 require "rack/test"
@@ -28,12 +30,21 @@ test_environment = {
   "JIRA_USERNAME" => "job_tomate_username",
   "JIRA_PASSWORD" => "job_tomate_pwd",
   "SLACK_WEBHOOK_URL" => "https://hooks.slack.com/services/abcd1234",
-  "TOGGL_WORKSPACE_ID" => "twid"
+  "TOGGL_WORKSPACE_ID" => "twid",
+  "ASYNC_WEB_TRANSACTIONS_ENABLED" => "false"
 }
 test_environment.each { |k, v| ENV[k] = v }
 
 require File.expand_path("../../config/boot", __FILE__)
-Dir[File.expand_path("../support/**/*.rb", __FILE__)].each { |f| require(f) }
+
+%w(
+  fixtures
+  rack_test_helpers
+  webhooks_helpers
+  webmock_helpers
+).each do |file|
+  require File.expand_path("../support/#{file}", __FILE__)
+end
 
 require "job_tomate/data/user"
 require "job_tomate/data/toggl_entry"

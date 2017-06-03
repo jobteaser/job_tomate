@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "web"
 
 # Helpers for rack/test tests:
@@ -14,9 +16,7 @@ module RackTestHelpers
   include Rack::Test::Methods
 
   def app
-    web = JobTomate::Web
-    web.disable :async_web_transactions
-    web
+    JobTomate::Web
   end
 
   def post_json(path, payload)
