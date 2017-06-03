@@ -33,7 +33,7 @@ module JobTomate
     #     )
     #
     namespace "/webhooks" do
-      async_web_transactions_enabled = ENV["ASYNC_WEB_TRANSACTIONS_ENABLED"] == true
+      async_web_transactions_enabled = ENV["ASYNC_WEB_TRANSACTIONS_ENABLED"] == "true"
       base_path = File.expand_path("..", __FILE__)
       Dir[File.expand_path("../triggers/webhooks/**/*.rb", __FILE__)].each do |file|
         require file
