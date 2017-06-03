@@ -36,7 +36,15 @@ test_environment = {
 test_environment.each { |k, v| ENV[k] = v }
 
 require File.expand_path("../../config/boot", __FILE__)
-Dir[File.expand_path("../support/**/*.rb", __FILE__)].each { |f| require(f) }
+
+%w(
+  fixtures
+  rack_test_helpers
+  webhooks_helpers
+  webmock_helpers
+).each do |file|
+  require File.expand_path("../support/#{file}", __FILE__)
+end
 
 require "job_tomate/data/user"
 require "job_tomate/data/toggl_entry"
