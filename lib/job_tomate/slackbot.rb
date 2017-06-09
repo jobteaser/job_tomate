@@ -1,5 +1,7 @@
 require "slack-ruby-bot"
 
+SlackRubyBot::Client.logger.level = Logger::INFO
+
 Dir[File.expand_path("../triggers/slackbot_commands/*.rb", __FILE__)].each do |f|
   require f
 end

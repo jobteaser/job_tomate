@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "uri"
 require "active_support/all"
 require "httparty"
@@ -13,7 +15,7 @@ module JobTomate
       class SendMessage
         extend ServicePattern
 
-        DEFAULT_CHANNEL = "#dev-team"
+        DEFAULT_CHANNEL = "#dev-team-only"
         DEFAULT_USERNAME = "JobTomate"
         DEFAULT_ICON_URL = nil
         DEFAULT_ICON_EMOJI = ":japanese_ogre:"

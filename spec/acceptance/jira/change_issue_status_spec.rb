@@ -11,7 +11,7 @@ describe "change issue status" do
   let(:jira_username) { "user.name" }
   let(:issue_key) { "JT-4467" }
 
-  let(:user_is_developer) { false }
+  let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
   let(:user_is_feature_owner) { false }
   let(:slack_username) { 'user.name' }
@@ -19,17 +19,17 @@ describe "change issue status" do
   let!(:user) do
     JobTomate::Data::User.create(
       jira_username: jira_username,
-      jira_developer: user_is_developer,
+      developer_backend: user_is_developer_backend,
       jira_reviewer: user_is_reviewer,
       jira_feature_owner: user_is_feature_owner,
       slack_username: slack_username
     )
   end
 
-  let(:issue_developer_name) { nil }
+  let(:issue_developer_backend_name) { nil }
   let(:issue_reviewer_name) { nil }
   let(:issue_feature_owner_name) { nil }
-  let(:issue_developer) { issue_developer_name.nil? ? nil : { name: issue_developer_name } }
+  let(:issue_developer_backend) { issue_developer_backend_name.nil? ? nil : { name: issue_developer_backend_name } }
   let(:issue_reviewer) { issue_reviewer_name.nil? ? nil : { name: issue_reviewer_name } }
   let(:issue_feature_owner) { issue_feature_owner_name.nil? ? nil : { name: issue_feature_owner_name } }
   let(:changelog_to_string) { "In Development" } # same value as in :jira_issue_update fixture
@@ -37,7 +37,7 @@ describe "change issue status" do
   let(:webhook) do
     wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
     parsed_body = wh.value.parsed_body
-    parsed_body["issue"]["fields"]["customfield_10600"] = issue_developer
+    parsed_body["issue"]["fields"]["customfield_10600"] = issue_developer_backend
     parsed_body["issue"]["fields"]["customfield_10601"] = issue_reviewer
     parsed_body["issue"]["fields"]["customfield_11200"] = issue_feature_owner
     parsed_body["changelog"]["items"][0]["toString"] = changelog_to_string
@@ -54,13 +54,13 @@ describe "change issue status" do
     end
   end
 
-  # Special case: the developer may move the issue to "In Review" and herself
+  # Special case: the backend developer may move the issue to "In Review" and herself
   # be a potential reviewer. In the case the user is already the issue's
-  # developer, we must not set her as the reviewer and instead unassign the
+  # backend developer, we must not set her as the reviewer and instead unassign the
   # issue.
-  context "to \"In Review\" with no reviewer set and user is reviewer and the issue's developer" do
+  context "to \"In Review\" with no reviewer set and user is reviewer and the issue's backend developer" do
     let(:changelog_to_string) { "In Review" }
-    let(:issue_developer_name) { jira_username }
+    let(:issue_developer_backend_name) { jira_username }
     let(:user_is_reviewer) { true }
 
     it "is unassigns the issue" do
@@ -80,18 +80,18 @@ describe "change issue status" do
   end
 
   {
-    "In Development" => "developer",
+    "In Development" => "developer_backend",
     "In Review" => "reviewer",
     "In Functional Review" => "feature_owner",
-    "Ready for Release" => "developer"
+    "Ready for Release" => "developer_backend"
   }.each do |status, role|
     context "to \"#{status}\"" do
       let(:changelog_to_string) { status }
 
-      context "issue's #{role} is not set" do
+      context "given #{role} is not set" do
         let(:"issue_#{role}_name") { nil }
 
-        context "user is unknown" do
+        context "and user is unknown" do
           before { user.destroy }
 
           it "fails with a JIRA::UnknownUser exception" do
@@ -101,7 +101,7 @@ describe "change issue status" do
           end
         end
 
-        context "user is a #{role}" do
+        context "and user is a #{role}" do
           let(:"user_is_#{role}") { true }
 
           it "sets the #{role} and assigns the issue to the user" do
@@ -121,7 +121,7 @@ describe "change issue status" do
           end
         end
 
-        context "user is not #{role}" do
+        context "and user is not #{role}" do
           let(:"user_is_#{role}") { false }
 
           it "unassigns the issue" do
@@ -141,7 +141,7 @@ describe "change issue status" do
         end
       end
 
-      context "issue's #{role} is set" do
+      context "given #{role} is set" do
         let(:"issue_#{role}_name") { jira_username }
 
         it "assigns the issue to the set #{role}" do

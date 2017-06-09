@@ -18,10 +18,10 @@ module JobTomate
       extend ServicePattern
 
       ROLE_FOR_STATUS = {
-        "In Development" => "developer",
+        "In Development" => "developer_backend",
         "In Review" => "reviewer",
         "In Functional Review" => "feature_owner",
-        "Ready for Release" => "developer"
+        "Ready for Release" => "developer_backend"
       }.freeze
 
       # @param issue [Values::JIRA::Issue]
@@ -74,20 +74,34 @@ module JobTomate
 
       # The user is appropriate for the role if:
       #   - the user record specifies the user can take the role (e.g.
-      #     `user.jira_developer == true`), and,
+      #     `user.developer_backend == true`), and,
       #   - either:
-      #     - if the role is "developer", the user is not "reviewer" of the issue, or,
-      #     - if the role is "reviewer", the user is not "developer" of the issue.
+      #     - if the role is "developer_backend", the user is not "reviewer" of the issue, or,
+      #     - if the role is "reviewer", the user is not "developer_backend" of the issue.
       def user_appropriate_for_role?(user, role, issue)
-        return false unless user.send(:"jira_#{role}")
+        return false unless user_can_take_role?(user, role)
+
         conflicting_role = (
           case role
-          when "developer" then "reviewer"
-          when "reviewer" then "developer"
+          when "developer_backend" then "reviewer"
+          when "reviewer" then "developer_backend"
           end
         )
         return true if conflicting_role.nil?
         issue_role_username(issue, conflicting_role) != user.jira_username
+      end
+
+      # NB: the condition is necessary because we have migrated
+      # `jira_developer` to `developer_backend` (not prefixed with `jira`).
+      # Migration of other roles without the `jira` prefix will enable removing
+      # the first clause.
+      def user_can_take_role?(user, role)
+        if role == "developer_backend"
+          return false unless user.developer_backend
+        else
+          return false unless user.send(:"jira_#{role}")
+        end
+        true
       end
 
       def update_assignee(issue, role)
