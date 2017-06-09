@@ -13,7 +13,7 @@ module JobTomate
           "developer_backend" => "customfield_10600",
           "reviewer" => "customfield_10601",
           "feature_owner" => "customfield_11200",
-          "bug_cause" => "customfield_11101"
+          "bug_cause" => "customfield_11101",
           "developer_frontend" => "customfield_12404"
         }.freeze
 
