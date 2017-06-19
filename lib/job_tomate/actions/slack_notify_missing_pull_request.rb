@@ -18,9 +18,13 @@ module JobTomate
         slack_user = slack_username(username)
         return if slack_user.nil?
         link = "<#{issue.link}|#{issue.key}>"
-        message = "You have probably forgotten to create a pull request for this issue In Review => #{link}"
+        text = "You have probably forgotten to create a pull request for this issue In Review => #{link}"
+        send_message(text, slack_user)
+      end
+
+      def send_message(text, slack_user)
         Commands::Slack::SendMessage.run(
-          message,
+          text,
           channel: "@#{slack_user}",
           username: "Git Patrol",
           icon_emoji: ":rotating_light:"
