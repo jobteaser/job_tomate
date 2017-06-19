@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "data/user"
 require "support/service_pattern"
 
@@ -10,27 +11,39 @@ module JobTomate
       extend ServicePattern
 
       # @param issue [Values::JIRA::Issue]
-      def run(issue)
-        return if issue.assignee_user.nil?
-        if issue.assignee_user.slack_username.blank?
-          LOGGER.warn "unknown Slack username for user ##{issue.assignee_user.id}"
+      def run(issue, username)
+        return unless missing_bug_cause?(issue)
+        user = slack_user(username)
+
+        if user.nil?
+          LOGGER.warn "unknown Slack username ##{username}"
           return
         end
 
-        send_message(issue)
+        send_message(issue, user)
       end
 
-      def send_message(issue)
+      def send_message(issue, slack_user)
         link = "<#{issue.link}|#{issue.key}>"
         message =
           "The bug issue you're working on doesn't have a cause specified.
 Please do something about it! #{link} (#{issue.status})"
         Commands::Slack::SendMessage.run(
           message,
-          channel: "@#{issue.assignee_user.slack_username}",
+          channel: "@#{slack_user}",
           username: "Bug Monster",
           icon_emoji: ":smiling_imp:"
         )
+      end
+
+      def missing_bug_cause?(issue)
+        issue.bug? && !issue.bug_cause?
+      end
+
+      def slack_user(username)
+        user = Data::User.where(jira_username: username).first
+        raise Errors::JIRA::UnknownUser, "no user with jira_username == \"#{username}\"" if user.nil?
+        user.slack_username
       end
     end
   end

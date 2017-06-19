@@ -14,7 +14,7 @@ describe "change issue status" do
   let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
   let(:user_is_feature_owner) { false }
-  let(:slack_username) { 'user.name' }
+  let(:slack_username) { "user.name" }
 
   let!(:user) do
     JobTomate::Data::User.create(
@@ -166,19 +166,10 @@ describe "change issue status" do
     before do
       allow(JobTomate::Commands::JIRA::UpdateIssue).to receive(:run).and_return(WebmockHelpers::RETURN_VALUES)
     end
-    let(:issue_developer_name) { jira_username }
+
+    let(:webhook_for_slack_notification)  { JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update) }
 
     context "get a slack notification because" do
-      let(:webhook_for_slack_notification) do
-        wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
-        parsed_body = wh.value.parsed_body
-        parsed_body["issue"]["fields"]["customfield_10600"] = issue_developer
-        parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
-        parsed_body["issue"]["fields"]["customfield_11101"] = nil
-        wh.body = parsed_body.to_json
-        wh
-      end
-
       let(:expected_slack_body) do
         issue_link = "<https://example.atlassian.net/browse/JT-4467|JT-4467>"
         {
@@ -192,33 +183,37 @@ Please do something about it! #{issue_link} (#{changelog_to_string})",
 
       it "the bug cause field is empty" do
         stub_slack = stub_slack_request(expected_slack_body)
-        receive_stored_webhook(webhook_for_slack_notification)
+        receive_stored_webhook(webhook_for_slack_notification) do |wh|
+          parsed_body = wh.value.parsed_body
+          parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
+          parsed_body["issue"]["fields"]["customfield_11101"] = nil
+          wh.body = parsed_body.to_json
+          wh
+        end
         expect(stub_slack).to have_been_requested
       end
     end
 
     context "have no slack notifications because" do
-      let(:webhook_for_no_slack_notification) do
-        wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
-        parsed_body = wh.value.parsed_body
-        parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
-        parsed_body["issue"]["fields"]["customfield_11101"] = "It just happened"
-        wh.body = parsed_body.to_json
-        wh
-      end
-
       it "the bug cause is filled in" do
-        expect(JobTomate::Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause).not_to receive(:run)
-        receive_stored_webhook(webhook_for_no_slack_notification)
+        expect(JobTomate::Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause).not_to receive(:send_message)
+        receive_stored_webhook(webhook_for_slack_notification) do |wh|
+          parsed_body = wh.value.parsed_body
+          parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
+          parsed_body["issue"]["fields"]["customfield_11101"] = "It just happened"
+          wh.body = parsed_body.to_json
+          wh
+        end
       end
 
-      it "the bug has no assignee" do
-        body = webhook_for_no_slack_notification.value.parsed_body
-        body["issue"]["fields"]["customfield_11101"] = nil
-        webhook_for_no_slack_notification.body = body.to_json
-
+      it "is not a but at all!" do
         expect(JobTomate::Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause).not_to receive(:send_message)
-        receive_stored_webhook(webhook_for_no_slack_notification)
+        receive_stored_webhook(webhook_for_slack_notification) do |wh|
+          parsed_body = wh.value.parsed_body
+          parsed_body["issue"]["fields"]["issuetype"]["name"] = "Not A Bug!"
+          wh.body = parsed_body.to_json
+          wh
+        end
       end
     end
   end
