@@ -13,6 +13,9 @@ module JobTomate
           "developer_backend" => "customfield_10600",
           "reviewer" => "customfield_10601",
           "feature_owner" => "customfield_11200",
+          "feature_env" => "customfield_12300",
+          "tribe" => "customfield_12100",
+          "type_of_issue" => "customfield_12404",
           "developer_frontend" => "customfield_12404"
         }.freeze
 
@@ -118,6 +121,11 @@ module JobTomate
           user = Data::User.where(jira_username: username).first
           fail Errors::JIRA::UnknownUser, "no user with jira_username == \"#{username}\"" if user.nil?
           user
+        end
+
+        def missing_feature_env?(changelog)
+          return false unless custom_field("feature_env").nil?
+          changelog.requires_feature_env?
         end
       end
     end

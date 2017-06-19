@@ -52,6 +52,10 @@ module JobTomate
           return dst if dst
           fail Errors::JIRA::UnknownCustomField, "no mapping for \"#{src}\" in Values::JIRA::Changelog"
         end
+
+        def requires_feature_env?
+          ["In Review", "In Functional Review"].include?(to_string)
+        end
       end
     end
   end
