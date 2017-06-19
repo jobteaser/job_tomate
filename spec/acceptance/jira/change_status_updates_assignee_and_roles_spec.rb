@@ -11,6 +11,7 @@ describe "JIRA issue status changed updates assignee and roles" do
   let(:jira_username) { "user.name" }
   let(:issue_key) { "JT-4467" }
   let(:issue_type_name) { "Task" }
+  let(:slack_username) { 'user.name' }
 
   let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
@@ -22,6 +23,7 @@ describe "JIRA issue status changed updates assignee and roles" do
       developer_backend: user_is_developer_backend,
       jira_reviewer: user_is_reviewer,
       product_manager: user_is_product_manager
+      slack_username: slack_username
     )
   end
 
@@ -32,6 +34,7 @@ describe "JIRA issue status changed updates assignee and roles" do
   let(:issue_reviewer) { issue_reviewer_name.nil? ? nil : { name: issue_reviewer_name } }
   let(:issue_product_manager) { issue_product_manager_name.nil? ? nil : { name: issue_product_manager_name } }
   let(:changelog_to_string) { "In Development" } # same value as in :jira_issue_update fixture
+  let(:comments) { [{ "body" => "Opened PR: some link" , "author" => { name: "job_tomate" } }] }
 
   let(:webhook) do
     wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
@@ -41,6 +44,7 @@ describe "JIRA issue status changed updates assignee and roles" do
     parsed_body["issue"]["fields"]["customfield_10601"] = issue_reviewer
     parsed_body["issue"]["fields"]["customfield_11200"] = issue_product_manager
     parsed_body["changelog"]["items"][0]["toString"] = changelog_to_string
+    parsed_body["issue"]["fields"]["comment"]["comments"] = comments
     wh.body = parsed_body.to_json
     wh
   end
@@ -101,6 +105,39 @@ describe "JIRA issue status changed updates assignee and roles" do
       )
       receive_stored_webhook(webhook)
       expect(stub).to have_been_requested
+    end
+  end
+
+  context "to In Review status change checks if comments contain a PR link" do
+    before do
+      allow(JobTomate::Commands::JIRA::UpdateIssue).to receive(:run).and_return(WebmockHelpers::RETURN_VALUES)
+    end
+
+    let(:changelog_to_string) { "In Review" }
+    let(:link) { "<https://example.atlassian.net/browse/#{issue_key}|#{issue_key}>" }
+    let(:expected_body) do
+      {
+        text: "You have probably forgotten to create a pull request for this issue In Review => #{link}",
+        channel: "@#{slack_username}",
+        username: "Git Patrol",
+        icon_emoji: ":rotating_light:"
+      }.to_json
+    end
+
+    context "comments are absent" do
+      let(:comments) { [] }
+
+      it "notifies the updater of the issue" do
+        stub = stub_slack_request(expected_body, return_values: WebmockHelpers::RETURN_VALUES)
+        receive_stored_webhook(webhook)
+        expect(stub).to have_been_requested
+      end
+    end
+
+    it "doesn't notify the updater of the issue if a comment with a pull request link is present" do
+      stub = stub_slack_request(expected_body, return_values: WebmockHelpers::RETURN_VALUES)
+      receive_stored_webhook(webhook)
+      expect(stub).to_not have_been_requested
     end
   end
 

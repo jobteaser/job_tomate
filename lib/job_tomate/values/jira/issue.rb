@@ -105,6 +105,19 @@ module JobTomate
         def bug_cause?
           !custom_field("bug_cause").nil?
         end
+
+        def missing_pull_request?
+          return true unless got_comments?
+          comments = data["fields"]["comment"]["comments"].map do |comment_data|
+            JobTomate::Values::JIRA::Comment.build(comment_data)
+          end
+          comments.each { |c| return false if c.pull_request? }
+          true
+        end
+
+        def got_comments?
+          data["fields"]["comment"]["comments"].any?
+        end
       end
     end
   end

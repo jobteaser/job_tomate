@@ -52,6 +52,10 @@ module JobTomate
           return dst if dst
           fail Errors::JIRA::UnknownCustomField, "no mapping for \"#{src}\" in Values::JIRA::Changelog"
         end
+
+        def requires_pull_request?
+          to_string == "In Review"
+        end
       end
     end
   end
