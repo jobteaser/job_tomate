@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "sinatra/base"
 require "sinatra/namespace"
 require "triggers/webhooks"
@@ -12,7 +14,6 @@ module JobTomate
   class Web < Sinatra::Base
     register Sinatra::Namespace
     set :show_exceptions, false if ENV["RACK_ENV"] == "test"
-    enable :async_web_transactions
 
     get "/" do
       { status: "ok" }.to_json
@@ -32,6 +33,7 @@ module JobTomate
     #     )
     #
     namespace "/webhooks" do
+      async_web_transactions_enabled = ENV["ASYNC_WEB_TRANSACTIONS_ENABLED"] == "true"
       base_path = File.expand_path("..", __FILE__)
       Dir[File.expand_path("../triggers/webhooks/**/*.rb", __FILE__)].each do |file|
         require file
@@ -45,7 +47,7 @@ module JobTomate
             transaction_uuid = JobTomate::Triggers::Webhooks.run(
               trigger: trigger_module.new,
               request: request,
-              async: settings.async_web_transactions
+              async: async_web_transactions_enabled
             )
           rescue JobTomate::Triggers::Webhooks::InvalidWebhook
             return [400, { status: "invalid webhook" }.to_json]

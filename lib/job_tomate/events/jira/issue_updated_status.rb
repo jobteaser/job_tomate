@@ -17,12 +17,7 @@ module JobTomate
         # @param user_name [String]
         def run(issue, changelog, user_name)
           Actions::JIRAUpdateIssueAssigneeAndRolesForStatus.run(issue, changelog, user_name)
-          Actions::SlackNotifyOnAbsentFeatureEnv.run(issue, changelog) if notify_on_feature_env?(issue, changelog)
-        end
-
-        def notify_on_feature_env?(issue, changelog)
-          return if issue.assignee_user.nil?
-          issue.missing_feature_env?(changelog)
+          Actions::SlackNotifyOnAbsentFeatureEnv.run(issue, changelog, user_name)
         end
       end
     end

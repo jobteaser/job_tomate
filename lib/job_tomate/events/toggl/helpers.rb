@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "commands/jira/add_worklog"
 require "commands/jira/delete_worklog"
 require "commands/jira/update_worklog"
@@ -12,6 +14,7 @@ module JobTomate
       #   - `@entry instance variable containing [Data::TogglEntry]
       #     instance
       module Helpers
+        private
 
         def entry
           @entry
@@ -58,7 +61,8 @@ module JobTomate
             username,
             password,
             entry.toggl_duration,
-            entry.toggl_started
+            entry.toggl_started,
+            comment
           )
         end
 
@@ -68,10 +72,10 @@ module JobTomate
           Commands::JIRA::UpdateWorklog.run(
             entry.jira_issue_key,
             worklog_id,
-            username,
-            password,
+            username, password,
             entry.toggl_duration,
-            entry.toggl_started
+            entry.toggl_started,
+            comment
           )
         end
 
@@ -88,9 +92,17 @@ module JobTomate
         end
 
         def jira_credentials
-          user = Data::User.where(toggl_user: entry.toggl_user).first
-          fail Errors::JIRA::UnknownUser, "No user for toggl_user=#{entry.toggl_user}" if user.nil?
-          [user.jira_username, user.jira_password]
+          username = ENV["JIRA_USERNAME"]
+          password = ENV["JIRA_PASSWORD"]
+          if username.blank? || password.blank?
+            raise Errors::JIRA::MissingSharedUser,
+              "Missing shared JIRA user (set JIRA_USERNAME and JIRA_PASSWORD environment variables)"
+          end
+          [username, password]
+        end
+
+        def comment
+          "#{entry.toggl_user} logged work from Toggl (via JobTomate)"
         end
       end
     end

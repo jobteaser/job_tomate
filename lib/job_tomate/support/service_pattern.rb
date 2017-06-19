@@ -31,15 +31,27 @@ module JobTomate
 
     def within_log
       start = Time.now
-      LOGGER.info "#{name}.run transaction='#{transaction_uuid}' - START"
+      log_start
       result = yield
-      duration = (Time.now - start) / 1_000
-      LOGGER.info "#{name}.run transaction='#{transaction_uuid}' - END (#{duration}s)"
+      log_end((Time.now - start) / 1_000)
       result
     end
 
     def transaction_uuid
       Thread.current.thread_variable_get("transaction_uuid")
+    end
+
+    def log_start
+      LOGGER.info "#{log_prefix}START"
+    end
+
+    def log_end(duration)
+      LOGGER.info "#{log_prefix}END (#{duration}s)"
+    end
+
+    def log_prefix
+      return "#{name}.run transaction='#{transaction_uuid}' - " unless transaction_uuid.blank?
+      "#{name}.run - "
     end
   end
 end

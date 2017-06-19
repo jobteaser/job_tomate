@@ -83,9 +83,9 @@ module WebhooksHelpers
       }
     end
 
-    if :issue_developer.in?(override.keys)
+    if :issue_developer_backend.in?(override.keys)
       payload["issue"]["fields"]["customfield_10600"] = {
-        "name" => override[:issue_developer]
+        "name" => override[:issue_developer_backend]
       }
     end
 

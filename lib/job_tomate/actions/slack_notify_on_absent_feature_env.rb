@@ -10,23 +10,36 @@ module JobTomate
       extend ServicePattern
 
       # @param issue [Values::JIRA::Issue]
-      def run(issue, changelog)
-        if issue.assignee_user.slack_username.blank?
-          LOGGER.warn "unknown Slack username for user ##{issue.assignee_user.id}"
+      def run(issue, changelog, username)
+        return unless notify_on_feature_env?(issue, changelog)
+        slack_username = slack_user(username)
+
+        if slack_username.blank?
+          LOGGER.warn "unknown Slack username for user ##{username}"
           return
         end
-        send_message(issue, changelog)
+        send_message(issue, changelog, slack_username)
       end
 
-      def send_message(issue, changelog)
+      def send_message(issue, changelog, slack_username)
         link = "<#{issue.link}|#{issue.key}>"
         message = "This JIRA issue #{link} (#{changelog.to_string}) requires a feature env. Why don't you add it?"
         Commands::Slack::SendMessage.run(
           message,
-          channel: "@#{issue.assignee_user.slack_username}",
+          channel: "@#{slack_username}",
           username: "Feature Environmentor",
           icon_emoji: ":anchor:"
         )
+      end
+
+      def notify_on_feature_env?(issue, changelog)
+        issue.missing_feature_env?(changelog)
+      end
+
+      def slack_user(username)
+        user = Data::User.where(jira_username: username).first
+        raise Errors::JIRA::UnknownUser, "no user with jira_username == \"#{username}\"" if user.nil?
+        user.slack_username
       end
     end
   end

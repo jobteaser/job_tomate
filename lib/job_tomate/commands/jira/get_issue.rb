@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "job_tomate/commands/jira/support/client"
 require "support/service_pattern"
 
@@ -12,7 +14,7 @@ module JobTomate
       # environment variables.
       class GetIssue
         extend ServicePattern
-        
+
         API_USERNAME = ENV["JIRA_USERNAME"]
         API_PASSWORD = ENV["JIRA_PASSWORD"]
 
