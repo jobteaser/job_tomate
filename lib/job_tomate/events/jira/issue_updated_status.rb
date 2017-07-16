@@ -1,4 +1,5 @@
-require "actions/jira_update_issue_assignee_and_roles_for_status"
+require "actions/jira_issue_changing_status_updates_assignee_and_roles"
+require "actions/slack_notify_jira_bug_issue_updated_without_cause"
 require "data/user"
 require "errors/jira"
 require "support/service_pattern"
@@ -15,7 +16,8 @@ module JobTomate
         # @param issue [Values::JIRA::Changelog]
         # @param user_name [String]
         def run(issue, changelog, user_name)
-          Actions::JIRAUpdateIssueAssigneeAndRolesForStatus.run(issue, changelog, user_name)
+          Actions::JIRAIssueChangingStatusUpdatesAssigneeAndRoles.run(issue, changelog, user_name)
+          Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause.run(issue, user_name)
         end
       end
     end

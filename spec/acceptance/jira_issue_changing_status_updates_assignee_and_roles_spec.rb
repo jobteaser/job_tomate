@@ -2,7 +2,7 @@ require "spec_helper"
 require "data/user"
 require "errors/jira"
 
-describe "change issue status" do
+describe "JIRA issue changing status updates assignee and roles" do
   include WebhooksHelpers
   include WebmockHelpers
 
@@ -43,10 +43,10 @@ describe "change issue status" do
     wh
   end
 
-  context "to \"Open\"" do
+  context "when issue changed to \"Open\"" do
     let(:changelog_to_string) { "Open" }
 
-    it "is successful and does nothing" do
+    it "does nothing" do
       receive_stored_webhook(webhook)
       expect(last_response).to be_ok
     end
@@ -56,7 +56,7 @@ describe "change issue status" do
   # be a potential reviewer. In the case the user is already the issue's
   # backend developer, we must not set her as the reviewer and instead unassign the
   # issue.
-  context "to \"In Review\" with no reviewer set and user is reviewer and the issue's backend developer" do
+  context "when issue is changed to \"In Review\" with no reviewer set and user is reviewer and the issue's backend developer" do
     let(:changelog_to_string) { "In Review" }
     let(:issue_developer_backend_name) { jira_username }
     let(:user_is_reviewer) { true }
@@ -83,7 +83,7 @@ describe "change issue status" do
     "In Functional Review" => "feature_owner",
     "Ready for Release" => "developer_backend"
   }.each do |status, role|
-    context "to \"#{status}\"" do
+    context "when issue is changed to \"#{status}\"" do
       let(:changelog_to_string) { status }
 
       context "given #{role} is not set" do

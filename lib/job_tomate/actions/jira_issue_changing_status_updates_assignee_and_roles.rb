@@ -14,9 +14,12 @@ module JobTomate
     #   - Using status labels instead of status identifiers. We use the changelog's
     #     `toString` value instead of `to`, so if the labels of the statuses are changed
     #     the code may get broken, while the identifiers would not change.
-    class JIRAUpdateIssueAssigneeAndRolesForStatus
+    class JIRAIssueChangingStatusUpdatesAssigneeAndRoles
       extend ServicePattern
 
+      # Maps which role (developer_backend, feature_owner...)
+      # should be assigned to the issue depending on the 
+      # status.
       ROLE_FOR_STATUS = {
         "In Development" => "developer_backend",
         "In Review" => "reviewer",
@@ -34,6 +37,7 @@ module JobTomate
         new_status_role = role_for_new_status(changelog)
         return if update_assignee_based_on_role(issue, new_status_role)
         return if update_assignee_and_roles(issue, username, new_status_role)
+
         unassign(issue)
       end
 
@@ -68,6 +72,11 @@ module JobTomate
         issue.send(:"#{role}_name")
       end
 
+      # Returns true if an username is already set on the issue
+      # for the specified role.
+      #
+      # For example, returns true when called with `issue` and
+      # `:reviewer` if `issue.reviewer` has a value.
       def issue_role_set?(issue, role)
         issue_role_username(issue, role).present?
       end
@@ -133,7 +142,8 @@ module JobTomate
       end
 
       def assign_to(issue, assignee)
-        update_issue(issue, fields: { assignee: { name: assignee.jira_username } })
+        username = assignee.jira_username
+        update_issue(issue, fields: { assignee: { name: username } })
       end
 
       def user_for_role(issue, role)

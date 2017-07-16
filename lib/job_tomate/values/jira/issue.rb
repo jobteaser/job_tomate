@@ -13,6 +13,7 @@ module JobTomate
           "developer_backend" => "customfield_10600",
           "reviewer" => "customfield_10601",
           "feature_owner" => "customfield_11200",
+          "bug_cause" => "customfield_11101",
           "developer_frontend" => "customfield_12404"
         }.freeze
 
@@ -64,6 +65,10 @@ module JobTomate
           data["fields"]["customfield_10400"]["name"]
         end
 
+        def issue_type
+          data["fields"]["issuetype"]["name"]
+        end
+
         def maintenance?
           category == "Maintenance"
         end
@@ -71,6 +76,10 @@ module JobTomate
         def assignee_name
           value = data["fields"]["assignee"]
           value ? value["name"] : nil
+        end
+
+        def change_assignee_name(username)
+          data["fields"]["assignee"] = { "name" => username }
         end
 
         def assignee_user
@@ -118,6 +127,14 @@ module JobTomate
           user = Data::User.where(jira_username: username).first
           fail Errors::JIRA::UnknownUser, "no user with jira_username == \"#{username}\"" if user.nil?
           user
+        end
+
+        def bug?
+          issue_type == "Bug"
+        end
+
+        def bug_cause?
+          !custom_field("bug_cause").nil?
         end
       end
     end
