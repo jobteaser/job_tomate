@@ -2,7 +2,7 @@ require "spec_helper"
 require "data/user"
 require "errors/jira"
 
-describe "change issue status" do
+describe "JIRA issue changing status updates assignee and roles" do
   include WebhooksHelpers
   include WebmockHelpers
 
@@ -14,15 +14,13 @@ describe "change issue status" do
   let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
   let(:user_is_feature_owner) { false }
-  let(:slack_username) { "user.name" }
 
   let!(:user) do
     JobTomate::Data::User.create(
       jira_username: jira_username,
       developer_backend: user_is_developer_backend,
       jira_reviewer: user_is_reviewer,
-      jira_feature_owner: user_is_feature_owner,
-      slack_username: slack_username
+      jira_feature_owner: user_is_feature_owner
     )
   end
 
@@ -45,10 +43,10 @@ describe "change issue status" do
     wh
   end
 
-  context "to \"Open\"" do
+  context "when issue changed to \"Open\"" do
     let(:changelog_to_string) { "Open" }
 
-    it "is successful and does nothing" do
+    it "does nothing" do
       receive_stored_webhook(webhook)
       expect(last_response).to be_ok
     end
@@ -58,7 +56,7 @@ describe "change issue status" do
   # be a potential reviewer. In the case the user is already the issue's
   # backend developer, we must not set her as the reviewer and instead unassign the
   # issue.
-  context "to \"In Review\" with no reviewer set and user is reviewer and the issue's backend developer" do
+  context "when issue is changed to \"In Review\" with no reviewer set and user is reviewer and the issue's backend developer" do
     let(:changelog_to_string) { "In Review" }
     let(:issue_developer_backend_name) { jira_username }
     let(:user_is_reviewer) { true }
@@ -85,7 +83,7 @@ describe "change issue status" do
     "In Functional Review" => "feature_owner",
     "Ready for Release" => "developer_backend"
   }.each do |status, role|
-    context "to \"#{status}\"" do
+    context "when issue is changed to \"#{status}\"" do
       let(:changelog_to_string) { status }
 
       context "given #{role} is not set" do
@@ -157,62 +155,6 @@ describe "change issue status" do
           )
           receive_stored_webhook(webhook)
           expect(stub).to have_been_requested
-        end
-      end
-    end
-  end
-
-  context "for a bug issue and" do
-    before do
-      allow(JobTomate::Commands::JIRA::UpdateIssue).to receive(:run).and_return(WebmockHelpers::RETURN_VALUES)
-    end
-
-    let(:webhook_for_slack_notification)  { JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update) }
-
-    context "get a slack notification because" do
-      let(:expected_slack_body) do
-        issue_link = "<https://example.atlassian.net/browse/JT-4467|JT-4467>"
-        {
-          text: "The bug issue you're working on doesn't have a cause specified.
-Please do something about it! #{issue_link} (#{changelog_to_string})",
-          channel: "@#{slack_username}",
-          username: "Bug Monster",
-          icon_emoji: ":smiling_imp:"
-        }.to_json
-      end
-
-      it "the bug cause field is empty" do
-        stub_slack = stub_slack_request(expected_slack_body)
-        receive_stored_webhook(webhook_for_slack_notification) do |wh|
-          parsed_body = wh.value.parsed_body
-          parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
-          parsed_body["issue"]["fields"]["customfield_11101"] = nil
-          wh.body = parsed_body.to_json
-          wh
-        end
-        expect(stub_slack).to have_been_requested
-      end
-    end
-
-    context "have no slack notifications because" do
-      it "the bug cause is filled in" do
-        expect(JobTomate::Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause).not_to receive(:send_message)
-        receive_stored_webhook(webhook_for_slack_notification) do |wh|
-          parsed_body = wh.value.parsed_body
-          parsed_body["issue"]["fields"]["issuetype"]["name"] = "Bug"
-          parsed_body["issue"]["fields"]["customfield_11101"] = "It just happened"
-          wh.body = parsed_body.to_json
-          wh
-        end
-      end
-
-      it "is not a but at all!" do
-        expect(JobTomate::Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause).not_to receive(:send_message)
-        receive_stored_webhook(webhook_for_slack_notification) do |wh|
-          parsed_body = wh.value.parsed_body
-          parsed_body["issue"]["fields"]["issuetype"]["name"] = "Not A Bug!"
-          wh.body = parsed_body.to_json
-          wh
         end
       end
     end

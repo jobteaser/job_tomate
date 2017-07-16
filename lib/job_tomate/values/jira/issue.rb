@@ -133,7 +133,6 @@ module JobTomate
           issue_type == "Bug"
         end
 
-        # customfield_11101 corresponds to `bug_cause`
         def bug_cause?
           !custom_field("bug_cause").nil?
         end
