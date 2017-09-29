@@ -12,7 +12,9 @@ module JobTomate
     class SlackNotifyOnGithubStatusUpdate
       extend ServicePattern
       FILTERED_DESCRIPTION_PATTERNS = [
-        /Code Climate is analyzing this code/
+        /Code Climate is analyzing this code/,
+        /Your tests are queued behind your running builds/,
+        /CircleCI is running your tests/
       ].freeze
 
       # @param issue [Values::Github::Status]
