@@ -1,4 +1,5 @@
 require "actions/jira_add_comment_on_github_pull_request_opened"
+require "actions/jira_fill_branch_name_pull_request_opened"
 require "support/service_pattern"
 
 module JobTomate
@@ -13,6 +14,7 @@ module JobTomate
         def run(pull_request)
           return if pull_request.jira_issue_key.blank?
           Actions::JIRAAddCommentOnGithubPullRequestOpened.run(pull_request)
+          Actions::JIRAFillBranchNameGithubPullRequestOpened.run(pull_request)
         end
       end
     end
