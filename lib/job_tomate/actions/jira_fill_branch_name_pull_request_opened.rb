@@ -1,4 +1,4 @@
-require "commands/jira/fill_branch_name"
+require "commands/jira/set_field"
 require "support/service_pattern"
 
 module JobTomate
