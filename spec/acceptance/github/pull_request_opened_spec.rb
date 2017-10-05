@@ -18,7 +18,7 @@ RSpec.describe "/webhooks/github" do
         expected_body
       )
       receive_stored_webhook(:github_pull_request_opened_jira_related)
-      expect(stub).to_return(status: 200, body: "", headers: {})
+      expect(stub).to have_been_requested
     end
 
     it "fill the field with the correct value" do
