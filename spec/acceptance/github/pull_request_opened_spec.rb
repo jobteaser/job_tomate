@@ -2,9 +2,7 @@ require "spec_helper"
 require "job_tomate/web"
 require "job_tomate/data/stored_webhook"
 
-WebMock.allow_net_connect!(allow_localhost: true)
-
-RSpec.describe "/webhooks/github" do
+describe "/webhooks/github" do
   include WebhooksHelpers
   include WebmockHelpers
 
@@ -17,21 +15,15 @@ RSpec.describe "/webhooks/github" do
         "/issue/jt-1234/comment",
         expected_body
       )
-      receive_stored_webhook(:github_pull_request_opened_jira_related)
-      expect(stub).to have_been_requested
-    end
-
-    it "fill the field with the correct value" do
-      expected_field = "Branch Name"
-      expected_value = "jt-1234-create-crawler"
-      expected_body = "{\"body\":{\"#{expected_field}\":\"#{expected_value}\"}}"
-      stub = stub_jira_request(
+      expected_body_2 = "{\"fields\":{\"Branch Name\":\"jt-1234-create-crawler\"}}"
+      stub_2 = stub_jira_request(
         :put,
-        "/issue/jt-1234/",
-        expected_body
+        "/issue/jt-1234",
+        expected_body_2
       )
       receive_stored_webhook(:github_pull_request_opened_jira_related)
       expect(stub).to have_been_requested
+      expect(stub_2).to have_been_requested
     end
   end
 
