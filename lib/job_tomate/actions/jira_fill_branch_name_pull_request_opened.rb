@@ -5,7 +5,7 @@ module JobTomate
   module Actions
 
     # Adds a JIRA comment as JobTomate
-    class JIRAFillBranchNameGithubPullRequestOpened
+    class JIRAFillBranchNameOnGithubPullRequestOpened
       extend ServicePattern
 
       def run(pull_request)

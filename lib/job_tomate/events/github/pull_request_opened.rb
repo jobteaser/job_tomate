@@ -14,7 +14,7 @@ module JobTomate
         def run(pull_request)
           return if pull_request.jira_issue_key.blank?
           Actions::JIRAAddCommentOnGithubPullRequestOpened.run(pull_request)
-          Actions::JIRAFillBranchNameGithubPullRequestOpened.run(pull_request)
+          Actions::JIRAFillBranchNameOnGithubPullRequestOpened.run(pull_request)
         end
       end
     end

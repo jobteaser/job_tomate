@@ -3,7 +3,7 @@ require "timecop"
 require "commands/jira/set_field"
 
 describe JobTomate::Commands::JIRA::SetField do
-  describe ".run(issue_key, username, password, time_spent, start)" do
+  describe ".run(issue_key, username, password, field, value)" do
     context "JIRA_DRY_RUN" do
 
       before { ENV["JIRA_DRY_RUN"] = "true" }

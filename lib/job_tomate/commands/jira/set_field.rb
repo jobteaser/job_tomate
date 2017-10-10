@@ -12,7 +12,8 @@ module JobTomate
         # @param issue_key [String]
         # @param username [String]
         # @param password [String]
-        # @param comment [String] text for the comment
+        # @param field [String]
+        # @param value [String]
         def run(issue_key, username, password, field, value)
           body = {
             fields: {
