@@ -1,0 +1,221 @@
+{
+   "payload":{
+      "compare":"https://github.com/jobteaser/jobteaser/compare/3ffd83ce1364...ad2e19c3ab58",
+      "previous_successful_build":{
+         "build_num":62983,
+         "status":"success",
+         "build_time_millis":62424
+      },
+      "build_parameters":{
+         "CIRCLE_JOB":"checkout_code"
+      },
+      "oss":false,
+      "all_commit_details_truncated":false,
+      "committer_date":"2017-10-10T16:07:44+02:00",
+      "steps":[
+         {
+            "name":"Spin up Environment",
+            "actions":[
+               {
+                  "truncated":false,
+                  "index":0,
+                  "parallel":true,
+                  "failed":null,
+                  "infrastructure_fail":null,
+                  "name":"Spin up Environment",
+                  "bash_command":null,
+                  "status":"success",
+                  "timedout":null,
+                  "continue":null,
+                  "end_time":"2017-10-10T14:13:03.672Z",
+                  "type":"test",
+                  "allocation_id":"59dcd43b234ee70001cd97b0-0-build/495D4B72",
+                  "output_url":"https://circle-production-action-output.s3.amazonaws.com/d40943100046b1ace65dcd95-jobteaser-jobteaser-0-0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20171010T141416Z&X-Amz-SignedHeaders=host&X-Amz-Expires=431999&X-Amz-Credential=AKIAIQ65EYQDTMSJK2DQ%2F20171010%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1ebf6285c87340532f3a271af823998c238dcaf85a6a649b1f9b56020f2aee7e",
+                  "start_time":"2017-10-10T14:13:02.357Z",
+                  "background":false,
+                  "exit_code":null,
+                  "insignificant":false,
+                  "canceled":null,
+                  "step":0,
+                  "run_time_millis":1315,
+                  "has_output":true
+               }
+            ]
+         },
+         {
+            "name":"Checkout code",
+            "actions":[
+               {
+                  "truncated":false,
+                  "index":0,
+                  "parallel":true,
+                  "failed":null,
+                  "infrastructure_fail":null,
+                  "name":"Checkout code",
+                  "bash_command":"#!/bin/sh\nset -e\n\n# Workaround old docker images with incorrect $HOME\n# check https://github.com/docker/docker/issues/2968 for details\nif [ \"${HOME}\" = \"/\" ]\nthen\n  export HOME=$(getent passwd $(id -un) | cut -d: -f6)\nfi\n\nmkdir -p ~/.ssh\n\necho 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==\nbitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==\n' >> ~/.ssh/known_hosts\n\n(umask 077; touch ~/.ssh/id_rsa)\nchmod 0600 ~/.ssh/id_rsa\n(cat <<EOF > ~/.ssh/id_rsa\n$CHECKOUT_KEY\nEOF\n)\n\n# use git+ssh instead of https\ngit config --global url.\"ssh://git@github.com\".insteadOf \"https://github.com\" || true\n\nif [ -e /root/app/.git ]\nthen\n  cd /root/app\n  git remote set-url origin \"$CIRCLE_REPOSITORY_URL\" || true\nelse\n  mkdir -p /root/app\n  cd /root/app\n  git clone \"$CIRCLE_REPOSITORY_URL\" .\nfi\n\nif [ -n \"$CIRCLE_TAG\" ]\nthen\n  git fetch --force origin \"refs/tags/${CIRCLE_TAG}\"\nelse\n  git fetch --force origin \"test-webhook-circleci:remotes/origin/test-webhook-circleci\"\nfi\n\n\nif [ -n \"$CIRCLE_TAG\" ]\nthen\n  git reset --hard \"$CIRCLE_SHA1\"\n  git checkout -q \"$CIRCLE_TAG\"\nelif [ -n \"$CIRCLE_BRANCH\" ]\nthen\n  git reset --hard \"$CIRCLE_SHA1\"\n  git checkout -q -B \"$CIRCLE_BRANCH\"\nfi\n\ngit reset --hard \"$CIRCLE_SHA1\"",
+                  "status":"success",
+                  "timedout":null,
+                  "continue":null,
+                  "end_time":"2017-10-10T14:13:39.195Z",
+                  "type":"test",
+                  "allocation_id":"59dcd43b234ee70001cd97b0-0-build/495D4B72",
+                  "output_url":"https://circle-production-action-output.s3.amazonaws.com/f40943100046b1acf65dcd95-jobteaser-jobteaser-101-0?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20171010T141416Z&X-Amz-SignedHeaders=host&X-Amz-Expires=431999&X-Amz-Credential=AKIAIQ65EYQDTMSJK2DQ%2F20171010%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=a4f47ba95ab7131735249b1fbe9c3e4c0d91ff32b27356f9a9d6c77d15fde1fd",
+                  "start_time":"2017-10-10T14:13:03.740Z",
+                  "background":false,
+                  "exit_code":0,
+                  "insignificant":false,
+                  "canceled":null,
+                  "step":101,
+                  "run_time_millis":35455,
+                  "has_output":true
+               }
+            ]
+         },
+         {
+            "name":"Persisting to Workspace",
+            "actions":[
+               {
+                  "truncated":false,
+                  "index":0,
+                  "parallel":true,
+                  "failed":null,
+                  "infrastructure_fail":null,
+                  "name":"Persisting to Workspace",
+                  "bash_command":null,
+                  "status":"success",
+                  "timedout":null,
+                  "continue":null,
+                  "end_time":"2017-10-10T14:14:16.139Z",
+                  "type":"test",
+                  "allocation_id":"59dcd43b234ee70001cd97b0-0-build/495D4B72",
+                  "start_time":"2017-10-10T14:13:39.195Z",
+                  "background":false,
+                  "exit_code":null,
+                  "insignificant":false,
+                  "canceled":null,
+                  "step":102,
+                  "run_time_millis":36944,
+                  "has_output":true
+               }
+            ]
+         }
+      ],
+      "body":"",
+      "usage_queued_at":"2017-10-10T14:07:56.053Z",
+      "context_ids":[
+
+      ],
+      "fail_reason":null,
+      "retry_of":null,
+      "reponame":"jobteaser",
+      "ssh_users":[
+
+      ],
+      "build_url":"https://circleci.com/gh/jobteaser/jobteaser/63026",
+      "parallel":1,
+      "failed":false,
+      "branch":"test-webhook-circleci",
+      "username":"jobteaser",
+      "author_date":"2017-10-10T16:07:44+02:00",
+      "why":"github",
+      "user":{
+         "is_user":true,
+         "login":"hdorio",
+         "avatar_url":"https://avatars1.githubusercontent.com/u/110615?v=4",
+         "name":"Hadrien Dorio",
+         "vcs_type":"github",
+         "id":110615
+      },
+      "vcs_revision":"ad2e19c3ab58ae1f51b9a29689b6cef3bfaeab7d",
+      "workflows":{
+         "job_name":"checkout_code",
+         "job_id":"628802f7-bff4-4ac2-b82d-e78acbf12d5d",
+         "workflow_id":"1f1c7e8e-285e-4866-997f-90e60f848be8",
+         "workspace_id":"1f1c7e8e-285e-4866-997f-90e60f848be8",
+         "upstream_job_ids":[
+
+         ],
+         "upstream_concurrency_map":{
+
+         },
+         "workflow_name":"btd"
+      },
+      "owners":[
+         "hdorio"
+      ],
+      "vcs_tag":null,
+      "pull_requests":[
+
+      ],
+      "build_num":63026,
+      "infrastructure_fail":false,
+      "committer_email":"hadrien.dorio@gmail.com",
+      "has_artifacts":true,
+      "previous":{
+         "build_num":62443,
+         "status":"failed",
+         "build_time_millis":1
+      },
+      "status":"fixed",
+      "committer_name":"Hadrien Dorio",
+      "retries":null,
+      "subject":"Test CircleCI WebHook",
+      "vcs_type":"github",
+      "timedout":false,
+      "dont_build":null,
+      "lifecycle":"finished",
+      "no_dependency_cache":false,
+      "stop_time":"2017-10-10T14:14:16.139Z",
+      "ssh_disabled":true,
+      "build_time_millis":73782,
+      "picard":{
+         "build_agent":{
+            "image":null,
+            "properties":{
+               "build_agent":"0.0.4303-8712365",
+               "executor":"docker"
+            }
+         },
+         "resource_class":{
+            "cpu":8.0,
+            "ram":16384,
+            "class":"xlarge"
+         }
+      },
+      "circle_yml":{
+         "string":"defaults: &defaults\n  working_directory: ~/app\n  docker:\n    - image: jobteaser/docker-capybara-chrome-headless:0.1\n      environment:\n        - RAILS_ENV: test\n  resource_class: xlarge\n\nversion: 2\nnotify:\n  webhooks:\n    - url: http://example.org.com/hooks/circle\n\njobs:\n  checkout_code:\n    <<: *defaults\n    steps:\n      - checkout\n\n      - persist_to_workspace:\n          root: /root/app\n          paths:\n            - .\n\nworkflows:\n  version: 2\n  btd:\n    jobs:\n      - checkout_code\n"
+      },
+      "messages":[
+
+      ],
+      "is_first_green_build":false,
+      "job_name":null,
+      "start_time":"2017-10-10T14:13:02.357Z",
+      "canceler":null,
+      "all_commit_details":[
+         {
+            "committer_date":"2017-10-10T16:07:44+02:00",
+            "body":"",
+            "branch":"test-webhook-circleci",
+            "author_date":"2017-10-10T16:07:44+02:00",
+            "committer_email":"hadrien.dorio@gmail.com",
+            "commit":"ad2e19c3ab58ae1f51b9a29689b6cef3bfaeab7d",
+            "committer_login":"hdorio",
+            "committer_name":"Hadrien Dorio",
+            "subject":"Test CircleCI WebHook",
+            "commit_url":"https://github.com/jobteaser/jobteaser/commit/ad2e19c3ab58ae1f51b9a29689b6cef3bfaeab7d",
+            "author_login":"hdorio",
+            "author_name":"Hadrien Dorio",
+            "author_email":"hadrien.dorio@gmail.com"
+         }
+      ],
+      "platform":"2.0",
+      "outcome":"success",
+      "vcs_url":"https://github.com/jobteaser/jobteaser",
+      "author_name":"Hadrien Dorio",
+      "node":null,
+      "queued_at":"2017-10-10T14:12:58.581Z",
+      "canceled":false,
+      "author_email":"hadrien.dorio@gmail.com"
+   }
+}

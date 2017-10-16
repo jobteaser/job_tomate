@@ -1,0 +1,145 @@
+{
+   "payload":{
+      "compare":"https://github.com/jobteaser/jobteaser/compare/2baa09e83602...3ffd83ce1364",
+      "previous_successful_build":{
+         "build_num":62366,
+         "status":"success",
+         "build_time_millis":53898
+      },
+      "build_parameters":null,
+      "oss":false,
+      "all_commit_details_truncated":false,
+      "committer_date":"2017-10-10T13:58:02+02:00",
+      "steps":[
+         {
+            "name":"Spin up Environment",
+            "actions":[
+               {
+                  "truncated":false,
+                  "index":0,
+                  "parallel":true,
+                  "failed":true,
+                  "infrastructure_fail":null,
+                  "name":"Spin up Environment",
+                  "bash_command":null,
+                  "status":"failed",
+                  "timedout":null,
+                  "continue":null,
+                  "end_time":"2017-10-10T11:58:41.079Z",
+                  "type":"test",
+                  "allocation_id":"59dcb4f5c9e77c0001687344-0-build/166C50",
+                  "start_time":"2017-10-10T11:58:41.079Z",
+                  "background":false,
+                  "exit_code":null,
+                  "insignificant":false,
+                  "canceled":null,
+                  "step":0,
+                  "run_time_millis":0,
+                  "has_output":true
+               }
+            ]
+         }
+      ],
+      "body":"",
+      "usage_queued_at":"2017-10-10T11:54:29.252Z",
+      "fail_reason":null,
+      "retry_of":null,
+      "reponame":"jobteaser",
+      "ssh_users":[
+
+      ],
+      "build_url":"https://circleci.com/gh/jobteaser/jobteaser/62443",
+      "parallel":1,
+      "failed":true,
+      "branch":"test-webhook-circleci",
+      "username":"jobteaser",
+      "author_date":"2017-10-10T13:58:02+02:00",
+      "why":"github",
+      "user":{
+         "is_user":true,
+         "login":"hdorio",
+         "avatar_url":"https://avatars1.githubusercontent.com/u/110615?v=4",
+         "name":"Hadrien Dorio",
+         "vcs_type":"github",
+         "id":110615
+      },
+      "vcs_revision":"3ffd83ce1364305a6a98c4e9ca55e5d6284bc3ec",
+      "owners":[
+         "hdorio"
+      ],
+      "vcs_tag":null,
+      "pull_requests":[
+
+      ],
+      "build_num":62443,
+      "infrastructure_fail":false,
+      "committer_email":"hadrien.dorio@gmail.com",
+      "has_artifacts":true,
+      "previous":{
+         "build_num":62394,
+         "status":"canceled",
+         "build_time_millis":0
+      },
+      "status":"failed",
+      "committer_name":"Hadrien Dorio",
+      "retries":null,
+      "subject":"Test CircleCI WebHook",
+      "vcs_type":"github",
+      "timedout":false,
+      "dont_build":null,
+      "lifecycle":"finished",
+      "no_dependency_cache":false,
+      "stop_time":"2017-10-10T11:58:41.079Z",
+      "ssh_disabled":true,
+      "build_time_millis":1,
+      "picard":{
+         "build_agent":{
+            "image":null,
+            "properties":{
+               "executor":"missing",
+               "build_agent":"0.0.4303-8712365"
+            }
+         },
+         "resource_class":{
+            "cpu":2.0,
+            "ram":4096,
+            "class":"medium"
+         }
+      },
+      "circle_yml":{
+         "string":"defaults: &defaults\n  working_directory: ~/app\n  docker:\n    - image: jobteaser/docker-capybara-chrome-headless:0.1\n      environment:\n        - RAILS_ENV: test\n  resource_class: xlarge\n\nunit_ruby_test_defaults: &unit_ruby_test_defaults\n  working_directory: ~/app\n  docker:\n    - image: jobteaser/docker-capybara-chrome-headless:0.1\n      environment:\n        - RAILS_ENV: test\n    - image: redis:2\n    - image: mysql:5.6\n      environment:\n        - MYSQL_ROOT_PASSWORD: \"root\"\n    - image: yannvery/docker-elastic23:latest\n    - image: elasticsearch:1.5.2\n    - image: loadimpact/k6\n  resource_class: xlarge\n\nattach_volume: &attach_volume\n  attach_workspace:\n    at: /root/app\n\nsetup_host: &setup_host\n  run:\n    name: Editing hosts file\n    command: |\n      echo \"127.0.0.1 es-master \\\n            es2-master \\\n            localhost \\\n            jobteasertest.dev \\\n            www.jobteasertest.dev \\\n            embedded.jobteasertest.dev \\\n            school.jobteasertest.dev \\\n            em-lyon.jobteasertest.dev \\\n            essec.jobteasertest.dev \\\n            redis-master \\\n            sql-master \\\n            docker.dev\" | sed 's/ [[:blank:]]//g' | sudo tee -a /etc/hosts\n\nversion: 2\nnotify:\n  webhooks:\n    - url: http://example.org/hooks/circle\njobs:\n  checkout_code:\n    <<: *defaults\n    steps:\n      - checkout\n\n      - persist_to_workspace:\n          root: /root/app\n          paths:\n            - .\n"
+      },
+      "messages":[
+
+      ],
+      "is_first_green_build":false,
+      "job_name":null,
+      "start_time":"2017-10-10T11:58:41.078Z",
+      "canceler":null,
+      "all_commit_details":[
+         {
+            "committer_date":"2017-10-10T13:58:02+02:00",
+            "body":"",
+            "branch":"test-webhook-circleci",
+            "author_date":"2017-10-10T13:58:02+02:00",
+            "committer_email":"hadrien.dorio@gmail.com",
+            "commit":"3ffd83ce1364305a6a98c4e9ca55e5d6284bc3ec",
+            "committer_login":"hdorio",
+            "committer_name":"Hadrien Dorio",
+            "subject":"Test CircleCI WebHook",
+            "commit_url":"https://github.com/jobteaser/jobteaser/commit/3ffd83ce1364305a6a98c4e9ca55e5d6284bc3ec",
+            "author_login":"hdorio",
+            "author_name":"Hadrien Dorio",
+            "author_email":"hadrien.dorio@gmail.com"
+         }
+      ],
+      "platform":"2.0",
+      "outcome":"failed",
+      "vcs_url":"https://github.com/jobteaser/jobteaser",
+      "author_name":"Hadrien Dorio",
+      "node":null,
+      "queued_at":"2017-10-10T11:58:37.390Z",
+      "canceled":false,
+      "author_email":"hadrien.dorio@gmail.com"
+   }
+}
