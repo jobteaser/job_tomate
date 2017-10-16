@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require "commands/slack/send_message"
-require "errors/github"
 require "errors/slack"
 require "support/service_pattern"
 
@@ -9,22 +8,12 @@ module JobTomate
 
     # Run on Github status update event to notify the corresponding user
     # (the sender of status' pull request).
-    class SlackNotifyOnGithubStatusUpdate
+    class SlackNotifyOnCircleciStatusUpdate
       extend ServicePattern
-      FILTERED_DESCRIPTION_PATTERNS = [
-        /CircleCI is running your tests/,
-        /Code Climate is analyzing this code/,
-        /Your tests are queued behind your running builds/,
-        /Your tests failed on CircleCI/,
-        /Your tests passed on CircleCI!/
-      ].freeze
 
-      # @param issue [Values::Github::Status]
-      # @raise [Errors::Github::UnknownUser] if the status author's login
+      # @param issue [string] either 'success' or 'failed'
+      # @raise [Errors::Circleci::UnknownUser] if the status author's login
       #   does not match any user in the database.
-      #
-      # NB: The status payload may not contain an author login. In this
-      #     case, it does nothing.
       def run(status)
         return if status.author_github_login.nil?
         user = user_for_github_login(status.author_github_login)
@@ -32,8 +21,6 @@ module JobTomate
 
         slack_username = user.slack_username
         raise_missing_slack_username(user) if slack_username.blank?
-
-        return if filtered_description?(status)
 
         send_message(slack_username, status)
       end
@@ -44,15 +31,8 @@ module JobTomate
         JobTomate::Data::User.where(github_user: login).first
       end
 
-      def filtered_description?(status)
-        FILTERED_DESCRIPTION_PATTERNS.each do |regexp|
-          return true if status.description =~ regexp
-        end
-        false
-      end
-
       def raise_unknown_github_login(login)
-        raise Errors::Github::UnknownUser, "Unknown user with github login '#{login}'"
+        raise Errors::Circleci::UnknownUser, "Unknown user with github login '#{login}'"
       end
 
       def raise_missing_slack_username(user)
