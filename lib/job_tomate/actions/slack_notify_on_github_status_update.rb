@@ -11,13 +11,29 @@ module JobTomate
     # (the sender of status' pull request).
     class SlackNotifyOnGithubStatusUpdate
       extend ServicePattern
-      FILTERED_DESCRIPTION_PATTERNS = [
-        /Code Climate is analyzing this code/,
-        /Your tests are queued behind your running builds/,
-        /CircleCI is running your tests/
-      ].freeze
 
-      # @param issue [Values::Github::Status]
+      # Array, to filter message that should be sent, where
+      #   - first value are regex for status.context
+      #   - second value are regex for status.description
+      #
+      # For code climate, we want to send message for
+      #   - the result of the analyse
+      #
+      # For CircleCI, we want to send message for
+      #   - failed test
+      #   - first passed test of the workflow
+      #   - two last test of the workflow
+      WHITELIST_STATUS_REGEX = [
+        [%r{codeclimate}, %r{to fix}],
+        [%r{codeclimate}, %r{All good!}],
+        [%r{ci/circleci}, %r{Your tests failed on CircleCI}],
+        [%r{ci/circleci: checkout_code}, %r{Your tests passed on CircleCI!}],
+        [%r{ci/circleci: ruby_integration_test_1}, %r{Your tests passed on CircleCI!}],
+        [%r{ci/circleci: ruby_integration_test_2}, %r{Your tests passed on CircleCI!}]
+      ].freeze
+      private_constant :WHITELIST_STATUS_REGEX
+
+      # @param status [Values::Github::Status]
       # @raise [Errors::Github::UnknownUser] if the status author's login
       #   does not match any user in the database.
       #
@@ -31,7 +47,7 @@ module JobTomate
         slack_username = user.slack_username
         raise_missing_slack_username(user) if slack_username.blank?
 
-        return if filtered_description?(status)
+        return unless whitelist_status?(status)
 
         send_message(slack_username, status)
       end
@@ -42,11 +58,10 @@ module JobTomate
         JobTomate::Data::User.where(github_user: login).first
       end
 
-      def filtered_description?(status)
-        FILTERED_DESCRIPTION_PATTERNS.each do |regexp|
-          return true if status.description =~ regexp
+      def whitelist_status?(status)
+        WHITELIST_STATUS_REGEX.any? do |context_regex, description_regex|
+          status.context =~ /#{context_regex}/ && status.description =~ /#{description_regex}/
         end
-        false
       end
 
       def raise_unknown_github_login(login)

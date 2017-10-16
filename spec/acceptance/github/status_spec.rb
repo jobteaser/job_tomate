@@ -11,7 +11,7 @@ describe "/webhooks/github" do
 
   describe "received status update" do
     let!(:stub) do
-      expected_text = "[jira-issue] ci/circleci - Your tests passed on CircleCI!"
+      expected_text = "[jira-issue] ci/circleci - Your tests failed on CircleCI"
       expected_channel = "@slack_user"
       stub_slack_send_message_as_job_tomate(expected_text, expected_channel)
     end
@@ -33,11 +33,11 @@ describe "/webhooks/github" do
       expect(stub).to have_been_requested
     end
 
-    context "status update is filtered" do
+    context "status update is not in whitelist" do
       it "does not notify the status update author" do
         receive_stored_webhook(:github_status_update) do |webhook|
-          source = "Your tests passed on CircleCI!"
-          replacement = "Code Climate is analyzing this code"
+          source = "Your tests failed on CircleCI"
+          replacement = "Your tests passed on CircleCI!"
           webhook.body.gsub!(source, replacement)
         end
         expect(stub).not_to have_been_requested
