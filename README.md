@@ -20,7 +20,7 @@ Automate as many things as possible in our development workflow.
 Trigger | Event | Action | Status
 ------- | ----- | ------ | ------
 Scheduled task | **Toggl** new time entry | **JIRA** add worklog on matching issue | DONE
-Webhook | **Github** pull request opened | **JIRA** add comment on matching issue (branch named `jt-xyz-...`) | DONE
+Webhook | **Github** pull request opened | **JIRA** add comment on matching issue (branch named `jt-xyz-...` or `cs-xyz-...`) | DONE
 Webhook | **Github** pull request closed | **JIRA** add comment on matching issue (indicate if merged or not) | DONE
 Webhook | **Github** status updated | The author of the update (e.g. Codeclimate analyze, CircleCI build) is notified on Slack | DONE
 Webhook | **JIRA** updated issue **assignee** | **JIRA** depending on the issue status, update the developer | DONE
@@ -145,9 +145,8 @@ ruby script/analyze_pending_toggl_entries.rb
 ## Contributing
 
 - Check the [issues](https://github.com/jobteaser/job_tomate/issues).
-- Read the doc: 
+- Read the doc:
   - [architecture](https://github.com/jobteaser/job_tomate/tree/master/doc/architecture.md),
   - [howtos](https://github.com/jobteaser/job_tomate/tree/master/doc/howtos.md),
   - [testing](https://github.com/jobteaser/job_tomate/tree/master/doc/testing.md),
   - [tips](https://github.com/jobteaser/job_tomate/tree/master/doc/development_tips.md).
-

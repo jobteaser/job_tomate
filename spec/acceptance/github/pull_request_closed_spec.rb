@@ -9,26 +9,46 @@ describe "/webhooks/github" do
   context "closed pull request merged related to JIRA issue" do
     it "adds a comment on the JIRA with the PR link" do
       expected_body = "{\"body\":\"Merged PR in develop: https://github.com/jobteaser/job_tomate/pull/3\"}"
-      stub = stub_jira_request(
-        :post,
-        "/issue/jt-1234/comment",
-        expected_body
-      )
-      receive_stored_webhook(:github_pull_request_closed_merged_jira_related)
-      expect(stub).to have_been_requested
+
+      post_comment = stub_jira_request(:post, "/issue/jt-1234/comment", expected_body)
+
+      receive_stored_webhook(:github_pull_request_closed_merged_jira_jobteaser_related)
+
+      expect(post_comment).to have_been_requested
+    end
+
+    context "in the career services JIRA project" do
+      it "adds a comment on the JIRA with the PR link" do
+        expected_body = "{\"body\":\"Merged PR in develop: https://github.com/jobteaser/job_tomate/pull/3\"}"
+
+        post_comment = stub_jira_request(:post, "/issue/cs-123/comment", expected_body)
+
+        receive_stored_webhook(:github_pull_request_closed_merged_jira_career_services_related)
+
+        expect(post_comment).to have_been_requested
+      end
     end
   end
 
   context "closed pull request not merged related to JIRA issue" do
     it "adds a comment on the JIRA with the PR link" do
       expected_body = "{\"body\":\"Closed PR without merging: https://github.com/jobteaser/job_tomate/pull/3\"}"
-      stub = stub_jira_request(
-        :post,
-        "/issue/jt-1234/comment",
+      stub = stub_jira_request(:post, "/issue/jt-1234/comment",
         expected_body
       )
-      receive_stored_webhook(:github_pull_request_closed_not_merged_jira_related)
+      receive_stored_webhook(:github_pull_request_closed_not_merged_jira_jobteaser_related)
       expect(stub).to have_been_requested
+    end
+
+    context "in the career services JIRA project" do
+      it "adds a comment on the JIRA with the PR link" do
+        expected_body = "{\"body\":\"Closed PR without merging: https://github.com/jobteaser/job_tomate/pull/3\"}"
+        stub = stub_jira_request(:post, "/issue/cs-123/comment",
+          expected_body
+        )
+        receive_stored_webhook(:github_pull_request_closed_not_merged_jira_career_services_related)
+        expect(stub).to have_been_requested
+      end
     end
   end
 

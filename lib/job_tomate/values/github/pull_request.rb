@@ -29,7 +29,7 @@ module JobTomate
         end
 
         def jira_issue_key
-          @jira_issue_key ||= head_ref[/jt-[\d]+/i]
+          @jira_issue_key ||= head_ref[/(jt|cs)-[\d]+/i]
         end
       end
     end
