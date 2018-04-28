@@ -12,15 +12,13 @@ Automate as many things as possible in our development workflow.
 
 - JIRA
 - Github
-- Toggl
 - Slack (and bot)
 
 ## Workflows
 
 Trigger | Event | Action | Status
 ------- | ----- | ------ | ------
-Scheduled task | **Toggl** new time entry | **JIRA** add worklog on matching issue | DONE
-Webhook | **Github** pull request opened | **JIRA** add comment on matching issue (branch named `jt-xyz-...` or `cs-xyz-...`) | DONE
+Webhook | **Github** pull request opened | **JIRA** add comment on matching issue (branch named `jt-xyz-...`) | DONE
 Webhook | **Github** pull request closed | **JIRA** add comment on matching issue (indicate if merged or not) | DONE
 Webhook | **Github** status updated | The author of the update (e.g. Codeclimate analyze, CircleCI build) is notified on Slack | DONE
 Webhook | **JIRA** updated issue **assignee** | **JIRA** depending on the issue status, update the developer | DONE
@@ -84,25 +82,22 @@ bin/dump_production_to_staging
 
 ### Add a new user
 
-If the user started using Toggl, some `TogglEntry` records should be pending for this user. We can use them to find the user's Toggl username. We also need to process them after the user has been created.
+**NB**
+
+- This assumes you have deployed to Heroku
+- You must have the `mongo` command-line client tool installed on your local machine
+
+```
+bin/dump_production_to_local
+bin/dump_production_to_staging
+```
+
+### Add a new user
 
 _In an application console:_
 
 ```
-# Get the Toggl username
-JobTomate::Data::TogglEntry.where(status: "pending").all.map(&:toggl_user).uniq
-=> ["New User"]
-
-# The JIRA password can be reset manually for a given user by a JIRA admin
-JobTomate::Data::User.create toggl_user: 'Toggl User', github_user: 'Github User', jira_username: 'JIRA username', jira_password: 'JIRA password', developer_backend: true, developer_frontend: false, jira_reviewer: true, jira_feature_owner: false, jira_functional_reviewer: false, slack_username: 'Slack User'
-```
-
-**Reprocess older Toggl reports for a given user**
-
-All unprocessed Toggl reports are stored as `Data::TogglEntry` records with the status `"pending"`. Use the following task to process them:
-
-```
-bin/run_task process_pending_toggl_entries
+JobTomate::Data::User.create github_user: 'Github User', jira_username: 'JIRA username', developer_backend: true, developer_frontend: false, jira_reviewer: true, jira_feature_owner: false, jira_functional_reviewer: false, slack_username: 'Slack User'
 ```
 
 ## Setup
@@ -111,7 +106,7 @@ bin/run_task process_pending_toggl_entries
 
 See `.env.example` file.
 
-### JIRA Webhook
+### Jira Webhook
 
 You must setup a webhook on JIRA to trigger JIRA-related workflows. You can find this in Administration > System > Webhooks.
 
@@ -131,16 +126,6 @@ For each repository that needs to be connected to JobTomate, setup the webhook l
 ### Slack Webhook
 
 Setup a webhook integration on Slack. Any default will do since they are all overriden by JobTomate. The webhook URL must be defined in the environment variables (`SLACK_WEBHOOK_URL`).
-
-## Troubleshooting
-
-### Pending Toggl entries
-
-Use this script to analyze reasons for pending Toggl entries:
-
-```
-ruby script/analyze_pending_toggl_entries.rb
-```
 
 ## Contributing
 
