@@ -107,12 +107,6 @@ module WebhooksHelpers
       }
     end
 
-    if :issue_priority.in?(override.keys)
-      payload["issue"]["fields"]["priority"] = {
-        "name" => override[:issue_priority]
-      }
-    end
-
     if :issue_category.in?(override.keys)
       payload["issue"]["fields"]["customfield_10400"] = {
         "name" => override[:issue_category]
