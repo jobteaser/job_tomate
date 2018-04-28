@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift File.expand_path(".")
 require "config/boot"
 
@@ -11,6 +13,8 @@ require "config/boot"
 # the documents through the migration.
 module JobTomate
   module Data
+
+    # Removed persisted data class
     class TogglEntry
       include Mongoid::Document
       store_in collection: "toggl_entries"
