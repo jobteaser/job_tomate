@@ -63,7 +63,6 @@ module JobTomate
           response["id"]
         end
 
-        # DUPLICATE update_worklog
         def format_time(time)
           time.in_time_zone("UTC").strftime("%Y-%m-%dT%H:%M:%S.%3N%z")
         end
