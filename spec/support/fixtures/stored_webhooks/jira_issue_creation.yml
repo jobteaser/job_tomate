@@ -1,0 +1,50 @@
+--- !ruby/object:JobTomate::Data::StoredWebhook
+__selected_fields: 
+attributes: !ruby/hash:BSON::Document
+  _id: !ruby/object:BSON::ObjectId
+    raw_data: !binary |-
+      WuSvZ2IMjQAEbcYK
+  transaction_uuid: 1a3f1b0e-8936-4325-a98a-37479575b77c
+  headers: !ruby/hash:BSON::Document
+    SCRIPT_NAME: ''
+    QUERY_STRING: user_id=romain.champourlier&user_key=romain.champourlier
+    SERVER_PROTOCOL: HTTP/1.1
+    SERVER_SOFTWARE: puma 3.11.4 Love Song
+    GATEWAY_INTERFACE: CGI/1.2
+    REQUEST_METHOD: POST
+    REQUEST_PATH: "/webhooks/jira"
+    REQUEST_URI: "/webhooks/jira?user_id=romain.champourlier&user_key=romain.champourlier"
+    HTTP_VERSION: HTTP/1.1
+    HTTP_HOST: job-tomate-staging.herokuapp.com
+    HTTP_CONNECTION: close
+    HTTP_ACCEPT: "*/*"
+    CONTENT_TYPE: application/json; charset=UTF-8
+    HTTP_VIA: 1.1 localhost (Apache-HttpClient/4.4.1 (cache)), 1.1 vegur
+    HTTP_USER_AGENT: Atlassian HttpClient unknown / JIRA-1001.0.0-SNAPSHOT (100083)
+      / Default
+    HTTP_X_REQUEST_ID: 9e0e3392-7a85-408c-834e-1de594b1a5d3
+    HTTP_X_FORWARDED_FOR: 104.192.142.132
+    HTTP_X_FORWARDED_PROTO: https
+    HTTP_X_FORWARDED_PORT: '443'
+    HTTP_CONNECT_TIME: '1'
+    HTTP_X_REQUEST_START: '1524936551017'
+    HTTP_TOTAL_ROUTE_TIME: '0'
+    CONTENT_LENGTH: '8244'
+    SERVER_NAME: job-tomate-staging.herokuapp.com
+    SERVER_PORT: '443'
+    PATH_INFO: "/webhooks/jira"
+    REMOTE_ADDR: 10.5.234.21
+  body: '{"timestamp":1524936550532,"webhookEvent":"jira:issue_created","issue_event_type_name":"issue_created","user":{"self":"https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier","name":"romain.champourlier","key":"romain.champourlier","accountId":"557058:871b008f-ade1-4633-a8e6-694fe0499a5c","emailAddress":"romain.champourlier@jobteaser.com","avatarUrls":{"48x48":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=48&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3FownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","24x24":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=24&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dsmall%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","16x16":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=16&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dxsmall%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","32x32":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=32&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dmedium%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue"},"displayName":"Romain
+    Champourlier","active":true,"timeZone":"Europe/Berlin"},"issue":{"id":"47411","self":"https://jobteaser.atlassian.net/rest/api/2/issue/47411","key":"JT-7630","fields":{"issuetype":{"self":"https://jobteaser.atlassian.net/rest/api/2/issuetype/3","id":"3","description":"A
+    task that needs to be done.","iconUrl":"https://jobteaser.atlassian.net/secure/viewavatar?size=xsmall&avatarId=10718&avatarType=issuetype","name":"Task","subtask":false,"avatarId":10718},"timespent":null,"project":{"self":"https://jobteaser.atlassian.net/rest/api/2/project/10103","id":"10103","key":"JT","name":"JobTeaser","projectTypeKey":"software","avatarUrls":{"48x48":"https://jobteaser.atlassian.net/secure/projectavatar?pid=10103&avatarId=12901","24x24":"https://jobteaser.atlassian.net/secure/projectavatar?size=small&pid=10103&avatarId=12901","16x16":"https://jobteaser.atlassian.net/secure/projectavatar?size=xsmall&pid=10103&avatarId=12901","32x32":"https://jobteaser.atlassian.net/secure/projectavatar?size=medium&pid=10103&avatarId=12901"}},"customfield_11000":null,"fixVersions":[],"aggregatetimespent":null,"customfield_11200":null,"resolution":null,"customfield_11400":null,"customfield_12800":null,"customfield_12404":{"self":"https://jobteaser.atlassian.net/rest/api/2/customFieldOption/11200","value":"Kanban","id":"11200"},"customfield_12403":null,"customfield_12601":null,"resolutiondate":null,"workratio":-1,"lastViewed":"2018-04-28T19:29:10.638+0200","watches":{"self":"https://jobteaser.atlassian.net/rest/api/2/issue/JT-7630/watchers","watchCount":0,"isWatching":true},"created":"2018-04-28T19:29:10.486+0200","customfield_12000":null,"customfield_10020":"","customfield_12200":null,"customfield_10021":null,"customfield_12400":null,"priority":{"self":"https://jobteaser.atlassian.net/rest/api/2/priority/3","iconUrl":"https://jobteaser.atlassian.net/images/icons/priorities/major.svg","name":"Normal
+    (SHOULD)","id":"3"},"customfield_10100":"1|i005ir:","customfield_10024":null,"customfield_12600":null,"customfield_12401":null,"labels":[],"customfield_10016":"","customfield_10017":"","customfield_11900":null,"customfield_10018":"","customfield_10019":"","aggregatetimeoriginalestimate":null,"timeestimate":null,"versions":[],"issuelinks":[],"assignee":null,"updated":"2018-04-28T19:29:10.486+0200","status":{"self":"https://jobteaser.atlassian.net/rest/api/2/status/1","description":"The
+    issue is open and ready for the assignee to start work on it.","iconUrl":"https://jobteaser.atlassian.net/images/icons/statuses/open.png","name":"Open
+    / Ready for dev","id":"1","statusCategory":{"self":"https://jobteaser.atlassian.net/rest/api/2/statuscategory/2","id":2,"key":"new","colorName":"blue-gray","name":"New"}},"components":[],"timeoriginalestimate":null,"description":null,"customfield_11100":null,"customfield_10012":"","customfield_11101":null,"customfield_10013":"","customfield_11300":null,"customfield_10014":"","customfield_10015":"","timetracking":{},"customfield_12701":null,"customfield_10600":null,"customfield_12700":null,"customfield_10601":null,"security":null,"customfield_10007":[],"customfield_12901":null,"customfield_12900":null,"customfield_10602":null,"customfield_10008":null,"customfield_12702":null,"customfield_12903":null,"attachment":[],"aggregatetimeestimate":null,"customfield_12902":null,"customfield_12904":null,"summary":"JobTomate
+    test issue #2","creator":{"self":"https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier","name":"romain.champourlier","key":"romain.champourlier","accountId":"557058:871b008f-ade1-4633-a8e6-694fe0499a5c","emailAddress":"romain.champourlier@jobteaser.com","avatarUrls":{"48x48":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=48&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3FownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","24x24":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=24&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dsmall%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","16x16":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=16&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dxsmall%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","32x32":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=32&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dmedium%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue"},"displayName":"Romain
+    Champourlier","active":true,"timeZone":"Europe/Berlin"},"subtasks":[],"reporter":{"self":"https://jobteaser.atlassian.net/rest/api/2/user?username=romain.champourlier","name":"romain.champourlier","key":"romain.champourlier","accountId":"557058:871b008f-ade1-4633-a8e6-694fe0499a5c","emailAddress":"romain.champourlier@jobteaser.com","avatarUrls":{"48x48":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=48&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3FownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","24x24":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=24&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dsmall%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","16x16":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=16&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dxsmall%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue","32x32":"https://avatar-cdn.atlassian.com/11cf8be313d7e6e4d69f67772d66fcf1?s=32&d=https%3A%2F%2Fjobteaser.atlassian.net%2Fsecure%2Fuseravatar%3Fsize%3Dmedium%26ownerId%3Dromain.champourlier%26avatarId%3D10400%26noRedirect%3Dtrue"},"displayName":"Romain
+    Champourlier","active":true,"timeZone":"Europe/Berlin"},"customfield_10000":null,"aggregateprogress":{"progress":0,"total":0},"customfield_12100":{"self":"https://jobteaser.atlassian.net/rest/api/2/customFieldOption/11004","value":"Core/Tech","id":"11004"},"customfield_10001":null,"customfield_10002":null,"customfield_12300":null,"customfield_10003":null,"customfield_12500":null,"customfield_10004":null,"customfield_11600":null,"environment":null,"customfield_11800":"{}","duedate":null,"progress":{"progress":0,"total":0},"votes":{"self":"https://jobteaser.atlassian.net/rest/api/2/issue/JT-7630/votes","votes":0,"hasVoted":false}}},"changelog":{"id":"260763","items":[{"field":"priority","fieldtype":"jira","fieldId":"priority","from":null,"fromString":null,"to":"3","toString":"Normal
+    (SHOULD)"},{"field":"reporter","fieldtype":"jira","fieldId":"reporter","from":null,"fromString":null,"to":"romain.champourlier","toString":"Romain
+    Champourlier"},{"field":"Status","fieldtype":"jira","fieldId":"status","from":null,"fromString":null,"to":"1","toString":"Open
+    / Ready for dev"}]}}'
+  updated_at: 2018-04-28 17:29:11.023000000 Z
+  created_at: 2018-04-28 17:29:11.023000000 Z

@@ -58,19 +58,8 @@ module JobTomate
           priority == "Blocker"
         end
 
-        # The issue category (JobTeaser custom field).
-        # May be Roadmap, Quickwin, Maintenance, Technical, Operational.
-        # @return [String]
-        def category
-          data["fields"]["customfield_10400"]["name"]
-        end
-
         def issue_type
           data["fields"]["issuetype"]["name"]
-        end
-
-        def maintenance?
-          category == "Maintenance"
         end
 
         def assignee_name

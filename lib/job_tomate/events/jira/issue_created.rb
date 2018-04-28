@@ -1,4 +1,3 @@
-require "actions/slack_notify_jira_new_maintenance_blocker"
 require "support/service_pattern"
 
 module JobTomate
@@ -11,7 +10,6 @@ module JobTomate
 
         # @param issue [Values::Issue]
         def run(issue)
-          Actions::SlackNotifyJIRANewMaintenanceBlocker.run(issue)
         end
       end
     end
