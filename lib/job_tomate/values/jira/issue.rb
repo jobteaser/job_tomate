@@ -50,14 +50,6 @@ module JobTomate
           data["fields"]["status"]["name"]
         end
 
-        def priority
-          data["fields"]["priority"]["name"]
-        end
-
-        def blocker?
-          priority == "Blocker"
-        end
-
         def issue_type
           data["fields"]["issuetype"]["name"]
         end
@@ -65,10 +57,6 @@ module JobTomate
         def assignee_name
           value = data["fields"]["assignee"]
           value ? value["name"] : nil
-        end
-
-        def change_assignee_name(username)
-          data["fields"]["assignee"] = { "name" => username }
         end
 
         def assignee_user
@@ -80,26 +68,14 @@ module JobTomate
           value ? value["name"] : nil
         end
 
-        def developer_backend_user
-          user_for_name(developer_backend_name)
-        end
-
         def reviewer_name
           value = custom_field("reviewer")
           value ? value["name"] : nil
         end
 
-        def reviewer_user
-          user_for_name(reviewer_name)
-        end
-
         def feature_owner_name
           value = custom_field("feature_owner")
           value ? value["name"] : nil
-        end
-
-        def feature_owner_user
-          user_for_name(feature_owner_name)
         end
 
         # @return [String] custom JIRA field for the specified
