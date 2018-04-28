@@ -9,8 +9,7 @@ module JobTomate
         extend ServicePattern
 
         # @param issue [Values::Issue]
-        def run(issue)
-        end
+        def run(issue); end
       end
     end
   end
