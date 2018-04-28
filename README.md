@@ -32,16 +32,22 @@ Webhook | **JIRA new comment** on issue | **Slack** notify the mentioned user(s)
 ### Start dependencies (MongoDB)
 
 ```
-docker-compose up -d
+docker-compose up -d mongo-dev mongo-test
 ```
 
-### Open a console locally
+### Open a Ruby console locally
 
 ```
 bin/console
 ```
 
 NB: by default in non-production environments (see `RACK_ENV` environment variable), the `JIRA_DRY_RUN` is set to `"true"` to prevent JIRA API calls with effects (e.g. update, delete).
+
+### Open a Mongo console locally
+
+```
+docker-compose run mongo-client
+```
 
 ### Deploy to Heroku
 
@@ -71,16 +77,13 @@ Some maintenance scripts must be scheduled too (Heroku's Scheduler plugin is fin
 heroku run bin/console -a <APP-NAME>
 ```
 
+### Run a migration on Heroku
+
+```
+heroku run ruby db/migrate/... -a <APP-NAME>
+```
+
 ### Dump the production database
-
-_NB: this assumes you have deployed to Heroku_
-
-```
-bin/dump_production_to_local
-bin/dump_production_to_staging
-```
-
-### Add a new user
 
 **NB**
 

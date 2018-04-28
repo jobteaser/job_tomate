@@ -13,6 +13,11 @@ services:
       - "27018:27017"
     volumes:
       - mongo-test-data:/data/db
+  mongo-client:
+    image: mongo
+    command: mongo --host=mongo-dev
+    links:
+      - mongo-dev:mongo-dev
 
 volumes:
   mongo-dev-data:
