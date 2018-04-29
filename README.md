@@ -100,7 +100,7 @@ bin/dump_production_to_staging
 _In an application console:_
 
 ```
-JobTomate::Data::User.create github_user: 'Github User', jira_username: 'JIRA username', developer_backend: true, developer_frontend: false, jira_reviewer: true, jira_feature_owner: false, jira_functional_reviewer: false, slack_username: 'Slack User'
+JobTomate::Data::User.create github_user: 'Github User', jira_username: 'JIRA username', developer_backend: true, developer_frontend: false, jira_reviewer: true, product_manager: false, jira_functional_reviewer: false, slack_username: 'Slack User'
 ```
 
 ## Setup

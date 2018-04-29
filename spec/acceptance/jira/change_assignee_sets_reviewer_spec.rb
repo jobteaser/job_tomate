@@ -17,12 +17,12 @@ describe "change assignee sets reviewer" do
       jira_username: "romain.champourlier",
       developer_backend: developer_backend,
       jira_reviewer: jira_reviewer,
-      jira_feature_owner: jira_feature_owner
+      product_manager: product_manager
     )
   end
   let(:developer_backend) { false }
   let(:jira_reviewer) { false }
-  let(:jira_feature_owner) { false }
+  let(:product_manager) { false }
 
   context "assignee is unknown" do
     let!(:assignee) { nil }

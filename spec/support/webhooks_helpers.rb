@@ -95,9 +95,9 @@ module WebhooksHelpers
       }
     end
 
-    if :issue_feature_owner.in?(override.keys)
+    if :issue_product_manager.in?(override.keys)
       payload["issue"]["fields"]["customfield_11200"] = {
-        "name" => override[:issue_feature_owner]
+        "name" => override[:issue_product_manager]
       }
     end
 

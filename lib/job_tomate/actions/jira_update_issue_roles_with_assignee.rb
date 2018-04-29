@@ -19,7 +19,7 @@ module JobTomate
         return if @issue.assignee_user.nil?
         set_developer_backend
         set_reviewer
-        set_feature_owner
+        set_product_manager
       end
 
       private
@@ -38,10 +38,10 @@ module JobTomate
         update_for_custom_field("reviewer", name: @issue.assignee_user.jira_username)
       end
 
-      def set_feature_owner
-        return if @issue.feature_owner_name.present?
-        return unless @issue.assignee_user.jira_feature_owner?
-        update_for_custom_field("feature_owner", name: @issue.assignee_user.jira_username)
+      def set_product_manager
+        return if @issue.product_manager_name.present?
+        return unless @issue.assignee_user.product_manager?
+        update_for_custom_field("product_manager", name: @issue.assignee_user.jira_username)
       end
 
       def update_for_custom_field(custom_field, value)

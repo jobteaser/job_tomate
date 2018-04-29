@@ -12,7 +12,7 @@ module JobTomate
         CUSTOM_FIELDS_MAPPING = {
           "developer_backend" => "customfield_10600",
           "reviewer" => "customfield_10601",
-          "feature_owner" => "customfield_11200",
+          "product_manager" => "customfield_11200",
           "bug_cause" => "customfield_11101",
           "developer_frontend" => "customfield_12404"
         }.freeze
@@ -73,8 +73,8 @@ module JobTomate
           value ? value["name"] : nil
         end
 
-        def feature_owner_name
-          value = custom_field("feature_owner")
+        def product_manager_name
+          value = custom_field("product_manager")
           value ? value["name"] : nil
         end
 

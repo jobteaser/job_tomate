@@ -17,13 +17,13 @@ module JobTomate
     class JIRAIssueChangingStatusUpdatesAssigneeAndRoles
       extend ServicePattern
 
-      # Maps which role (developer_backend, feature_owner...)
+      # Maps which role (developer_backend, product_manager...)
       # should be assigned to the issue depending on the 
       # status.
       ROLE_FOR_STATUS = {
         "In Development" => "developer_backend",
         "In Review" => "reviewer",
-        "In Functional Review" => "feature_owner",
+        "In Functional Review" => "product_manager",
         "Ready for Release" => "developer_backend"
       }.freeze
 
@@ -100,13 +100,13 @@ module JobTomate
         issue_role_username(issue, conflicting_role) != user.jira_username
       end
 
-      # NB: the condition is necessary because we have migrated
-      # `jira_developer` to `developer_backend` (not prefixed with `jira`).
+      # NB: the condition is necessary because we have migrated some fields
+      # from `jira_...` to a non-prefixed version (`developer`, `product_manager`).
       # Migration of other roles without the `jira` prefix will enable removing
       # the first clause.
       def user_can_take_role?(user, role)
-        if role == "developer_backend"
-          return false unless user.developer_backend
+        if role.in? ["developer_backend", "product_manager"]
+          return false unless user.send(role)
         else
           return false unless user.send(:"jira_#{role}")
         end
