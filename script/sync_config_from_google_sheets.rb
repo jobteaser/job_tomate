@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../config/boot"
 require "job_tomate/data/token"
 require "job_tomate/data/user"
@@ -14,11 +16,13 @@ require "googleauth"
 # manage the configuration without having to access the application
 # running in production.
 
-OOB_URI = "urn:ietf:wg:oauth:2.0:oob".freeze
-APPLICATION_NAME = "JobTomate".freeze
-CLIENT_SECRETS_PATH = "client_secret.json".freeze
+OOB_URI = "urn:ietf:wg:oauth:2.0:oob"
+APPLICATION_NAME = "JobTomate"
+CLIENT_SECRETS_PATH = "client_secret.json"
 SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS_READONLY
 
+# Implements Google::Auth::TokenStore contract to provide a
+# custom token store saving the tokens in the Mongo database.
 class CustomTokenStore
   class << self
     attr_accessor :default
@@ -31,7 +35,7 @@ class CustomTokenStore
 
   def store(id, token)
     t = load(id)
-    if t != nil
+    if !t.nil?
       t.value = token
       t.save!
     else
@@ -41,12 +45,10 @@ class CustomTokenStore
 
   def delete(id)
     token = load(id)
-    if token != nil
-      token.destroy
-    end
+    token&.destroy
   end
 end
-        
+
 # Ensure valid credentials, either by restoring from the saved credentials
 # files or intitiating an OAuth2 authorization. If authorization is required,
 # the user's default browser will be launched to approve the request.
@@ -56,18 +58,20 @@ def authorize
   client_id = Google::Auth::ClientId.new(ENV["GOOGLE_AUTH_ID"], ENV["GOOGLE_AUTH_SECRET"])
   token_store = CustomTokenStore.new
   authorizer = Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
-  user_id = 'default'
+  user_id = "default"
   credentials = authorizer.get_credentials(user_id)
-  if credentials.nil?
-    url = authorizer.get_authorization_url(base_url: OOB_URI)
-    puts 'Open the following URL in the browser and enter the ' \
-         'resulting code after authorization:\n' + url
-    code = gets
-    credentials = authorizer.get_and_store_credentials_from_code(
-      user_id: user_id, code: code, base_url: OOB_URI
-    )
-  end
+  credentials = get_credentials(authorizer, user_id) if credentials.nil?
   credentials
+end
+
+def get_credentials(authorizer, user_id)
+  url = authorizer.get_authorization_url(base_url: OOB_URI)
+  puts "Open the following URL in the browser and enter the " \
+       "resulting code after authorization:\n" + url
+  code = gets
+  authorizer.get_and_store_credentials_from_code(
+    user_id: user_id, code: code, base_url: OOB_URI
+  )
 end
 
 # Initialize the API
@@ -89,11 +93,11 @@ rows[1..-1].each do |row|
   columns.each_with_index do |column, index|
     user_fields[column] = row[index]
   end
-  
+
   # We use `slack_username` to find existing records as its almost always filled
   slack_username = row[columns.index("slack_username")]
   user = JobTomate::Data::User.where(slack_username: slack_username).first
-  if user != nil
+  if !user.nil?
     user.fields = user_fields
     user.save!
     JobTomate::LOGGER.info "Updated user with Slack username `#{slack_username}` from Google Sheets document"
