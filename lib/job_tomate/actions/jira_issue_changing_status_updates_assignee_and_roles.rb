@@ -32,6 +32,11 @@ module JobTomate
       # @param username [String]: name of the JIRA user which performed the
       #   change
       def run(issue, changelog, username)
+        if issue.issue_type == "Bug" && changelog.to_string == "In Functional Review"
+          update_issue_assignee_with_username(issue, issue.reporter_name)
+          return
+        end
+
         return if no_role_for_new_status?(changelog)
 
         new_status_role = role_for_new_status(changelog)
@@ -128,6 +133,10 @@ module JobTomate
           issue.key,
           payload
         )
+      end
+
+      def update_issue_assignee_with_username(issue, username)
+        update_issue(issue, fields: { assignee: { name: username } })
       end
 
       def update_assignee_and_role(issue, user, role)

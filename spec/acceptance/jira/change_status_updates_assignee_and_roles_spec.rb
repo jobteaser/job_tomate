@@ -2,7 +2,7 @@ require "spec_helper"
 require "data/user"
 require "errors/jira"
 
-describe "JIRA issue changing status updates assignee and roles" do
+describe "JIRA issue status changed updates assignee and roles" do
   include WebhooksHelpers
   include WebmockHelpers
 
@@ -10,34 +10,36 @@ describe "JIRA issue changing status updates assignee and roles" do
   let(:payload_override) { { issue_status: "Open" } }
   let(:jira_username) { "user.name" }
   let(:issue_key) { "JT-4467" }
+  let(:issue_type_name) { "Task" }
 
   let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
-  let(:user_is_feature_owner) { false }
+  let(:user_is_product_manager) { false }
 
   let!(:user) do
     JobTomate::Data::User.create(
       jira_username: jira_username,
       developer_backend: user_is_developer_backend,
       jira_reviewer: user_is_reviewer,
-      jira_feature_owner: user_is_feature_owner
+      product_manager: user_is_product_manager
     )
   end
 
   let(:issue_developer_backend_name) { nil }
   let(:issue_reviewer_name) { nil }
-  let(:issue_feature_owner_name) { nil }
+  let(:issue_product_manager_name) { nil }
   let(:issue_developer_backend) { issue_developer_backend_name.nil? ? nil : { name: issue_developer_backend_name } }
   let(:issue_reviewer) { issue_reviewer_name.nil? ? nil : { name: issue_reviewer_name } }
-  let(:issue_feature_owner) { issue_feature_owner_name.nil? ? nil : { name: issue_feature_owner_name } }
+  let(:issue_product_manager) { issue_product_manager_name.nil? ? nil : { name: issue_product_manager_name } }
   let(:changelog_to_string) { "In Development" } # same value as in :jira_issue_update fixture
 
   let(:webhook) do
     wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
     parsed_body = wh.value.parsed_body
+    parsed_body["issue"]["fields"]["issuetype"]["name"] = issue_type_name
     parsed_body["issue"]["fields"]["customfield_10600"] = issue_developer_backend
     parsed_body["issue"]["fields"]["customfield_10601"] = issue_reviewer
-    parsed_body["issue"]["fields"]["customfield_11200"] = issue_feature_owner
+    parsed_body["issue"]["fields"]["customfield_11200"] = issue_product_manager
     parsed_body["changelog"]["items"][0]["toString"] = changelog_to_string
     wh.body = parsed_body.to_json
     wh
@@ -61,7 +63,7 @@ describe "JIRA issue changing status updates assignee and roles" do
     let(:issue_developer_backend_name) { jira_username }
     let(:user_is_reviewer) { true }
 
-    it "is unassigns the issue" do
+    it "unassigns the issue" do
       expected_body = {
         fields: {
           assignee: nil
@@ -77,10 +79,35 @@ describe "JIRA issue changing status updates assignee and roles" do
     end
   end
 
+  # Special case: the issue is a Bug and its status is changed to "In Functional
+  # Review". The issue is assigned to the issue's reporter, even if a product
+  # manager is defined.
+  context "when issue is changed to \"In Functional Review\" and is a bug" do
+    let(:changelog_to_string) { "In Functional Review" }
+    let(:issue_reporter_name) { jira_username }
+    let(:issue_product_manager_name) { "product.manager" }
+    let(:issue_type_name) { "Bug" }
+
+    it "assigns the issue to its reporter" do
+      expected_body = {
+        fields: {
+          assignee: { name: jira_username },
+        }
+      }.to_json
+      stub = stub_jira_request(
+        :put,
+        "/issue/#{issue_key}",
+        expected_body
+      )
+      receive_stored_webhook(webhook)
+      expect(stub).to have_been_requested
+    end
+  end
+
   {
     "In Development" => "developer_backend",
     "In Review" => "reviewer",
-    "In Functional Review" => "feature_owner",
+    "In Functional Review" => "product_manager",
     "Ready for Release" => "developer_backend"
   }.each do |status, role|
     context "when issue is changed to \"#{status}\"" do

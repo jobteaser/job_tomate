@@ -59,6 +59,10 @@ module JobTomate
           value ? value["name"] : nil
         end
 
+        def reporter_name
+          data.dig("fields", "reporter", "name")
+        end
+
         def assignee_user
           user_for_name(assignee_name)
         end
