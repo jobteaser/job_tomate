@@ -126,15 +126,50 @@ For each repository that needs to be connected to JobTomate, setup the webhook l
 - Content type: select "application/json"
 - Select "Send me everything"
 
-### Slack Webhook
+#### Slack Webhook
 
 Setup a webhook integration on Slack. Any default will do since they are all overriden by JobTomate. The webhook URL must be defined in the environment variables (`SLACK_WEBHOOK_URL`).
 
-## Contributing
+#### Google Sheets API
 
-- Check the [issues](https://github.com/jobteaser/job_tomate/issues).
-- Read the doc:
-  - [architecture](https://github.com/jobteaser/job_tomate/tree/master/doc/architecture.md),
-  - [howtos](https://github.com/jobteaser/job_tomate/tree/master/doc/howtos.md),
-  - [testing](https://github.com/jobteaser/job_tomate/tree/master/doc/testing.md),
-  - [tips](https://github.com/jobteaser/job_tomate/tree/master/doc/development_tips.md).
+The `script/sync_config_from_google_sheets.rb` script may be used to synchronize the application's configuration stored in the Mongo database using a Google Sheets document. This makes updating the configuration easier for non-developers and for sharing the permission to update the configuration without having to give production access permission.
+
+To enable this integration, you need to perform the following.
+
+#### Setup a Google Developers Console Project
+
+You can follow the instructions available on [Google Sheets API Ruby Quickstart](https://developers.google.com/sheets/api/quickstart/ruby).
+
+Write your Client ID and Client Secret somewhere secure.
+
+#### Create the configuration Google Sheets document
+
+The document must follow this structure:
+
+- A page named after a model, e.g. `User` for `JobTomate::Data::User`.
+- One column per model field, e.g. `github_user`.
+- A single row at the top with the field's name.
+
+Share the document with the appropriate users. You will need a "technical" user with limited permissions to be able to access this file for deployment. You should use this user to retrieve API tokens for your production instance.
+
+#### Retrieve tokens
+
+The first time you'll use the script, it will ask you to perform an OAuth authentication to retrieve API tokens.
+
+**NB: SECURITY WARNING**
+
+While you can perform the OAuth authentication using your personal _jobteaser.com_ Google account for development purposes, you **MUST NOT** use it to deploy the application.
+
+This token could indeed be used to access all your Google Sheets documents. It should remain secured on your workstation. 
+
+
+#### Update `.env`
+
+```
+GOOGLE_AUTH_ID=
+GOOGLE_AUTH_SECRET=
+GOOGLE_SHEETS_CONFIGURATION_ID=
+```
+
+1. Insert the retrieved client ID and client secret. 
+2. Insert the document's ID (the string after `spreadsheets/d/` in the URL).

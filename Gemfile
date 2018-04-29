@@ -13,6 +13,11 @@ gem "pry"
 gem "awesome_print"
 gem "ruby-progressbar"
 
+# Integrations
+
+# Google API
+gem "google-api-client"
+
 # Slack bot
 gem "faye-websocket"
 gem "slack-ruby-bot"

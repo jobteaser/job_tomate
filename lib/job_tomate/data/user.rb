@@ -5,6 +5,10 @@ module JobTomate
 
     # Store users in database with credentials and
     # identifiers to the appropriate services.
+    # 
+    # NB: The records are synchronized with a Google Sheets
+    # document. See `script/sync_config_from_google_sheets.rb`
+    # for more information.
     class User
       include Mongoid::Document
       include Mongoid::Timestamps
