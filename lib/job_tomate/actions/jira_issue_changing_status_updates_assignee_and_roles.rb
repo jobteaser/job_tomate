@@ -17,13 +17,13 @@ module JobTomate
     class JIRAIssueChangingStatusUpdatesAssigneeAndRoles
       extend ServicePattern
 
-      # Maps which role (developer_backend, feature_owner...)
+      # Maps which role (developer_backend, product_manager...)
       # should be assigned to the issue depending on the 
       # status.
       ROLE_FOR_STATUS = {
         "In Development" => "developer_backend",
         "In Review" => "reviewer",
-        "In Functional Review" => "feature_owner",
+        "In Functional Review" => "product_manager",
         "Ready for Release" => "developer_backend"
       }.freeze
 
@@ -32,20 +32,25 @@ module JobTomate
       # @param username [String]: name of the JIRA user which performed the
       #   change
       def run(issue, changelog, username)
-        return if no_role_for_new_status?(changelog)
+        if issue.issue_type == "Bug" && changelog.to_string == "In Functional Review"
+          update_issue_assignee_with_username(issue, issue.reporter_name)
+          return
+        end
+
+        return if role_for_new_status(changelog).nil?
 
         new_status_role = role_for_new_status(changelog)
         return if update_assignee_based_on_role(issue, new_status_role)
         return if update_assignee_and_roles(issue, username, new_status_role)
 
-        unassign(issue)
+        update_issue_by_removing_assignee(issue)
       end
 
       private
 
       # @return [Bool] true if the operation was done, false otherwise
       def update_assignee_based_on_role(issue, role)
-        return false unless issue_role_set?(issue, role)
+        return false unless issue_has_username_for_role?(issue, role)
         update_assignee(issue, role)
         true
       end
@@ -64,11 +69,7 @@ module JobTomate
         )
       end
 
-      def no_role_for_new_status?(changelog)
-        role_for_new_status(changelog).nil?
-      end
-
-      def issue_role_username(issue, role)
+      def issue_username_for_role(issue, role)
         issue.send(:"#{role}_name")
       end
 
@@ -77,8 +78,8 @@ module JobTomate
       #
       # For example, returns true when called with `issue` and
       # `:reviewer` if `issue.reviewer` has a value.
-      def issue_role_set?(issue, role)
-        issue_role_username(issue, role).present?
+      def issue_has_username_for_role?(issue, role)
+        issue_username_for_role(issue, role).present?
       end
 
       # The user is appropriate for the role if:
@@ -97,16 +98,16 @@ module JobTomate
           end
         )
         return true if conflicting_role.nil?
-        issue_role_username(issue, conflicting_role) != user.jira_username
+        issue_username_for_role(issue, conflicting_role) != user.jira_username
       end
 
-      # NB: the condition is necessary because we have migrated
-      # `jira_developer` to `developer_backend` (not prefixed with `jira`).
+      # NB: the condition is necessary because we have migrated some fields
+      # from `jira_...` to a non-prefixed version (`developer`, `product_manager`).
       # Migration of other roles without the `jira` prefix will enable removing
       # the first clause.
       def user_can_take_role?(user, role)
-        if role == "developer_backend"
-          return false unless user.developer_backend
+        if role.in? %w[developer_backend product_manager]
+          return false unless user.send(role)
         else
           return false unless user.send(:"jira_#{role}")
         end
@@ -117,9 +118,9 @@ module JobTomate
         new_assignee = user_for_role(issue, role)
 
         if new_assignee.nil?
-          unassign(issue)
+          update_issue_by_removing_assignee(issue)
         else
-          assign_to(issue, new_assignee)
+          update_issue_by_updating_assignee_with_user(issue, new_assignee)
         end
       end
 
@@ -130,6 +131,10 @@ module JobTomate
         )
       end
 
+      def update_issue_assignee_with_username(issue, username)
+        update_issue(issue, fields: { assignee: { name: username } })
+      end
+
       def update_assignee_and_role(issue, user, role)
         update_issue(issue, fields: {
                        assignee: { name: user.jira_username },
@@ -137,12 +142,12 @@ module JobTomate
                      })
       end
 
-      def unassign(issue)
+      def update_issue_by_removing_assignee(issue)
         update_issue(issue, fields: { assignee: nil })
       end
 
-      def assign_to(issue, assignee)
-        username = assignee.jira_username
+      def update_issue_by_updating_assignee_with_user(issue, user)
+        username = user.jira_username
         update_issue(issue, fields: { assignee: { name: username } })
       end
 

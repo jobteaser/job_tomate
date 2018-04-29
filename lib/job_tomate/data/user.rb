@@ -19,7 +19,7 @@ module JobTomate
       field :developer_backend,         type: Boolean
       field :developer_frontend,        type: Boolean
       field :jira_reviewer,             type: Boolean # TODO: should be `reviewer`
-      field :jira_feature_owner,        type: Boolean # TODO: should be `feature_owner`
+      field :product_manager,           type: Boolean
       field :jira_functional_reviewer,  type: Boolean # TODO: should be `functional_reviewer`
       field :slack_username,            type: String
     end

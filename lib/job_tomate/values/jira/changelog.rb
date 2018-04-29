@@ -12,8 +12,8 @@ module JobTomate
         CUSTOM_FIELDS_MAPPING = {
           "Developer" => "developer",
           "Reviewer" => "reviewer",
-          "Feature Owner" => "feature_owner"
-        }
+          "Feature Owner" => "product_manager"
+        }.freeze
 
         # @param data [Hash] the "changelog" values from
         #   the JIRA webhook payload.

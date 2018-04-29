@@ -2,7 +2,7 @@ require "spec_helper"
 require "data/user"
 require "errors/jira"
 
-describe "change assignee sets feature_owner" do
+describe "change assignee sets product_manager" do
   include WebhooksHelpers
   include WebmockHelpers
 
@@ -17,12 +17,12 @@ describe "change assignee sets feature_owner" do
       jira_username: "romain.champourlier",
       developer_backend: developer_backend,
       jira_reviewer: jira_reviewer,
-      jira_feature_owner: jira_feature_owner
+      product_manager: product_manager
     )
   end
   let(:developer_backend) { false }
   let(:jira_reviewer) { false }
-  let(:jira_feature_owner) { false }
+  let(:product_manager) { false }
 
   context "assignee is unknown" do
     let!(:assignee) { nil }
@@ -34,8 +34,8 @@ describe "change assignee sets feature_owner" do
     end
   end
 
-  context "assignee is a JIRA feature owner" do
-    let(:jira_feature_owner) { true }
+  context "assignee is a product manager" do
+    let(:product_manager) { true }
 
     ["Open", "In Development", "In Review", "In Functional Review"].each do |status|
       context "status is \"#{status}\"" do
@@ -56,8 +56,8 @@ describe "change assignee sets feature_owner" do
       end
     end
 
-    context "issue already has a feature_owner" do
-      let(:payload_override) { { issue_feature_owner: "anyone" } }
+    context "issue already has a product_manager" do
+      let(:payload_override) { { issue_product_manager: "anyone" } }
 
       it "is successful and does nothing" do
         play_request
@@ -67,7 +67,7 @@ describe "change assignee sets feature_owner" do
   end
 
   context "assignee is not a JIRA feature owner" do
-    let(:jira_feature_owner) { false }
+    let(:product_manager) { false }
 
     it "is successful and does nothing" do
       play_request
