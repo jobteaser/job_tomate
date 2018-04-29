@@ -6,6 +6,8 @@ JobTomate is built on a set of components that interact together to perform work
 - **Events** trigger **actions** (e.g. `JIRAAddCommentOnGithubPullRequest`, `SlackNotifyJIRAIssueAssignee`)
 - **Actions** perform effects through **commands** (e.g. `JIRA::AddComment`, `Slack::SendMessage`). This is the part where the workflow's logic is handled.
 
+![Overview](architecture-overview.jpg)
+
 ## Triggers
 
 Any action performed by JobTomate will start from a trigger. This is were JobTomate takes inputs from the external world. The currently available triggers are:
@@ -56,3 +58,7 @@ If you realize that external information needs to be modified, it is a valid rea
 For example, a change of JIRA issue status requires several Slack notifications AND at the same time it triggers an external re-assignment of the issue. 
 
 So, each Slack notification is a separate action sourced by the `Issue` value object, the change of assignee is another action that, in its turn, triggers a new webhook with the updated assignee. This change might (or might now) trigger another slack notification, but there's absolutely no need to compact all of these notifications into one service. They are completely independent.
+
+---
+
+![Details](architecture-details.jpg)
