@@ -13,7 +13,7 @@ module JobTomate
           "Developer" => "developer",
           "Reviewer" => "reviewer",
           "Feature Owner" => "product_manager"
-        }
+        }.freeze
 
         # @param data [Hash] the "changelog" values from
         #   the JIRA webhook payload.

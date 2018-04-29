@@ -106,7 +106,7 @@ module JobTomate
       # Migration of other roles without the `jira` prefix will enable removing
       # the first clause.
       def user_can_take_role?(user, role)
-        if role.in? ["developer_backend", "product_manager"]
+        if role.in? %w[developer_backend product_manager]
           return false unless user.send(role)
         else
           return false unless user.send(:"jira_#{role}")
