@@ -1,4 +1,6 @@
-require "commands/jira/set_field"
+# frozen_string_literal: true
+
+require "commands/jira/update_issue"
 require "support/service_pattern"
 
 module JobTomate
