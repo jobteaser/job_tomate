@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "data/user"
 require "errors/jira"
@@ -11,6 +13,7 @@ describe "JIRA issue status changed updates assignee and roles" do
   let(:jira_username) { "user.name" }
   let(:issue_key) { "JT-4467" }
   let(:issue_type_name) { "Task" }
+  let(:slack_username) { "user.name" }
 
   let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
@@ -21,7 +24,8 @@ describe "JIRA issue status changed updates assignee and roles" do
       jira_username: jira_username,
       developer_backend: user_is_developer_backend,
       jira_reviewer: user_is_reviewer,
-      product_manager: user_is_product_manager
+      product_manager: user_is_product_manager,
+      slack_username: slack_username
     )
   end
 
@@ -32,6 +36,8 @@ describe "JIRA issue status changed updates assignee and roles" do
   let(:issue_reviewer) { issue_reviewer_name.nil? ? nil : { name: issue_reviewer_name } }
   let(:issue_product_manager) { issue_product_manager_name.nil? ? nil : { name: issue_product_manager_name } }
   let(:changelog_to_string) { "In Development" } # same value as in :jira_issue_update fixture
+  let(:comments) { [{ "body" => "Opened PR: some link", "author" => { name: "job_tomate" } }] }
+  let(:issue_bug_cause) { "Some serious cause!" }
 
   let(:webhook) do
     wh = JobTomate::Data::StoredWebhook.load_from_fixture(:jira_issue_update)
@@ -40,7 +46,9 @@ describe "JIRA issue status changed updates assignee and roles" do
     parsed_body["issue"]["fields"]["customfield_10600"] = issue_developer_backend
     parsed_body["issue"]["fields"]["customfield_10601"] = issue_reviewer
     parsed_body["issue"]["fields"]["customfield_11200"] = issue_product_manager
+    parsed_body["issue"]["fields"]["customfield_11101"] = issue_bug_cause
     parsed_body["changelog"]["items"][0]["toString"] = changelog_to_string
+    parsed_body["issue"]["fields"]["comment"]["comments"] = comments
     wh.body = parsed_body.to_json
     wh
   end

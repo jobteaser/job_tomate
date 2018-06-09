@@ -35,6 +35,15 @@ module JobTomate
           )
         end
 
+        def pull_request?
+          body.include?("Opened PR") &&
+            by_job_tomate?
+        end
+
+        def by_job_tomate?
+          data["author"]["name"] == "job_tomate"
+        end
+
         # Takes the comment body and replaces occurrence of JIRA
         # user mentions (`[~jira.user]`) by Slack user mentions
         # (`@slack.user`).
