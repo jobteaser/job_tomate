@@ -86,6 +86,16 @@ JIRA_BROWSER_ISSUE_PREFIX=https://<REPLACE-ME>.atlassian.net/browse
 
 Replace `<REPLACE-ME` with the prefix of your Atlassian domain.
 
+NB: by default in non-production environments (see `RACK_ENV` environment variable), the `JIRA_DRY_RUN` is set to `"true"` to prevent JIRA API calls with effects (e.g. update, delete).
+
+### Run tests
+
+```
+rake test
+```
+
+### Open a Mongo console locally
+
 ```
 JIRA_USERNAME=<REPLACE-ME>
 JIRA_PASSWORD=<REPLACE-ME>
