@@ -4,7 +4,7 @@ require "spec_helper"
 require "data/user"
 require "errors/jira"
 
-describe "send Slack message if JIRA issue of type Bug is updated without bug cause" do
+describe "notifies on Slack if Jira \"Bug\" issue is updated without a bug cause" do
   include WebhooksHelpers
   include WebmockHelpers
 

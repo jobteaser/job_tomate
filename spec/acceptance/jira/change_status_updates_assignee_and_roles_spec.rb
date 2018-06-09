@@ -112,39 +112,6 @@ describe "JIRA issue status changed updates assignee and roles" do
     end
   end
 
-  context "to In Review status change checks if comments contain a PR link" do
-    before do
-      allow(JobTomate::Commands::JIRA::UpdateIssue).to receive(:run).and_return(WebmockHelpers::RETURN_VALUES)
-    end
-
-    let(:changelog_to_string) { "In Review" }
-    let(:link) { "<https://example.atlassian.net/browse/#{issue_key}|#{issue_key}>" }
-    let(:expected_body) do
-      {
-        text: "You have probably forgotten to create a pull request for this issue In Review => #{link}",
-        channel: "@#{slack_username}",
-        username: "Git Patrol",
-        icon_emoji: ":rotating_light:"
-      }.to_json
-    end
-
-    context "comments are absent" do
-      let(:comments) { [] }
-
-      it "notifies the updater of the issue" do
-        stub = stub_slack_request(expected_body, return_values: WebmockHelpers::RETURN_VALUES)
-        receive_stored_webhook(webhook)
-        expect(stub).to have_been_requested
-      end
-    end
-
-    it "doesn't notify the updater of the issue if a comment with a pull request link is present" do
-      stub = stub_slack_request(expected_body, return_values: WebmockHelpers::RETURN_VALUES)
-      receive_stored_webhook(webhook)
-      expect(stub).to_not have_been_requested
-    end
-  end
-
   {
     "In Development" => "developer_backend",
     "In Review" => "reviewer",

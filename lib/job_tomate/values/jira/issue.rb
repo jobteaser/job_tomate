@@ -117,6 +117,7 @@ module JobTomate
         end
 
         def got_comments?
+          return false if data["fields"]["comment"].blank?
           data["fields"]["comment"]["comments"].any?
         end
       end
