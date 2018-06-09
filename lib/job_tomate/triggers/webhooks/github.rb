@@ -17,12 +17,16 @@ module JobTomate
       #   - Choose "Send me everything"
       class Github
         HEADER_EVENT = "HTTP_X_GITHUB_EVENT"
-        HEADER_EVENT_VALID_VALUES = %w(
+        HEADER_EVENT_HANDLED_VALUES = %w(
           issue_comment
           status
           pull_request
           pull_request_review_comment
         ).freeze
+        HEADER_EVENT_VALID_VALUES = (%w(
+          delete
+          push
+        ) + HEADER_EVENT_HANDLED_VALUES).freeze
 
         def self.definition
           {
@@ -36,6 +40,7 @@ module JobTomate
         def run_events(webhook)
           @webhook = webhook
           raise InvalidWebhook unless valid_webhook?
+          return unless handled_webhook?
           process_pull_request_event if pull_request_event?
           process_status_event if status_event?
         end
@@ -46,6 +51,10 @@ module JobTomate
 
         def valid_webhook?
           webhook.headers[HEADER_EVENT].in? HEADER_EVENT_VALID_VALUES
+        end
+
+        def handled_webhook?
+          webhook.headers[HEADER_EVENT].in? HEADER_EVENT_HANDLED_VALUES
         end
 
         def status_event?
