@@ -14,7 +14,8 @@ module JobTomate
           "reviewer" => "customfield_10601",
           "product_manager" => "customfield_11200",
           "bug_cause" => "customfield_11101",
-          "developer_frontend" => "customfield_12404"
+          "developer_frontend" => "customfield_12404",
+          "branch_name" => "customfield_12900"
         }.freeze
 
         # Returns the JIRA field for a custom field.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "job_tomate/commands/jira/support/client"
 require "support/service_pattern"
 
@@ -16,7 +18,11 @@ module JobTomate
         # @param password [String] optional, defaults to ENV["JIRA_PASSWORD"]
         #
         def run(issue_key, body, username = ENV["JIRA_USERNAME"], password = ENV["JIRA_PASSWORD"])
-          Client.exec_request(:put, "/issue/#{issue_key}", username, password, body)
+          if ENV["JIRA_DRY_RUN"] != "true"
+            Client.exec_request(:put, "/issue/#{issue_key}", username, password, body)
+          else
+            true
+          end
         end
       end
     end
