@@ -11,7 +11,6 @@ module JobTomate
       UnknownError = Class.new(BaseError)
       UnknownUser = Class.new(BaseError)
       UnknownCustomField = Class.new(BaseError)
-      WorklogTooShort = Class.new(BaseError)
       MissingSharedUser = Class.new(BaseError)
     end
   end
