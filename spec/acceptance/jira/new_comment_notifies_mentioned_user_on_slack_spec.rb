@@ -58,7 +58,7 @@ describe "Slack notify on JIRA issue comment" do
         text: "#{prefix} *Trying a comment with some people mentioned: @rchampourlier*",
         channel: "@rchampourlier",
         username: "JobTomate",
-        icon_emoji: ":japanese_ogre:"
+        icon_emoji: ":tomato:"
       }.to_json
     end
 
@@ -84,7 +84,7 @@ describe "Slack notify on JIRA issue comment" do
         text: "#{prefix} *mentioned @rchampourlier and @knownslack, [~some.no_slack], [~some.unknown]*",
         channel: channel,
         username: "JobTomate",
-        icon_emoji: ":japanese_ogre:"
+        icon_emoji: ":tomato:"
       }.to_json
     end
 

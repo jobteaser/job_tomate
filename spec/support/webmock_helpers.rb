@@ -91,7 +91,7 @@ module WebmockHelpers
       "text" => text,
       "channel" => channel,
       "username" => "JobTomate",
-      "icon_emoji" => ":japanese_ogre:"
+      "icon_emoji" => ":tomato:"
     }
     stub_slack_request(body.to_json)
   end
