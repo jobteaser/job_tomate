@@ -18,10 +18,10 @@ describe "/webhooks/github" do
         :put,
         "https://example.atlassian.net/rest/api/2/issue/jt-1234?startAt=0"
         ).with(
-          body: "{\"fields\":{\"Branch Name\":\"jt-1234-create-crawler\"}}",
+          body: { fields: { customfield_12900: "jt-1234-create-crawler" } }.to_json,
           headers: {
-            'Authorization'=>'Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==',
-            'Content-Type'=>'application/json'
+            "Authorization" => "Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==",
+            "Content-Type" => "application/json"
           }
         ).to_return(status: 200, body: "", headers: {})
 
@@ -32,15 +32,20 @@ describe "/webhooks/github" do
     end
 
     it "sets the branch name field with the branch name" do
-      expected_body = "{\"fields\":{\"Branch Name\":\"jt-1234-create-crawler\"}}"
+      expected_body = { fields: { customfield_12900: "jt-1234-create-crawler" } }.to_json
 
       fill_branch_name = stub_jira_request(:put, "/issue/jt-1234", expected_body)
       post_comment = stub_request(
         :post,
         "https://example.atlassian.net/rest/api/2/issue/jt-1234/comment?startAt=0"
       ).with(
-        body: "{\"body\":\"Opened PR: https://github.com/jobteaser/job_tomate/pull/3 - branch: jt-1234-create-crawler\"}",
-        headers: {'Authorization'=>'Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==', 'Content-Type'=>'application/json'}
+        body: {
+          body: "Opened PR: https://github.com/jobteaser/job_tomate/pull/3 - branch: jt-1234-create-crawler"
+        }.to_json,
+        headers: {
+          "Authorization" => "Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==",
+          "Content-Type" => "application/json"
+        }
       ).to_return(status: 200, body: "", headers: {})
 
       receive_stored_webhook(:github_pull_request_opened_jira_jobteaser_related)
@@ -59,10 +64,10 @@ describe "/webhooks/github" do
           :put,
           "https://example.atlassian.net/rest/api/2/issue/cs-123?startAt=0"
           ).with(
-            body: "{\"fields\":{\"Branch Name\":\"cs-123-foo\"}}",
+            body: { fields: { customfield_12900: "cs-123-foo" } }.to_json,
             headers: {
-              'Authorization'=>'Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==',
-              'Content-Type'=>'application/json'
+              "Authorization" => "Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==",
+              "Content-Type" => "application/json"
             }
           ).to_return(status: 200, body: "", headers: {})
 
@@ -73,17 +78,17 @@ describe "/webhooks/github" do
       end
 
       it "sets the branch name field with the branch name" do
-        expected_body = "{\"fields\":{\"Branch Name\":\"cs-123-foo\"}}"
+        expected_body = { fields: { customfield_12900: "cs-123-foo" } }.to_json
 
         fill_branch_name = stub_jira_request(:put, "/issue/cs-123", expected_body)
         post_comment = stub_request(
           :post,
           "https://example.atlassian.net/rest/api/2/issue/cs-123/comment?startAt=0"
         ).with(
-          body: "{\"body\":\"Opened PR: https://github.com/jobteaser/job_tomate/pull/3 - branch: cs-123-foo\"}",
+          body: { body: "Opened PR: https://github.com/jobteaser/job_tomate/pull/3 - branch: cs-123-foo" }.to_json,
           headers: {
-            'Authorization'=>'Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==',
-            'Content-Type'=>'application/json'
+            "Authorization" => "Basic am9iX3RvbWF0ZV91c2VybmFtZTpqb2JfdG9tYXRlX3B3ZA==",
+            "Content-Type" => "application/json"
           }
         ).to_return(status: 200, body: "", headers: {})
 
