@@ -20,8 +20,9 @@ module JobTomate
         # @param issue [Values::JIRA::Changelog]
         # @param user_name [String]
         def run(issue, changelog, user_name)
-          Actions::JIRAUpdateIssueAssigneeAndRolesForStatus.run(issue, changelog, user_name)
+          Actions::JIRAIssueChangingStatusUpdatesAssigneeAndRoles.run(issue, changelog, user_name)
           Actions::SlackNotifyMissingPullRequest.run(issue, changelog, user_name)
+          Actions::SlackNotifyJIRABugIssueUpdatedWithoutCause.run(issue, user_name)
         end
       end
     end
