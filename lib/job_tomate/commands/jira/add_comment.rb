@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "commands/jira/support/client"
 require "support/service_pattern"
 

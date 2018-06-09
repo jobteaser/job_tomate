@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "job_tomate/commands/jira/support/client"
 require "support/service_pattern"
 
