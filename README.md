@@ -43,6 +43,12 @@ bin/console
 
 NB: by default in non-production environments (see `RACK_ENV` environment variable), the `JIRA_DRY_RUN` is set to `"true"` to prevent JIRA API calls with effects (e.g. update, delete).
 
+### Run tests
+
+```
+rake test
+```
+
 ### Open a Mongo console locally
 
 ```
