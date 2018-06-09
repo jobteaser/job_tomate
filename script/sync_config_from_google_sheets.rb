@@ -79,8 +79,6 @@ service = Google::Apis::SheetsV4::SheetsService.new
 service.client_options.application_name = APPLICATION_NAME
 service.authorization = authorize
 
-# Prints the names and majors of students in a sample spreadsheet:
-# https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
 spreadsheet_id = ENV["GOOGLE_SHEETS_CONFIGURATION_ID"]
 range = "User!A1:G"
 response = service.get_spreadsheet_values(spreadsheet_id, range)

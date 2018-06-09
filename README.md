@@ -214,13 +214,13 @@ The `script/sync_config_from_google_sheets.rb` script may be used to synchronize
 
 To enable this integration, you need to perform the following.
 
-#### Setup a Google Developers Console Project
+**Setup a Google Developers Console Project**
 
 You can follow the instructions available on [Google Sheets API Ruby Quickstart](https://developers.google.com/sheets/api/quickstart/ruby).
 
 Write your Client ID and Client Secret somewhere secure.
 
-#### Create the configuration Google Sheets document
+**Create the configuration Google Sheets document**
 
 The document must follow this structure:
 
@@ -230,7 +230,7 @@ The document must follow this structure:
 
 Share the document with the appropriate users. You will need a "technical" user with limited permissions to be able to access this file for deployment. You should use this user to retrieve API tokens for your production instance.
 
-#### Retrieve tokens
+**Retrieve tokens**
 
 The first time you'll use the script, it will ask you to perform an OAuth authentication to retrieve API tokens.
 
@@ -241,7 +241,7 @@ While you can perform the OAuth authentication using your personal _jobteaser.co
 This token could indeed be used to access all your Google Sheets documents. It should remain secured on your workstation. 
 
 
-#### Update `.env`
+**Update `.env`**
 
 ```
 GOOGLE_AUTH_ID=
@@ -251,3 +251,7 @@ GOOGLE_SHEETS_CONFIGURATION_ID=
 
 1. Insert the retrieved client ID and client secret. 
 2. Insert the document's ID (the string after `spreadsheets/d/` in the URL).
+
+**Reset your token**
+
+If you need to reset your token (e.g. if you changed the user authorized to access the file), connect to the application's console and drop the `JobTomate::Data::Token` stored in the DB.
