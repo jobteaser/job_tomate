@@ -30,9 +30,7 @@ module JobTomate
 Please do something about it! #{link} (#{issue.status})"
         Commands::Slack::SendMessage.run(
           message,
-          channel: "@#{slack_user}",
-          username: "Bug Monster",
-          icon_emoji: ":smiling_imp:"
+          channel: "@#{slack_user}"
         )
       end
 

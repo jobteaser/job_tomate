@@ -35,8 +35,8 @@ describe "notifies on Slack if Jira \"Bug\" issue is updated without a bug cause
       text: "The bug issue you're working on doesn't have a cause specified.
 Please do something about it! #{issue_link} (#{changelog_to_string})",
       channel: "@#{slack_username}",
-      username: "Bug Monster",
-      icon_emoji: ":smiling_imp:"
+      username: "JobTomate",
+      icon_emoji: ":tomato:"
     }.to_json
   end
 
