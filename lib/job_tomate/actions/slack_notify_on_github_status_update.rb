@@ -28,8 +28,11 @@ module JobTomate
         [%r{codeclimate}, %r{All good!}],
         [%r{ci/circleci}, %r{Your tests failed on CircleCI}],
         [%r{ci/circleci: checkout_code}, %r{Your tests passed on CircleCI!}],
-        [%r{ci/circleci: ruby_integration_test_1}, %r{Your tests passed on CircleCI!}],
-        [%r{ci/circleci: ruby_integration_test_2}, %r{Your tests passed on CircleCI!}]
+        [%r{ci/circleci: ruby_integration_test_request_a}, %r{Your tests passed on CircleCI!}],
+        [%r{Feature-env build}, %r{Build successful}],
+        [%r{Feature-env build}, %r{Build failed}],
+        [%r{Feature-env deployment}, %r{Deployment successful}],
+        [%r{Feature-env deployment}, %r{Deployment failed}]
       ].freeze
       private_constant :WHITELIST_STATUS_REGEX
 
@@ -47,12 +50,19 @@ module JobTomate
         slack_username = user.slack_username
         raise_missing_slack_username(user) if slack_username.blank?
 
+        log_status_context(status)
+
         return unless whitelist_status?(status)
 
         send_message(slack_username, status)
       end
 
       private
+
+      def log_status_context(status)
+        LOGGER.info "context: #{status.context}"
+        LOGGER.info "description: #{status.description}"
+      end
 
       def user_for_github_login(login)
         JobTomate::Data::User.where(github_user: login).first

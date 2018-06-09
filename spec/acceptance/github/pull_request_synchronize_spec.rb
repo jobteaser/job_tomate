@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "job_tomate/web"
 require "job_tomate/data/stored_webhook"
