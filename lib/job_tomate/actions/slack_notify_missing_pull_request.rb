@@ -25,9 +25,7 @@ module JobTomate
       def send_message(text, slack_user)
         Commands::Slack::SendMessage.run(
           text,
-          channel: "@#{slack_user}",
-          username: "Git Patrol",
-          icon_emoji: ":rotating_light:"
+          channel: "@#{slack_user}"
         )
       end
 

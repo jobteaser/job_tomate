@@ -49,8 +49,8 @@ describe "Jira issue status changed notifies developer on Slack if missing pull 
     {
       text: "You have probably forgotten to create a pull request for this issue In Review => #{link}",
       channel: "@#{slack_username}",
-      username: "Git Patrol",
-      icon_emoji: ":rotating_light:"
+      username: "JobTomate",
+      icon_emoji: ":tomato:"
     }.to_json
   end
 
