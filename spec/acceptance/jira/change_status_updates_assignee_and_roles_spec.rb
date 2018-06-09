@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "data/user"
 require "errors/jira"
@@ -11,7 +13,7 @@ describe "JIRA issue status changed updates assignee and roles" do
   let(:jira_username) { "user.name" }
   let(:issue_key) { "JT-4467" }
   let(:issue_type_name) { "Task" }
-  let(:slack_username) { 'user.name' }
+  let(:slack_username) { "user.name" }
 
   let(:user_is_developer_backend) { false }
   let(:user_is_reviewer) { false }
@@ -22,7 +24,7 @@ describe "JIRA issue status changed updates assignee and roles" do
       jira_username: jira_username,
       developer_backend: user_is_developer_backend,
       jira_reviewer: user_is_reviewer,
-      product_manager: user_is_product_manager
+      product_manager: user_is_product_manager,
       slack_username: slack_username
     )
   end
