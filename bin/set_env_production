@@ -5,6 +5,7 @@ envs = File.read(env_file)
 envs.gsub!("\n", ' ')
 envs.gsub!('RACK_ENV=development', 'RACK_ENV=production')
 envs.gsub! /MONGODB_URI[^\s]+/, ''
+envs.gsub! /JIRA_DRY_RUN[^\s]+/, ''
 envs.strip!
 
 command = "heroku config:set #{envs} -a job-tomate"
