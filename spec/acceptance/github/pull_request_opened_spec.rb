@@ -20,7 +20,12 @@ describe "/webhooks/github" do
         branch_name: "cs-123-foo",
         issue_key: "cs-123",
         webhook_name: "github_pull_request_opened_jira_career_services_related"
-      }
+      },
+      { project: "Job Snow",
+        branch_name: "js-1234-bar",
+        issue_key: "js-1234",
+        webhook_name: "github_pull_request_opened_jira_job_snow_related" }
+
     ].each do |jira_context|
         context "for project #{jira_context[:project]}" do
 
