@@ -40,6 +40,18 @@ describe "/webhooks/github" do
         expect(post_comment).to have_been_requested
       end
     end
+
+    context "in the Sound School JIRA project" do
+      it "adds a comment on the JIRA with the PR link" do
+        expected_body = "{\"body\":\"Merged PR in develop: https://github.com/jobteaser/job_tomate/pull/3\"}"
+
+        post_comment = stub_jira_request(:post, "/issue/sds-1234/comment", expected_body)
+
+        receive_stored_webhook(:github_pull_request_closed_merged_jira_sds_related)
+
+        expect(post_comment).to have_been_requested
+      end
+    end
   end
 
   context "closed pull request not merged related to JIRA issue" do
@@ -70,6 +82,17 @@ describe "/webhooks/github" do
           expected_body
         )
         receive_stored_webhook(:github_pull_request_closed_not_merged_jira_job_snow_related)
+        expect(stub).to have_been_requested
+      end
+    end
+
+    context "in the Sound School JIRA project" do
+      it "adds a comment on the JIRA with the PR link" do
+        expected_body = "{\"body\":\"Closed PR without merging: https://github.com/jobteaser/job_tomate/pull/3\"}"
+        stub = stub_jira_request(:post, "/issue/sds-1234/comment",
+          expected_body
+        )
+        receive_stored_webhook(:github_pull_request_closed_not_merged_jira_sds_related)
         expect(stub).to have_been_requested
       end
     end
