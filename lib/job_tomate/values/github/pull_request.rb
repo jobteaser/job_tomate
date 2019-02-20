@@ -6,6 +6,10 @@ module JobTomate
       class PullRequest
         attr_reader :data
 
+        TRACKED_TICKET_IDS = /(jt|cs|js|sds)-[\d]+/i.freeze
+
+        private_constant :TRACKED_TICKET_IDS
+
         # @param data [Hash] the "pull_request" values from
         #   the Github webhook payload.
         def initialize(data)
@@ -29,7 +33,7 @@ module JobTomate
         end
 
         def jira_issue_key
-          @jira_issue_key ||= head_ref[/(jt|cs|js)-[\d]+/i]
+          @jira_issue_key ||= head_ref[TRACKED_TICKET_IDS]
         end
       end
     end
